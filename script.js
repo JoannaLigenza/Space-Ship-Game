@@ -6,10 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_height = 15;
 	const brick_quantity = 17;
 	const all_brick_arr = [];
-	let ship_position = 30;
+	let ship_position_x = 160;
+	let ship_position_y = 300;
 	let space_ship = "";
 	let which_key_pressed = "";
 	let move = false;
+	let one_shoot = [];
+	const bullet_width = 2;
+	const bullet_height = 10;
+	let bullet_arr = [];
 
 	//context.fillStyle = "rgb(233, 233, 233)";
 	//context.fillRect(1,1,canvas.width,canvas.height);	
@@ -212,48 +217,96 @@ document.addEventListener('DOMContentLoaded', function() {
 	function space_ship_move() {
 		const step = 3;
 		if (which_key_pressed == "") { 
-			ship_position = ship_position;
+			ship_position_x = ship_position_x;
 		}
 		if (which_key_pressed == "39" && move == true) { 
 			check_collision();
-			ship_position = ship_position + step;
+			ship_position_x = ship_position_x + step;
 		}
 		if (which_key_pressed == "37" && move == true) { 
 			check_collision();
-			ship_position = ship_position - step;
+			ship_position_x = ship_position_x - step;
 		}
-		context.putImageData(space_ship, ship_position, 300);
+		context.putImageData(space_ship, ship_position_x, ship_position_y);
 	}
 	
 	function check_collision() {
-		if (ship_position <= 6) {
-			ship_position = 6;
+		if (ship_position_x <= 6) {
+			ship_position_x = 6;
 		}
-		if (ship_position >= (canvas.width - space_ship.width - 6  ) ) {
-			ship_position = canvas.width - space_ship.width - 6;
+		if (ship_position_x >= (canvas.width - space_ship.width - 6  ) ) {
+			ship_position_x = canvas.width - space_ship.width - 6;
+		}
+	}
+	
+	function draw_bullet() {
+				
+		if (which_key_pressed == "32" && one_shoot.length <= 1) { 
+			context.beginPath();
+			context.moveTo(ship_position_x + 20, ship_position_y - bullet_height); 
+			context.lineTo(ship_position_x + 20, ship_position_y);
+			context.lineWidth = bullet_width;
+			context.strokeStyle = "rgb(250, 250, 250)";
+			context.stroke();
+			
+			get_bullet();
+			return;
+		}	
+	}
+	
+	function get_bullet() {
+		let bullet_position_x = "";
+		let bullet_position_y = "";
+		let get_bullet = "";
+		
+		bullet_position_x = ship_position_x + 19;
+		bullet_position_y = ship_position_y - bullet_height;
+		get_bullet = context.getImageData(bullet_position_x, bullet_position_y, bullet_width, bullet_height);
+		
+		bullet_arr.push([get_bullet, bullet_position_x, bullet_position_y]);
+		
+		//return get_bullet;
+	}
+	
+	function shoot(get_bullet, bullet_position_x, bullet_position_y) {
+		//const one_bullet = draw_bullet();
+		context.putImageData(get_bullet, bullet_position_x, bullet_position_y);
+	}
+	
+	function move_bullet() {
+		const bullet_step = 3;
+		for (i=0; i < bullet_arr.length; i++) {
+			//context.putImageData(get_bullet, bullet_position_x, bullet_position_y - bullet_step);
+			context.putImageData(bullet_arr[i][0], bullet_arr[i][1], bullet_arr[i][2] - bullet_step);
+			bullet_arr[i][2] = bullet_arr[i][2] - bullet_step;
 		}
 	}
 	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
+		console.log(which_key_pressed)
 		move = true;
+		one_shoot.push(1);
+		console.log("one_shoot: ", one_shoot)
 	}); 
 	
 	document.addEventListener("keyup", function() {
 		move = false;
 		which_key_pressed = "";
+		one_shoot = [];
+		console.log("one_shoot: ", one_shoot)
 	});
 
 	
 	var t0 = performance.now();
 
-	draw_line_brick1(5, 5);
-	draw_line_brick2(5, 5 + brick_height);
-	draw_line_brick1(5, 5 + (brick_height * 2));
-	suprise_brick();
+	//draw_line_brick1(5, 5);
+	//draw_line_brick2(5, 5 + brick_height);
+	//draw_line_brick1(5, 5 + (brick_height * 2));
+	//suprise_brick();
 	
-	var t1 = performance.now();
-	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
+	
+	
 	
 	function loop() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
@@ -262,6 +315,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_line_brick1(5, 5);
 		draw_line_brick2(5, 5 + brick_height);
 		draw_line_brick1(5, 5 + (brick_height * 2));
+		draw_bullet();
+		move_bullet();
+		console.log("test");
 		setTimeout(function() {
 			const req = requestAnimationFrame(loop); 
 			
@@ -276,5 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	console.log(all_brick_arr);
 
-
+	var t1 = performance.now();
+	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
 })
