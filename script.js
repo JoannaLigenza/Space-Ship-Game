@@ -213,15 +213,24 @@ document.addEventListener('DOMContentLoaded', function() {
 		const step = 3;
 		if (which_key_pressed == "") { 
 			ship_position = ship_position;
-			context.putImageData(space_ship, ship_position, 300);
 		}
 		if (which_key_pressed == "39" && move == true) { 
+			check_collision();
 			ship_position = ship_position + step;
-			context.putImageData(space_ship, ship_position, 300);
 		}
 		if (which_key_pressed == "37" && move == true) { 
+			check_collision();
 			ship_position = ship_position - step;
-			context.putImageData(space_ship, ship_position, 300);
+		}
+		context.putImageData(space_ship, ship_position, 300);
+	}
+	
+	function check_collision() {
+		if (ship_position <= 6) {
+			ship_position = 6;
+		}
+		if (ship_position >= (canvas.width - space_ship.width - 6  ) ) {
+			ship_position = canvas.width - space_ship.width - 6;
 		}
 	}
 	
