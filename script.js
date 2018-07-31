@@ -15,15 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let bullet_arr = [];
-	//let new_date = new Date();
-	//let bullet_delay = new_date.getTime();
+	let go_left_and_shoot = "";
 	
 	function draw_frame() {
-	//	const color = context.getImageData(10,10,canvas.width,canvas.height);
-	//	const red = color.data[0];
-	//	const green = color.data[1];
-	//	const blue = color.data[2];
-	//	console.log("colors: ", red + " " + green + " " + blue)
 		for (i=0; i < canvas.width; i++) {
 			for (j=0; j < canvas.height; j++) {
 				//console.log("test")
@@ -46,10 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				context.fillStyle = "rgb(250, 250, 250)";
 				context.fillRect(i,j,1,1);
 				}
-			/*	if (j == positionY + 10 || j == ((positionY + 10) + brick_width)) { 
-				context.fillStyle = "rgb(232, 169, 0)";
-				context.fillRect(i,j,1,1);
-				} */
 			}
 		}
 		all_brick_arr.push([positionX, positionY, brick_width, brick_height]);
@@ -106,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.textBaseline = "middle";
 		context.fillStyle = "rgba(255,0,0)";
 		context.fillText("?", positionX, positionY);
-		//brick_width
 	}
 	
 	
@@ -208,8 +197,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function get_space_ship() {
 		space_ship = context.getImageData(30, 300, 40, 70);
-		//context.putImageData(space_ship, 100, 300);
-		
 		return space_ship;
 	}
 	
@@ -218,11 +205,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (which_key_pressed == "") { 
 			ship_position_x = ship_position_x;
 		}
-		if (which_key_pressed == "39" && move == true) { 
+		if (my_keys.keys && my_keys.keys[39] && move == true) { 
 			ship_collision();
 			ship_position_x = ship_position_x + step;
 		}
-		if (which_key_pressed == "37" && move == true) { 
+		if (my_keys.keys && my_keys.keys[37] && move == true) { 
 			ship_collision();
 			ship_position_x = ship_position_x - step;
 		}
@@ -238,19 +225,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
+	
 	function draw_bullet() {
-	/*	const new_date2 = new Date();
-		const actual_time = new_date2.getTime();
-		
-		
-		console.log("czas aktualny: " , actual_time);
-		console.log("czas zapisany: " , bullet_delay);
-		console.log("roznica: " , actual_time - bullet_delay); */
-		
-		
-		
-		//if (which_key_pressed == "32" && (actual_time - bullet_delay) < 40 ) { 
 		if (which_key_pressed == "32" && one_shoot == true) { 
+			
 			context.beginPath();
 			context.moveTo(ship_position_x + 20, ship_position_y - bullet_height); 
 			context.lineTo(ship_position_x + 20, ship_position_y);
@@ -260,9 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			one_shoot = false;
 			get_bullet();
-		}	
-		//bullet_delay = actual_time;
-		
+		}
 	}
 	
 	function get_bullet() {
@@ -290,28 +266,30 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 	}
 	
+	const my_keys = { 32: false };
+	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
+		trr = e.key;
 		console.log(which_key_pressed)
+		console.log(trr)
 		move = true;
+		
+		my_keys.keys =  (my_keys.keys || []); 
+		my_keys.keys[e.keyCode] = true;
 	}); 
 	
-	document.addEventListener("keyup", function() {
+	document.addEventListener("keyup", function(e) {
 		move = false;
 		one_shoot = true;
 		which_key_pressed = "";
+		
+		my_keys.keys =  (my_keys.keys || []);
+		my_keys.keys[e.keyCode] = false;
 	});
 
 	
 	var t0 = performance.now();
-
-	//draw_line_brick1(5, 5);
-	//draw_line_brick2(5, 5 + brick_height);
-	//draw_line_brick1(5, 5 + (brick_height * 2));
-	//suprise_brick();
-	
-	
-	
 	
 	function loop() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
