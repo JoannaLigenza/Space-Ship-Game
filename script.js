@@ -11,13 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let space_ship = "";
 	let which_key_pressed = "";
 	let move = false;
-	let one_shoot = [];
+	let one_shoot = false;
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let bullet_arr = [];
-
-	//context.fillStyle = "rgb(233, 233, 233)";
-	//context.fillRect(1,1,canvas.width,canvas.height);	
+	//let new_date = new Date();
+	//let bullet_delay = new_date.getTime();
 	
 	function draw_frame() {
 	//	const color = context.getImageData(10,10,canvas.width,canvas.height);
@@ -220,17 +219,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			ship_position_x = ship_position_x;
 		}
 		if (which_key_pressed == "39" && move == true) { 
-			check_collision();
+			ship_collision();
 			ship_position_x = ship_position_x + step;
 		}
 		if (which_key_pressed == "37" && move == true) { 
-			check_collision();
+			ship_collision();
 			ship_position_x = ship_position_x - step;
 		}
 		context.putImageData(space_ship, ship_position_x, ship_position_y);
 	}
 	
-	function check_collision() {
+	function ship_collision() {
 		if (ship_position_x <= 6) {
 			ship_position_x = 6;
 		}
@@ -240,8 +239,18 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_bullet() {
-				
-		if (which_key_pressed == "32" && one_shoot.length <= 1) { 
+	/*	const new_date2 = new Date();
+		const actual_time = new_date2.getTime();
+		
+		
+		console.log("czas aktualny: " , actual_time);
+		console.log("czas zapisany: " , bullet_delay);
+		console.log("roznica: " , actual_time - bullet_delay); */
+		
+		
+		
+		//if (which_key_pressed == "32" && (actual_time - bullet_delay) < 40 ) { 
+		if (which_key_pressed == "32" && one_shoot == true) { 
 			context.beginPath();
 			context.moveTo(ship_position_x + 20, ship_position_y - bullet_height); 
 			context.lineTo(ship_position_x + 20, ship_position_y);
@@ -249,9 +258,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.strokeStyle = "rgb(250, 250, 250)";
 			context.stroke();
 			
+			one_shoot = false;
 			get_bullet();
-			return;
 		}	
+		//bullet_delay = actual_time;
+		
 	}
 	
 	function get_bullet() {
@@ -264,13 +275,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		get_bullet = context.getImageData(bullet_position_x, bullet_position_y, bullet_width, bullet_height);
 		
 		bullet_arr.push([get_bullet, bullet_position_x, bullet_position_y]);
-		
-		//return get_bullet;
-	}
-	
-	function shoot(get_bullet, bullet_position_x, bullet_position_y) {
-		//const one_bullet = draw_bullet();
-		context.putImageData(get_bullet, bullet_position_x, bullet_position_y);
 	}
 	
 	function move_bullet() {
@@ -282,19 +286,20 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
+	function bullet_collision() {
+		
+	}
+	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
 		console.log(which_key_pressed)
 		move = true;
-		one_shoot.push(1);
-		console.log("one_shoot: ", one_shoot)
 	}); 
 	
 	document.addEventListener("keyup", function() {
 		move = false;
+		one_shoot = true;
 		which_key_pressed = "";
-		one_shoot = [];
-		console.log("one_shoot: ", one_shoot)
 	});
 
 	
