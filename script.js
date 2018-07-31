@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let bullet_arr = [];
-	let go_left_and_shoot = "";
+	const my_keys = { 32: false };
 	
 	function draw_frame() {
 		for (i=0; i < canvas.width; i++) {
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (which_key_pressed == "") { 
 			ship_position_x = ship_position_x;
 		}
-		if (my_keys.keys && my_keys.keys[39] && move == true) { 
+		if (my_keys.keys && my_keys.keys[39] && move == true)  { 
 			ship_collision();
 			ship_position_x = ship_position_x + step;
 		}
@@ -213,6 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			ship_collision();
 			ship_position_x = ship_position_x - step;
 		}
+		move = true;
+		draw_bullet();
 		context.putImageData(space_ship, ship_position_x, ship_position_y);
 	}
 	
@@ -266,13 +268,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 	}
 	
-	const my_keys = { 32: false };
+	
 	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
-		trr = e.key;
 		console.log(which_key_pressed)
-		console.log(trr)
 		move = true;
 		
 		my_keys.keys =  (my_keys.keys || []); 
@@ -298,9 +298,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_line_brick1(5, 5);
 		draw_line_brick2(5, 5 + brick_height);
 		draw_line_brick1(5, 5 + (brick_height * 2));
-		draw_bullet();
+		//draw_bullet();
 		move_bullet();
-		console.log("test");
+		console.log(move);
 		setTimeout(function() {
 			const req = requestAnimationFrame(loop); 
 			
