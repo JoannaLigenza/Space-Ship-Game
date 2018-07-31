@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_quantity = 17;
 	const all_brick_arr = [];
 	let ship_position = 30;
+	let space_ship = "";
+	let which_key_pressed = "";
+	let move = false;
 
 	//context.fillStyle = "rgb(233, 233, 233)";
 	//context.fillRect(1,1,canvas.width,canvas.height);	
@@ -143,9 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_space_ship() {
-		//const space_ship = [];
-		let space_ship = "";
-		
 	
 		// Body of ship
 		context.beginPath();
@@ -200,30 +200,40 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineTo(59,370);
 		context.closePath();
 		context.fill();
-		
+	}
+	
+	function get_space_ship() {
 		space_ship = context.getImageData(30, 300, 40, 70);
 		//context.putImageData(space_ship, 100, 300);
 		
 		return space_ship;
-		
-	/*	for (i=0; i < space_ship.length; i++) {
-			for (j=0; j < space_ship.length; j++) {
-			context.fillStyle = "rgb(250, 250, 250)";
-			context.fillRect(i,j,1,1);
-		} */
 	}
 	
-	function space_ship_move(space_ship) {
+	function space_ship_move() {
 		const step = 3;
-		ship_position = ship_position + step;
-		context.putImageData(space_ship, ship_position, 300);
-		console.log(space_ship)
+		if (which_key_pressed == "") { 
+			ship_position = ship_position;
+			context.putImageData(space_ship, ship_position, 300);
+		}
+		if (which_key_pressed == "39" && move == true) { 
+			ship_position = ship_position + step;
+			context.putImageData(space_ship, ship_position, 300);
+		}
+		if (which_key_pressed == "37" && move == true) { 
+			ship_position = ship_position - step;
+			context.putImageData(space_ship, ship_position, 300);
+		}
 	}
 	
+	document.addEventListener("keydown", function(e) {
+		which_key_pressed = e.keyCode;
+		move = true;
+	}); 
 	
-	
-	//draw_line_brick1(5, 5);
-	//draw_line_brick2(5, 5 + brick_height);
+	document.addEventListener("keyup", function() {
+		move = false;
+		which_key_pressed = "";
+	});
 
 	
 	var t0 = performance.now();
@@ -238,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function loop() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		space_ship_move(draw_space_ship());
+		space_ship_move();
 		draw_frame();
 		draw_line_brick1(5, 5);
 		draw_line_brick2(5, 5 + brick_height);
@@ -246,12 +256,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		setTimeout(function() {
 			const req = requestAnimationFrame(loop); 
 			
-			console.log("test")
+			//console.log("test")
 		}, 10); 
 	}
 	
-	//draw_space_ship();
-	//space_ship_move(draw_space_ship());
+	draw_space_ship();
+	get_space_ship();
 	draw_frame();
 	loop();
 	
