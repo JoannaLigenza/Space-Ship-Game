@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	let ship_position_y = 300;
 	let space_ship = "";
 	let which_key_pressed = "";
+	let is_brick_moving = false;
+	const brick_moving_delay = 10;
+	let brick_moving_delay_arr = [];
 	let move = false;
 	let one_shoot = false;
 	let can_shoot = true;
@@ -47,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			}
 		}
-		all_bricks.push([positionX, positionY, brick_width, brick_height]);
+		//all_bricks.push([positionX, positionY, brick_width, brick_height]);
 	}
 	
 	function draw_all_bricks(positionX, positionY) {
@@ -57,10 +60,40 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (( k % 2 == 0 && l % 2 == 0) || (k % 2 != 0 && l % 2 != 0) ) { 
 					brick_color_orange(positionX + (brick_width * k), positionY + (brick_height * l));
 					brick_pattern1(positionX + (brick_width * k), positionY + (brick_height * l));
+					
+					
+					
+					//get_bullet = context.getImageData(bullet_position_x, bullet_position_y, bullet_width, bullet_height);
+					//context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
 				}
+				get_brick = context.getImageData(positionX + (brick_width * k), positionY + (brick_height * l), brick_width+1, brick_height+1);
+				all_bricks.push([get_brick, positionX + (brick_width * k), positionY + (brick_height * l)])
+				//all_bullets.push([get_bullet, bullet_position_x, bullet_position_y]);
 			}
 		}
 	}
+	
+	function move_bricks() {
+		const brick_step = 3;
+		brick_moving_delay_arr.push(1);
+		
+		for (i=0; i < all_bricks.length; i++) {
+			if (is_brick_moving == false) {
+				context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
+				return;
+			}
+			if (is_brick_moving == true && brick_moving_delay_arr.length > brick_moving_delay) {
+				for (j=0; j < all_bricks.length; j++) {
+					context.putImageData(all_bricks[j][0], all_bricks[j][1], all_bricks[j][2] + brick_step);
+					all_bricks[j][2] = all_bricks[j][2] + brick_step ;
+					brick_moving_delay_arr.splice(0, brick_moving_delay_arr.length);
+				}
+				return;
+			}
+			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
+		}
+	}
+	
 	
 	function brick_color_orange(positionX, positionY) {
 		for (i = positionX + 1 ; i <= (positionX + brick_width) -1 ; i++) {
@@ -286,7 +319,10 @@ document.addEventListener('DOMContentLoaded', function() {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
 					console.log(all_bullets);
-
+					
+					//all_bricks.splice(j, 1);
+					//console.log("all_bricks ", all_bricks)
+					//all_bricks.push([positionX, positionY, brick_width, brick_height]);
 					return;
 				} 
 			}
@@ -319,10 +355,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		space_ship_move();
 		draw_frame();
-		draw_all_bricks(9, 5);
+		//all_bricks.splice(0, all_bricks.length);
+		
+		//draw_all_bricks(9, 5);
 		//draw_line_brick1(5, 5);
 		//draw_line_brick2(5, 5 + brick_height);
 		//draw_line_brick1(5, 5 + (brick_height * 2));
+		move_bricks();
 		move_bullet();
 		bullet_collision();
 		if (bullets_counts.length < bullet_limit) {
@@ -339,12 +378,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		}, 30); 
 	}
 	
+	draw_all_bricks(9, 5);
 	draw_space_ship();
 	get_space_ship();
 	draw_frame();
+	move_bricks();
 	loop();
 	
-	console.log(all_bricks);
 
 	var t1 = performance.now();
 	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
