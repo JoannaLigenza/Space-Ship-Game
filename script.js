@@ -12,9 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let which_key_pressed = "";
 	let move = false;
 	let one_shoot = false;
-	let count_key_press = [];
 	let can_shoot = true;
-	const bullet_delay = 500;
+	const bullets_counts = [];
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let all_bullets = [];
@@ -241,7 +240,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.strokeStyle = "rgb(250, 250, 250)";
 			context.stroke();
 			
+			bullets_counts.push(1);
 			one_shoot = false;
+			
 			get_bullet();
 		}
 	}
@@ -270,28 +271,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	function bullet_collision() {
 		for (i = 0; i < all_bullets.length ; i++) {
 			for (j = 0; j < all_bricks.length ; j++) {
-				if (all_bullets[i][1] > all_bricks[j][0] && all_bullets[i][1] < all_bricks[j][0] + brick_width && all_bullets[i][2] > all_bricks[j][1] && all_bullets[i][2] < all_bricks[j][1] + brick_height) {
+				if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
 					all_bullets.splice(i, 1);
+					bullets_counts.splice(i, 1);
 					console.log(all_bullets);
 					return;
-				}
+				} 
 			}
 		}
 	}
-	
-/*	function bullet_collision() {
-		for (i = 0; i < all_bullets.length ; i++) {
-			for (j = 0; j < all_bricks.length ; j++) {
-				console.log("zderzenieeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-				for (k = all_bricks[j][0]; k < brick_width ; k++) {
-					if (all_bullets[i][1] == (all_bricks[j][0] + brick_height) && all_bullets[i][2] == (all_bricks[j][1] + brick_height)) {
-						
-					}
-				}
-			}
-		}
-	}  */
-	
 	
 	
 	document.addEventListener("keydown", function(e) {
@@ -326,14 +314,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		move_bullet();
 		//console.log(move);
 		bullet_collision();
-		if (count_key_press.length < bullet_delay) {
-			can_shoot = false;
-			count_key_press.push(1);
-		}
-		if (count_key_press.length >= 3) {
+		if (bullets_counts.length < 20) {
 			can_shoot = true;
-			count_key_press.splice(0, count_key_press.length);
 		}
+		if (bullets_counts.length > 20) {
+			can_shoot = false;
+		}
+		console.log("ilosc kul: ", bullets_counts.length);
 		setTimeout(function() {
 			const req = requestAnimationFrame(loop); 
 			
