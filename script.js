@@ -5,16 +5,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_width = 20;
 	const brick_height = 15;
 	const brick_quantity = 17;
-	const all_brick_arr = [];
+	const all_bricks = [];
 	let ship_position_x = 160;
 	let ship_position_y = 300;
 	let space_ship = "";
 	let which_key_pressed = "";
 	let move = false;
 	let one_shoot = false;
+	let count_key_press = [];
+	let can_shoot = true;
+	const bullet_delay = 500;
 	const bullet_width = 2;
 	const bullet_height = 10;
-	let bullet_arr = [];
+	let all_bullets = [];
 	const my_keys = { 32: false };
 	
 	function draw_frame() {
@@ -42,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			}
 		}
-		all_brick_arr.push([positionX, positionY, brick_width, brick_height]);
+		all_bricks.push([positionX, positionY, brick_width, brick_height]);
 	}
 	
 	function brick_color_orange(positionX, positionY) {
@@ -127,9 +130,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function suprise_brick() {
-		const random_suprise_brick = Math.floor(Math.random() * all_brick_arr.length );
-		suprise_brick_positionX = all_brick_arr[random_suprise_brick][0];
-		suprise_brick_positionY = all_brick_arr[random_suprise_brick][1];
+		const random_suprise_brick = Math.floor(Math.random() * all_bricks.length );
+		suprise_brick_positionX = all_bricks[random_suprise_brick][0];
+		suprise_brick_positionY = all_bricks[random_suprise_brick][1];
 		//brick_color_orange(suprise_brick_positionX, suprise_brick_positionY);
 		brick_pattern2(suprise_brick_positionX + (brick_width / 2), suprise_brick_positionY + (brick_height / 2));
 	}
@@ -229,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	
 	function draw_bullet() {
-		if (which_key_pressed == "32" && one_shoot == true) { 
+		if (which_key_pressed == "32" && one_shoot == true && can_shoot == true) { 
 			
 			context.beginPath();
 			context.moveTo(ship_position_x + 20, ship_position_y - bullet_height); 
@@ -252,21 +255,42 @@ document.addEventListener('DOMContentLoaded', function() {
 		bullet_position_y = ship_position_y - bullet_height;
 		get_bullet = context.getImageData(bullet_position_x, bullet_position_y, bullet_width, bullet_height);
 		
-		bullet_arr.push([get_bullet, bullet_position_x, bullet_position_y]);
+		all_bullets.push([get_bullet, bullet_position_x, bullet_position_y]);
 	}
 	
 	function move_bullet() {
 		const bullet_step = 3;
-		for (i=0; i < bullet_arr.length; i++) {
+		for (i=0; i < all_bullets.length; i++) {
 			//context.putImageData(get_bullet, bullet_position_x, bullet_position_y - bullet_step);
-			context.putImageData(bullet_arr[i][0], bullet_arr[i][1], bullet_arr[i][2] - bullet_step);
-			bullet_arr[i][2] = bullet_arr[i][2] - bullet_step;
+			context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
+			all_bullets[i][2] = all_bullets[i][2] - bullet_step;
 		}
 	}
 	
 	function bullet_collision() {
-		
+		for (i = 0; i < all_bullets.length ; i++) {
+			for (j = 0; j < all_bricks.length ; j++) {
+				if (all_bullets[i][1] > all_bricks[j][0] && all_bullets[i][1] < all_bricks[j][0] + brick_width && all_bullets[i][2] > all_bricks[j][1] && all_bullets[i][2] < all_bricks[j][1] + brick_height) {
+					all_bullets.splice(i, 1);
+					console.log(all_bullets);
+					return;
+				}
+			}
+		}
 	}
+	
+/*	function bullet_collision() {
+		for (i = 0; i < all_bullets.length ; i++) {
+			for (j = 0; j < all_bricks.length ; j++) {
+				console.log("zderzenieeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+				for (k = all_bricks[j][0]; k < brick_width ; k++) {
+					if (all_bullets[i][1] == (all_bricks[j][0] + brick_height) && all_bullets[i][2] == (all_bricks[j][1] + brick_height)) {
+						
+					}
+				}
+			}
+		}
+	}  */
 	
 	
 	
@@ -300,12 +324,21 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_line_brick1(5, 5 + (brick_height * 2));
 		//draw_bullet();
 		move_bullet();
-		console.log(move);
+		//console.log(move);
+		bullet_collision();
+		if (count_key_press.length < bullet_delay) {
+			can_shoot = false;
+			count_key_press.push(1);
+		}
+		if (count_key_press.length >= 3) {
+			can_shoot = true;
+			count_key_press.splice(0, count_key_press.length);
+		}
 		setTimeout(function() {
 			const req = requestAnimationFrame(loop); 
 			
 			//console.log("test")
-		}, 10); 
+		}, 30); 
 	}
 	
 	draw_space_ship();
@@ -313,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	draw_frame();
 	loop();
 	
-	console.log(all_brick_arr);
+	console.log(all_bricks);
 
 	var t1 = performance.now();
 	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
