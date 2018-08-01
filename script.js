@@ -314,14 +314,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	function bullet_collision() {
 		for (i = 0; i < all_bullets.length ; i++) {
 			for (j = 0; j < all_bricks.length ; j++) {
-				if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
+				//if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
+				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
+					all_bricks.splice(j, 1);
 					console.log(all_bullets);
 					
 					//all_bricks.splice(j, 1);
 					//console.log("all_bricks ", all_bricks)
 					//all_bricks.push([positionX, positionY, brick_width, brick_height]);
+					//all_bricks.push([get_brick, positionX + (brick_width * k), positionY + (brick_height * l)])
 					return;
 				} 
 			}
