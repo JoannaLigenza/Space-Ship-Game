@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		for (i=0; i < all_bricks.length; i++) {
 			if (is_brick_moving == false) {
 				context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
-				return;
 			}
 			if (is_brick_moving == true && brick_moving_delay_arr.length > brick_moving_delay) {
 				for (j=0; j < all_bricks.length; j++) {
