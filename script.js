@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	const context = canvas.getContext("2d");
 	const brick_width = 20;
 	const brick_height = 15;
-	const brick_quantity = 17;
+	//const brick_quantity = 17;
+	const brick_col = 17;
+	const brick_row = 3;
 	const all_bricks = [];
 	let ship_position_x = 160;
 	let ship_position_y = 300;
@@ -14,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let one_shoot = false;
 	let can_shoot = true;
 	const bullets_counts = [];
+	const bullet_limit = 20;
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let all_bullets = [];
@@ -45,6 +48,18 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 		all_bricks.push([positionX, positionY, brick_width, brick_height]);
+	}
+	
+	function draw_all_bricks(positionX, positionY) {
+		for (k=0; k < brick_col; k++) {
+			for (l=0; l < brick_row; l++) {
+				draw_one_brick(positionX + (brick_width * k), positionY + (brick_height * l));
+				if (( k % 2 == 0 && l % 2 == 0) || (k % 2 != 0 && l % 2 != 0) ) { 
+					brick_color_orange(positionX + (brick_width * k), positionY + (brick_height * l));
+					brick_pattern1(positionX + (brick_width * k), positionY + (brick_height * l));
+				}
+			}
+		}
 	}
 	
 	function brick_color_orange(positionX, positionY) {
@@ -101,12 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	
-	
-	function draw_line_brick1(positionX, positionY) {
-		draw_one_brick(positionX, positionY);
-		brick_color_orange(positionX, positionY);
-		brick_pattern1(positionX, positionY);
-		for (k=1; k < brick_quantity; k++) {
+/*	function draw_line_brick1(positionX, positionY) {
+
+		for (k=0; k < brick_quantity; k++) {
 			draw_one_brick(positionX + (brick_width * k), positionY);
 			if ( k % 2 == 0) { 
 				brick_color_orange(positionX + (brick_width * k), positionY);
@@ -116,8 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_line_brick2(positionX, positionY) {
-		draw_one_brick(positionX, positionY);
-		for (k=1; k < brick_quantity; k++) {
+		for (k=0; k < brick_quantity; k++) {
 			draw_one_brick(positionX + (brick_width * k), positionY);
 			if ( k % 2 != 0) { 
 				brick_pattern1(positionX + (brick_width * k), positionY);
@@ -126,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		//		brick_pattern2((positionX + (brick_width * k)) + (brick_width / 2), (positionY + (brick_height / 2)));
 		//	}
 		}
-	}
+	}  */
 	
 	function suprise_brick() {
 		const random_suprise_brick = Math.floor(Math.random() * all_bricks.length );
@@ -275,6 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
 					console.log(all_bullets);
+
 					return;
 				} 
 			}
@@ -307,17 +319,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		space_ship_move();
 		draw_frame();
-		draw_line_brick1(5, 5);
-		draw_line_brick2(5, 5 + brick_height);
-		draw_line_brick1(5, 5 + (brick_height * 2));
-		//draw_bullet();
+		draw_all_bricks(9, 5);
+		//draw_line_brick1(5, 5);
+		//draw_line_brick2(5, 5 + brick_height);
+		//draw_line_brick1(5, 5 + (brick_height * 2));
 		move_bullet();
-		//console.log(move);
 		bullet_collision();
-		if (bullets_counts.length < 20) {
+		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
-		if (bullets_counts.length > 20) {
+		if (bullets_counts.length > bullet_limit) {
 			can_shoot = false;
 		}
 		console.log("ilosc kul: ", bullets_counts.length);
