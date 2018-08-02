@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const bullet_height = 10;
 	let all_bullets = [];
 	const my_keys = { 32: false };
+	let score = 0;
 	
 	function draw_frame() {
 		for (i=0; i < canvas.width; i++) {
@@ -324,6 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
 					all_bricks.splice(j, 1);
+					score += 10;
 					console.log(all_bullets);
 					
 					//all_bricks.splice(j, 1);
@@ -336,6 +338,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
+	function count_score() {
+		context.font = "bold 12px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgba(255,0,0)";
+		context.fillText("Score: " + score, 5 , canvas.height - 15);
+
+	}
 	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
@@ -371,6 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		move_bricks();
 		move_bullet();
 		bullet_collision();
+		count_score();
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
