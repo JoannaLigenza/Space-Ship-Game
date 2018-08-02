@@ -1,405 +1,353 @@
 document.addEventListener('DOMContentLoaded', function() {
+
+
+	const canvasElem = document.getElementById("can");
+	const ctx = canvasElem.getContext("2d");
 	
-	const canvas = document.getElementById("canvas");
-	const context = canvas.getContext("2d");
-	const brick_width = 20;
-	const brick_height = 15;
-	//const brick_quantity = 17;
-	const brick_col = 17;
-	const brick_row = 3;
-	const all_bricks = [];
-	let ship_position_x = 160;
-	let ship_position_y = 300;
-	let space_ship = "";
-	let which_key_pressed = "";
-	let is_brick_moving = false;
-	const brick_moving_delay = 10;
-	let brick_moving_delay_arr = [];
-	const surprise_bricks_quantity = 5;
-	const all_surprise_bricks = [];
-	let move = false;
-	let one_shoot = false;
-	let can_shoot = true;
-	const bullets_counts = [];
-	const bullet_limit = 20;
-	const bullet_width = 2;
-	const bullet_height = 10;
-	let all_bullets = [];
-	const my_keys = { 32: false };
-	let score = 0;
+	// kwadrat
+	ctx.fillRect(25,25,100,100);		//rysujemy kwadrat
+	ctx.clearRect(45,45,60,60);			//wycinamy jego srodek
+	ctx.strokeRect(50,50,50,50);		//rysujemy obramowanie drugiego kwadratu
 	
-	function draw_frame() {
-		for (i=0; i < canvas.width; i++) {
-			for (j=0; j < canvas.height; j++) {
-				//console.log("test")
-				if (i == 0 || i == (canvas.width -1) || j == 0 || j == (canvas.height -1)) { 
-				context.fillStyle = "rgb(232, 169, 0)";
-				context.fillRect(i,j,1,1);
-				}
-				if (i == 1 || i == (canvas.width -2) || j == 1 || j == (canvas.height -2)) { 
-				context.fillStyle = "rgb(255, 195, 35)";
-				context.fillRect(i,j,1,1);
-				}
-			}
-		}		
-	}
+	//ctx.beginPath();
+	//ctx.moveTo(265,340); //rysowanie zaczynamy od punktów 35,10 - tam więc przesuwamy nasze piórko - to nie rysue sciezki
+	//ctx.lineTo(190,270);	// prawa
+	//ctx.lineTo(140,270);	// dolna
+	//ctx.lineTo(165,240);	// lewa
+	//ctx.stroke();
 	
-	function draw_one_brick(positionX, positionY) {
-		for (i = positionX; i <= positionX + brick_width; i++) {
-			for (j = positionY; j <= positionY + brick_height; j++) {
-				if (i == positionX || i == (positionX + brick_width) || j == positionY || j == (positionY + brick_height)) { 
-				context.fillStyle = "rgb(250, 250, 250)";
-				context.fillRect(i,j,1,1);
-				}
-			}
-		}
-		//all_bricks.push([positionX, positionY, brick_width, brick_height]);
-	}
+	// trojkat
+	ctx.beginPath();
+	ctx.moveTo(300,200); 
+	ctx.lineTo(400,400);	
+	ctx.lineTo(200,400);	
+	ctx.lineTo(300,200);	
+	ctx.stroke();
 	
-	function draw_all_bricks(positionX, positionY) {
-		for (k=0; k < brick_col; k++) {
-			for (l=0; l < brick_row; l++) {
-				draw_one_brick(positionX + (brick_width * k), positionY + (brick_height * l));
-				if (( k % 2 == 0 && l % 2 == 0) || (k % 2 != 0 && l % 2 != 0) ) { 
-					brick_color_orange(positionX + (brick_width * k), positionY + (brick_height * l));
-					brick_pattern1(positionX + (brick_width * k), positionY + (brick_height * l));
-					
-					
-					
-					//get_bullet = context.getImageData(bullet_position_x, bullet_position_y, bullet_width, bullet_height);
-					//context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
-				}
-				get_brick = context.getImageData(positionX + (brick_width * k), positionY + (brick_height * l), brick_width+1, brick_height+1);
-				all_bricks.push([get_brick, positionX + (brick_width * k), positionY + (brick_height * l), 0])
-				//all_bullets.push([get_bullet, bullet_position_x, bullet_position_y]);
-			}
-		}
-			surprise_brick();
-			console.log("all_bricks ", all_bricks);
-	}
+	ctx.fillText('a',230,300);
+	ctx.fillText('c',360,300);
+	ctx.fillText('b',300,415);
 	
-	function move_bricks() {
-		const brick_step = 3;
-		brick_moving_delay_arr.push(1);
-		
-		for (i=0; i < all_bricks.length; i++) {
-			if (is_brick_moving == false) {
-				context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
-			}
-			if (is_brick_moving == true && brick_moving_delay_arr.length > brick_moving_delay) {
-				for (j=0; j < all_bricks.length; j++) {
-					context.putImageData(all_bricks[j][0], all_bricks[j][1], all_bricks[j][2] + brick_step);
-					all_bricks[j][2] = all_bricks[j][2] + brick_step ;
-					brick_moving_delay_arr.splice(0, brick_moving_delay_arr.length);
-				}
-				return;
-			}
-			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
-		}
-	}
+	// kolo niebieskie
+	ctx.beginPath();
+	ctx.arc(500,100, 80, 0,10*Math.PI);
+	ctx.strokeStyle="blue";
+	ctx.stroke();
 	
+	// kolo czerwone
+	ctx.beginPath();
+	ctx.arc(500,500, 80, radianAngle(0), radianAngle(360));
+	ctx.fillStyle="red";
+	ctx.fill();
 	
-	function brick_color_orange(positionX, positionY) {
-		for (i = positionX + 1 ; i <= (positionX + brick_width) -1 ; i++) {
-			for (j = positionY + 1; j <= (positionY + brick_height) - 1; j++) {
-				//if (i == positionX || i == (positionX + brick_width) || j == positionY || j == (positionY + brick_height)) { 
-				context.fillStyle = "rgb(232, 169, 0)";
-				context.fillRect(i,j,1,1);
-				//}
-			}
-		}
-	}
-	
-	function brick_pattern1(positionX, positionY) {
-		horizontal_line1 = Math.floor(brick_height / 3);
-		horizontal_line2 = Math.floor(brick_height / 3) * 2;
-		vertical_line1 = Math.floor(brick_width / 10);
-		vertical_line2 = Math.floor(brick_width / 10) * 5;
-		vertical_line3 = Math.floor(brick_width / 10) * 9;
-		vertical_line4 = Math.floor(brick_width / 10) * 3;
-		vertical_line5 = Math.floor(brick_width / 10) * 7;
-		for (i = positionX; i <= positionX + brick_width; i++) {
-			for (j = positionY; j <= positionY + brick_height; j++) {
-				// Horizontal lines
-				if (j == positionY + horizontal_line1 || j == positionY + horizontal_line2) { 
-				context.fillStyle = "rgb(250, 250, 250)";
-				context.fillRect(i,j,1,1);
-				}
-				// First line of brick
-				if (j > positionY && j < positionY + horizontal_line1 && (i == positionX + vertical_line1 || i == positionX + vertical_line2 || i == positionX + vertical_line3) ) { 
-					context.fillStyle = "rgb(250, 250, 250)";
-					context.fillRect(i,j,1,1);
-				}
-				// Second line of brick
-				if (j > positionY + horizontal_line1 && j < positionY + horizontal_line2 && (i == positionX + vertical_line4 || i == positionX + vertical_line5) ) { 
-					context.fillStyle = "rgb(250, 250, 250)";
-					context.fillRect(i,j,1,1);
-				}
-				// Thrid line of brick
-				if (j > positionY + horizontal_line2 && j < (positionY + brick_height)  && (i == positionX + vertical_line1 || i == positionX + vertical_line2 || i == positionX + vertical_line3) ) { 
-					context.fillStyle = "rgb(250, 250, 250)";
-					context.fillRect(i,j,1,1);
-				}
-			}
-		}
-	}
-	
-	function brick_pattern2(positionX, positionY) {
-		context.font = "bold 12px Arial";
-		context.textAlign = "center";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgba(255,0,0)";
-		context.fillText("?", positionX, positionY);
-	}
-	
-	
-	function surprise_brick() {
-		for(i=0; i < surprise_bricks_quantity; i++) {
-			
-			const random_surprise_brick = Math.floor(Math.random() * all_bricks.length );
-			console.log("random_surprise_brick: ", random_surprise_brick)
-		
-			surprise_brick_positionX = all_bricks[random_surprise_brick][1];
-			surprise_brick_positionY = all_bricks[random_surprise_brick][2];
-			brick_pattern2(surprise_brick_positionX + (brick_width / 2), surprise_brick_positionY + (brick_height / 2));
-			
-			//all_surprise_bricks.push(all_bricks[random_surprise_brick], random_surprise_brick);
-			// which bricks have surprise
-			//
-			
-			//temporary_all_braicks.splice(random_surprise_brick, 1);
-			
-			get_surprise_brick = context.getImageData(surprise_brick_positionX, surprise_brick_positionY, brick_width+1, brick_height+1);
-			all_bricks[random_surprise_brick] = [get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, 1];
-			
-			all_surprise_bricks.push([get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY]);
-		}
-		console.log("all_surprise_bricks " ,all_surprise_bricks);
-	}
+	// kolo zielone
+	ctx.beginPath();
+	ctx.arc(100,500, 80, radianAngle(0), radianAngle(280));
+	ctx.fillStyle="green";
+	ctx.fill();
+	//ctx.stroke();
 	
 	function radianAngle(angle) {
-		return radians = (Math.PI/180)*angle;
+    return radians = (Math.PI/180)*angle;
 	}
+	// lub:
+	//const miara_w_radianach = miara_w_stopniach * (Math.PI / 180);
 	
-	function draw_space_ship() {
-	
-		// Body of ship
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(50,300);
-		context.bezierCurveTo(38,310, 38,355, 40,360);
-		//context.lineTo(40,360);
-		context.lineTo(60,360);
-		context.bezierCurveTo(62,355, 62,310, 50,300);
-		//context.closePath();
-		context.fill();
-		
-		// Circle on body
-		context.beginPath();
-		context.fillStyle = "white";
-		context.moveTo(50,340); 
-		context.arc(50, 330, 5, radianAngle(0), radianAngle(360));
-		context.fill();
-		
-		// Left wing
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(38,340); 
-		context.lineTo(30,360);
-		context.lineTo(38,360);
-		context.closePath();
-		context.fill();
-		
-		// Right wing
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(62,340); 
-		context.lineTo(62,360);
-		context.lineTo(70,360);
-		context.closePath();
-		context.fill();
-		
-		// Left bottom engine
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(45,361); 
-		context.lineTo(41,370);
-		context.lineTo(49,370);
-		context.closePath();
-		context.fill();
-		
-		// Right bottom engine
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(55,361); 
-		context.lineTo(51,370);
-		context.lineTo(59,370);
-		context.closePath();
-		context.fill();
-	}
-	
-	function get_space_ship() {
-		space_ship = context.getImageData(30, 300, 40, 70);
-		return space_ship;
-	}
-	
-	function space_ship_move() {
-		const step = 3;
-		if (which_key_pressed == "") { 
-			ship_position_x = ship_position_x;
-		}
-		if (my_keys.keys && my_keys.keys[39] && move == true)  { 
-			ship_collision();
-			ship_position_x = ship_position_x + step;
-		}
-		if (my_keys.keys && my_keys.keys[37] && move == true) { 
-			ship_collision();
-			ship_position_x = ship_position_x - step;
-		}
-		move = true;
-		draw_bullet();
-		context.putImageData(space_ship, ship_position_x, ship_position_y);
-	}
-	
-	function ship_collision() {
-		if (ship_position_x <= 6) {
-			ship_position_x = 6;
-		}
-		if (ship_position_x >= (canvas.width - space_ship.width - 6  ) ) {
-			ship_position_x = canvas.width - space_ship.width - 6;
-		}
-	}
+	// napisy
+	const canvasElem2 = document.getElementById("can2");
+	const ctx2 = canvasElem2.getContext("2d");
+	const gradient = ctx.createLinearGradient(0, 0, 800, 0); //Gradient liniowy biegnie z punktu x1,y1 do punktu x2,y2
+	const gradient2 = ctx.createLinearGradient(200, 200, 500, 0);
 	
 	
-	function draw_bullet() {
-		if (which_key_pressed == "32" && one_shoot == true && can_shoot == true) { 
-			
-			context.beginPath();
-			context.moveTo(ship_position_x + 20, ship_position_y - bullet_height); 
-			context.lineTo(ship_position_x + 20, ship_position_y);
-			context.lineWidth = bullet_width;
-			context.strokeStyle = "rgb(250, 250, 250)";
-			context.stroke();
-			
-			bullets_counts.push(1);
-			one_shoot = false;
-			
-			get_bullet();
-		}
-	}
+	ctx2.font = "normal 20px Arial";
+	ctx2.textBaseline = "top";							// wyrownanie tekstu w pionie
+	ctx2.strokeText('Ala ma kota Burek', 130, 80);		// dodaje napis
 	
-	function get_bullet() {
-		let bullet_position_x = "";
-		let bullet_position_y = "";
-		let get_bullet = "";
-		
-		bullet_position_x = ship_position_x + 19;
-		bullet_position_y = ship_position_y - bullet_height;
-		get_bullet = context.getImageData(bullet_position_x, bullet_position_y, bullet_width, bullet_height);
-		
-		all_bullets.push([get_bullet, bullet_position_x, bullet_position_y]);
-	}
-	
-	function move_bullet() {
-		const bullet_step = 3;
-		for (i=0; i < all_bullets.length; i++) {
-			//context.putImageData(get_bullet, bullet_position_x, bullet_position_y - bullet_step);
-			context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
-			all_bullets[i][2] = all_bullets[i][2] - bullet_step;
-		}
-	}
-	
-	function bullet_collision() {
-		for (i = 0; i < all_bullets.length; i++) {
-			if (all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
-				all_bullets.splice(i, 1);
-				bullets_counts.splice(i, 1);
-				return;
-			}
-			for (j = 0; j < all_bricks.length; j++) {
-				//if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
-				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
-					if(all_bricks[j][3] == 1) {
-						console.log("yes!")
-					}
-					all_bullets.splice(i, 1);
-					bullets_counts.splice(i, 1);
-					all_bricks.splice(j, 1);
-					score += 10;
-					//console.log(all_bullets);
-					
-					return;
-				} 
-			}
-		}
-	}
-	
-	function count_score() {
-		context.font = "bold 12px Arial";
-		context.textAlign = "left";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgba(255,0,0)";
-		context.fillText("Score: " + score, 5 , canvas.height - 15);
+	ctx2.font = "italic bold 30px Arial";
+	ctx2.textBaseline = "middle";
+	ctx2.fillText('Ala ma kota Bolek', 0, 30);
 
+	//ctx2.shadowColor = "#888";
+	//ctx2.shadowBlur = "5";
+	ctx2.font = "italic bold 20px Arial";
+	ctx2.textBaseline = "bottom";
+	ctx2.strokeText('Ala ma kota Lolek', 30, 70);
+	
+	// prostokat zolty z czerwona ramka
+	ctx2.beginPath();
+	ctx2.rotate(Math.PI / 40);			// obrot
+	ctx2.rect(50,200, 100, 200 );		//położenie względem lewej i prawej krawędzi, szerokość, wysokość
+	ctx2.fillStyle="yellow";
+	ctx2.fill();
+	ctx2.lineWidth=5;
+	ctx2.lineJoin = "round";
+	ctx2.strokeStyle="red";
+	ctx2.stroke();
+	
+	// prostokat z gradientem
+	ctx2.beginPath();
+	gradient.addColorStop(0, "yellow");
+	//gradient.addColorStop(0.5, "yellow");
+	gradient.addColorStop(1, "lime");
+	//ctx2.scale(1,1.1);
+	ctx2.fillStyle = gradient;
+	ctx2.fillRect(200, 200, 200, 100);
+	
+	// prostokat z gradientem2
+	ctx2.beginPath();
+	gradient2.addColorStop(0, "yellow");
+	gradient2.addColorStop(0.5, "red");
+	gradient2.addColorStop(1, "yellow");
+	ctx2.fillStyle = gradient2;
+	ctx2.fillRect(280, 280, 200, 100);
+	
+	//rysujemy uśmiech
+	ctx2.beginPath();
+	ctx2.moveTo(50,505);
+	ctx2.bezierCurveTo(75,530,125,530,150,500);
+	ctx2.moveTo(50,505);
+	ctx2.bezierCurveTo(75,550,125,550,150,500);
+	ctx2.strokeStyle="blue";
+	ctx2.stroke();
+	
+	
+	
+	const canvasElem3 = document.getElementById("can3");
+	const ctx3 = canvasElem3.getContext("2d");
+	
+	// Polkole
+	ctx3.beginPath();
+	ctx3.arc(50,50,30,Math.PI,0,false);
+	ctx3.closePath();
+	ctx3.lineWidth = 5;
+	ctx3.strokeStyle = "black";
+	ctx3.stroke();
+	
+	// kwadratowa krzywa
+	ctx3.beginPath();
+	ctx3.moveTo(150,80);
+	ctx3.quadraticCurveTo(200,0,250,80);
+	ctx3.closePath();
+	ctx3.strokeStyle = "red";
+	ctx3.stroke();
+	
+	// buzka
+	ctx3.beginPath();
+	ctx3.arc(150,250,100,Math.PI,180);
+	ctx3.strokeStyle="blue";
+	ctx3.stroke();
+	
+	// oczka
+	ctx3.beginPath();
+	ctx3.arc(120,220,10,Math.PI,180);
+	ctx3.strokeStyle="blue";
+	ctx3.stroke();
+	
+	ctx3.beginPath();
+	ctx3.arc(180,220,10,Math.PI,180);
+	ctx3.strokeStyle="blue";
+	ctx3.stroke();
+	
+	// nosek
+	ctx3.beginPath();
+	ctx3.arc(150,260,10,Math.PI,0);
+	ctx3.closePath();
+	ctx3.strokeStyle="blue";
+	ctx3.stroke();
+	
+	// usmiech
+	ctx3.beginPath();
+	ctx3.moveTo(120,290);
+	ctx3.quadraticCurveTo(150,320,180,290);
+	ctx3.closePath();
+	ctx3.strokeStyle = "red";
+	ctx3.stroke();
+	
+	// kwadrat przekreslony
+	ctx3.beginPath();
+	ctx3.moveTo(300,150);
+	ctx3.lineTo(300,350);
+	ctx3.lineTo(500,350);
+	ctx3.lineTo(500,150);
+	ctx3.lineTo(300,150);
+	ctx3.lineTo(500,350);
+	ctx3.moveTo(500,150);
+	ctx3.lineTo(300,350);
+	ctx3.lineJoin = "round"; // mozna jeszcze uzyc bevel lub miter 
+	ctx3.lineWidth = 15;
+	ctx3.strokeStyle = "green";
+	ctx3.stroke();
+	
+	
+	const canvasElem4 = document.getElementById("can4");
+	const ctx4 = canvasElem4.getContext("2d");
+	const image = new Image();
+	image.src = "mis.jpg";
+	
+	image.addEventListener('load', function(){
+		// wklejenie obrazka i skalowanie obrazka
+		ctx4.drawImage(image, 20, 20, 300, 200);			// (image, x, y, width, height)
+		ctx4.drawImage(image, 340, 20, 250, 150);
+		ctx4.drawImage(image, 20, 240, 200, 100);
+		ctx4.drawImage(image, 340, 240, 150, 70);
+		
+		// wyciecie kawalka obrazka
+			// najpierw podaje wspolrzedne obrazka wycinanego, a potem gdzie ma zostac wklejony na canvasie
+			// ctx.drawImage(img, x-wycinany, y-wycinany, Width-wycinany, Height-wycinany,  x, y, width, height);
+		ctx4.drawImage(image, 40, 40, 100, 100,     20, 400, 100, 100);
+		ctx4.drawImage(image, 150, 150, 100, 50,     170, 400, 100, 50);
+		
+		// przezroczystosc 1 - cos nie wyszlo
+		ctx4.drawImage(image, 280, 380, 300, 200);
+		ctx4.fillStyle = "white";
+		for (let i = 0; i < 1; i += 0.04) {
+			ctx4.globalAlpha = i;
+			ctx4.fillRect(280, i * 225, 300, 10); 
+		}
+		
+		// przezroczystosc 2 - na ostatnim misq - biegnie z punktu 580, 580 do punktu 350, 380
+		ctx4.beginPath();
+		ctx4.rect(280, 380, 300, 200);
+		const gradient3 = ctx.createLinearGradient(580, 580, 350, 380);
+		gradient3.addColorStop(0, "rgba(255,255,255, 1)");
+		gradient3.addColorStop(1, "rgba(255,255,255, 0)");
+		ctx4.fillStyle = gradient3;
+		ctx4.fill();
+    
+	});
+	
+	
+	
+	
+	
+	const canvasElem5 = document.getElementById("can5");
+	const ctx5 = canvasElem5.getContext("2d");
+		
+	// 3 kolka przezroczyste
+	ctx5.beginPath();
+	ctx5.arc(100,100, 80, radianAngle(0), radianAngle(360));
+	ctx5.fillStyle="rgba(255,0,0, 0.5)";
+	ctx5.fill();
+	
+	ctx5.beginPath();
+	ctx5.arc(200,100, 80, radianAngle(0), radianAngle(360));
+	ctx5.fillStyle="rgba(0,255,0, 0.5)";
+	ctx5.fill();
+	
+	ctx5.beginPath();
+	ctx5.arc(150,200, 80, radianAngle(0), radianAngle(360));
+	ctx5.fillStyle="rgba(0,0,255, 0.5)";
+	ctx5.fill();
+	
+	// 3 kolka wymiana kolorow
+	
+	ctx5.beginPath();
+	ctx5.arc(400,200, 80, radianAngle(0), radianAngle(360));
+	ctx5.globalCompositeOperation = "lighter";  // !!!!!!!!
+	ctx5.fillStyle="rgba(255,0,0, 1)";
+	ctx5.fill();
+	
+	ctx5.beginPath();
+	ctx5.arc(500,200, 80, radianAngle(0), radianAngle(360));
+	ctx5.fillStyle="rgba(0,255,0, 1)";
+	ctx5.fill();
+	
+	ctx5.beginPath();
+	ctx5.arc(450,300, 80, radianAngle(0), radianAngle(360));
+	ctx5.fillStyle="rgba(0,0,255, 1)";
+	ctx5.fill();
+	
+	
+	
+	
+	//const canvasElem6 = document.getElementById("can6");
+	//const ctx6 = canvasElem6.getContext("2d");
+	
+	var canvas;
+	var ctx6;
+	let x = 300;
+	let y = 20;
+	let dy = 10; 
+	const kolory = new Array("blue","red","yellow","green");
+	let i = 0;
+	
+	//ctx5.clearRect(0, 0, canvas.width, canvas.height);
+	
+/*	ctx6.beginPath();
+	ctx6.arc(x, y, 20, 0, Math.PI * 2, true);
+	ctx6.fillStyle = kolory[i];
+	ctx6.closePath;
+	ctx6.fill();  */
+	
+	function draw() {
+		canvas = document.getElementById('can6');
+		ctx6 = canvas.getContext('2d');
+		setInterval(anim, 100);
 	}
 	
-	document.addEventListener("keydown", function(e) {
-		which_key_pressed = e.keyCode;
-		console.log(which_key_pressed)
-		move = true;
+	function anim() {
 		
-		my_keys.keys =  (my_keys.keys || []); 
-		my_keys.keys[e.keyCode] = true;
-	}); 
+		ctx6.clearRect(0, 0, canvas.width, canvas.height);
+		
+		y +=dy;
+		if (y > (canvas.height-20)) {
+			//y -= dy;
+			dy = -10;
+			i = ++i % kolory.length;
+			
+		}
+		if (y < 20) {
+			//y +=dy;
+			dy = 10;
+			i = ++i % kolory.length;
+			
+		}
+		
+		ctx6.beginPath();
+		ctx6.arc(x, y, 20, 0, Math.PI * 2, true);
+		ctx6.fillStyle = kolory[i];
+		ctx6.closePath;
+		ctx6.fill();
+	}
 	
-	document.addEventListener("keyup", function(e) {
-		move = false;
-		one_shoot = true;
-		which_key_pressed = "";
+	draw();
+	
+	
+	const canvasElem7 = document.getElementById("can7");
+	const ctx7 = canvasElem7.getContext("2d");
+	const image3 = new Image();
+	image3.src = "http://misia.0dev.pl/blog/cwiczenia/kwiatek.png";
+			
+	image3.addEventListener('load', function(){
+		// wklejenie obrazka i skalowanie obrazka
+		ctx7.drawImage(image3, 0, 0, 400, 200);			// (image, x, y, width, height)
 		
-		my_keys.keys =  (my_keys.keys || []);
-		my_keys.keys[e.keyCode] = false;
+		// zmiana koloru pikseli
+			// pobieram dane z płótna do zmiennej myImgData
+			// const myImgData = ctx4.getImageData(0, 0, canvasElem.width, canvasElem.height);
+		const myImgData = ctx7.getImageData(0, 0, 400, 200);
+		
+		
+		//zmieniam kolor listków kwiatka
+			// data - tablica 1-wymiarowa zawierająca informacje na temat kolejnych pikseli płótna. Każdy piksel definiują 4 kolejne indeksy:
+			// i : czerwony, i+1 : zielony, i+2 : niebieski, i+3 : przezroczystość
+		for (let i=0; i<myImgData.data.length; i+=4) {
+			if (myImgData.data[i] === 255) {
+				myImgData.data[i] = 255;
+			}
+			if (myImgData.data[i+1] === 245) {
+				myImgData.data[i+1] = 0;
+			}
+			if (myImgData.data[i+2] === 104) {
+				myImgData.data[i+2] = 0;
+			}
+		}
+		
+		//rysujem na płótnie zmieniony obraz
+		ctx7.putImageData(myImgData, 220, 0);
+    
 	});
 
-	
-	var t0 = performance.now();
-	
-	function loop() {
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		space_ship_move();
-		draw_frame();
-		//all_bricks.splice(0, all_bricks.length);
-		
-		//draw_all_bricks(9, 5);
-		//draw_line_brick1(5, 5);
-		//draw_line_brick2(5, 5 + brick_height);
-		//draw_line_brick1(5, 5 + (brick_height * 2));
-		move_bricks();
-		move_bullet();
-		bullet_collision();
-		count_score();
-		if (bullets_counts.length < bullet_limit) {
-			can_shoot = true;
-		}
-		if (bullets_counts.length > bullet_limit) {
-			can_shoot = false;
-		}
-		//console.log("ilosc kul: ", bullets_counts.length);
-		setTimeout(function() {
-			const req = requestAnimationFrame(loop); 
-			
-			//console.log("test")
-		}, 30); 
-	}
-	
-	draw_all_bricks(9, 5);
-	draw_space_ship();
-	get_space_ship();
-	draw_frame();
-	move_bricks();
-	loop();
-	
-console.log(all_surprise_bricks)
-	var t1 = performance.now();
-	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
+ 
 })
