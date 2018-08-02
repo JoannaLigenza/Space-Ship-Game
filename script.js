@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
+	const surprise_bricks_quantity = 5;
+	const all_surprise_bricks = [];
 	let move = false;
 	let one_shoot = false;
 	let can_shoot = true;
@@ -68,10 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
 					//context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
 				}
 				get_brick = context.getImageData(positionX + (brick_width * k), positionY + (brick_height * l), brick_width+1, brick_height+1);
-				all_bricks.push([get_brick, positionX + (brick_width * k), positionY + (brick_height * l)])
+				all_bricks.push([get_brick, positionX + (brick_width * k), positionY + (brick_height * l), 0])
 				//all_bullets.push([get_bullet, bullet_position_x, bullet_position_y]);
 			}
 		}
+			surprise_brick();
+			console.log("all_bricks ", all_bricks);
 	}
 	
 	function move_bricks() {
@@ -149,35 +153,28 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	
-/*	function draw_line_brick1(positionX, positionY) {
-
-		for (k=0; k < brick_quantity; k++) {
-			draw_one_brick(positionX + (brick_width * k), positionY);
-			if ( k % 2 == 0) { 
-				brick_color_orange(positionX + (brick_width * k), positionY);
-				brick_pattern1(positionX + (brick_width * k), positionY);
-			}
+	function surprise_brick() {
+		for(i=0; i < surprise_bricks_quantity; i++) {
+			
+			const random_surprise_brick = Math.floor(Math.random() * all_bricks.length );
+			console.log("random_surprise_brick: ", random_surprise_brick)
+		
+			surprise_brick_positionX = all_bricks[random_surprise_brick][1];
+			surprise_brick_positionY = all_bricks[random_surprise_brick][2];
+			brick_pattern2(surprise_brick_positionX + (brick_width / 2), surprise_brick_positionY + (brick_height / 2));
+			
+			//all_surprise_bricks.push(all_bricks[random_surprise_brick], random_surprise_brick);
+			// which bricks have surprise
+			//
+			
+			//temporary_all_braicks.splice(random_surprise_brick, 1);
+			
+			get_surprise_brick = context.getImageData(surprise_brick_positionX, surprise_brick_positionY, brick_width+1, brick_height+1);
+			all_bricks[random_surprise_brick] = [get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, 1];
+			
+			all_surprise_bricks.push([get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY]);
 		}
-	}
-	
-	function draw_line_brick2(positionX, positionY) {
-		for (k=0; k < brick_quantity; k++) {
-			draw_one_brick(positionX + (brick_width * k), positionY);
-			if ( k % 2 != 0) { 
-				brick_pattern1(positionX + (brick_width * k), positionY);
-			}
-		//	if ( k % 2 == 0) { 
-		//		brick_pattern2((positionX + (brick_width * k)) + (brick_width / 2), (positionY + (brick_height / 2)));
-		//	}
-		}
-	}  */
-	
-	function suprise_brick() {
-		const random_suprise_brick = Math.floor(Math.random() * all_bricks.length );
-		suprise_brick_positionX = all_bricks[random_suprise_brick][0];
-		suprise_brick_positionY = all_bricks[random_suprise_brick][1];
-		//brick_color_orange(suprise_brick_positionX, suprise_brick_positionY);
-		brick_pattern2(suprise_brick_positionX + (brick_width / 2), suprise_brick_positionY + (brick_height / 2));
+		console.log("all_surprise_bricks " ,all_surprise_bricks);
 	}
 	
 	function radianAngle(angle) {
@@ -322,16 +319,15 @@ document.addEventListener('DOMContentLoaded', function() {
 			for (j = 0; j < all_bricks.length; j++) {
 				//if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
+					if(all_bricks[j][3] == 1) {
+						console.log("yes!")
+					}
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
 					all_bricks.splice(j, 1);
 					score += 10;
-					console.log(all_bullets);
+					//console.log(all_bullets);
 					
-					//all_bricks.splice(j, 1);
-					//console.log("all_bricks ", all_bricks)
-					//all_bricks.push([positionX, positionY, brick_width, brick_height]);
-					//all_bricks.push([get_brick, positionX + (brick_width * k), positionY + (brick_height * l)])
 					return;
 				} 
 			}
@@ -388,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (bullets_counts.length > bullet_limit) {
 			can_shoot = false;
 		}
-		console.log("ilosc kul: ", bullets_counts.length);
+		//console.log("ilosc kul: ", bullets_counts.length);
 		setTimeout(function() {
 			const req = requestAnimationFrame(loop); 
 			
@@ -403,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	move_bricks();
 	loop();
 	
-
+console.log(all_surprise_bricks)
 	var t1 = performance.now();
 	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
 })
