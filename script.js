@@ -49,6 +49,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	let life_quantity = 1;
 	let heart_position_x = 0;
 	let heart_position_y = 0;
+	let white_background = false;
+	let background_delay = 100;
+	let background_delay_arr = [];
 	let score = 0;
 	let level = 1;
 	let trr = false;
@@ -88,9 +91,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (( k % 2 == 0 && l % 2 == 0) || (k % 2 != 0 && l % 2 != 0) ) { 
 					brick_color_orange(positionX + (brick_width * k), positionY + (brick_height * l));
 					brick_pattern1(positionX + (brick_width * k), positionY + (brick_height * l));
-					
-					
-					
+						
+						
+						
 					//get_bullet = context.getImageData(bullet_position_x, bullet_position_y, bullet_width, bullet_height);
 					//context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
 				}
@@ -99,8 +102,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				//all_bullets.push([get_bullet, bullet_position_x, bullet_position_y]);
 			}
 		}
-			surprise_brick();
-			//console.log("all_bricks ", all_bricks);
+		surprise_brick();
+		//console.log("all_bricks ", all_bricks);
 	}
 	
 	function move_bricks() {
@@ -122,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
 		}
 	}
-	
+
 	
 	function brick_color_orange(positionX, positionY) {
 		for (i = positionX + 1 ; i <= (positionX + brick_width) -1 ; i++) {
@@ -202,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			all_surprise_bricks.push([get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_number_copy++]);
 			
 			all_bricks_copy.splice(random_surprise_brick, 1);
-			console.log(random_surprise_brick);
+			//console.log(random_surprise_brick);
 		}
 	}
 	
@@ -294,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				context.putImageData(get_life_heart, heart_position_x, heart_position_y + heart_step);
 				//console.log("heart_position_x", heart_position_x);
 				heart_position_y = heart_position_y + heart_step;
-				console.log("heart_position_x, heart_position_y", heart_position_x, heart_position_y);
+				//console.log("heart_position_x, heart_position_y", heart_position_x, heart_position_y);
 			}
 		}
 	} 
@@ -304,11 +307,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		//if (trr == true) {
 			
 			for (i = 0; i < hearts_quantity.length; i++) {
-				console.log("test");
+				//console.log("test");
 				if (heart_position_y + 8 > ship_position_y && heart_position_x > ship_position_x && heart_position_x < ship_position_x + ship_width) {
 					hearts_quantity.splice(i, 1);
 					life_quantity += 1;
-					console.log("test2");
+					//console.log("test2");
 					return;
 				}
 				if (heart_position_y + 8  > canvas.height - 5 ) {
@@ -319,7 +322,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	} 
 
-	
+	function background() {
+		if (white_background == true) {
+			background_delay_arr.push(1);
+			if(background_delay_arr.length < background_delay) {
+				console.log("jesttt");
+				//console.log("background_delay_arr", background_delay_arr);
+				canvas.style.backgroundColor = "rgb(250, 250, 250)";
+			}
+			console.log("background_delay_arr", background_delay_arr);
+			if(background_delay_arr.length > background_delay) {
+				console.log("nie ma");
+				canvas.style.backgroundColor = "rgb(6, 0, 135)";
+				background_delay_arr.splice(0, background_delay_arr.length);
+				white_background = false;
+			}
+		}
+	}
 	
 	
 
@@ -465,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			for (j = 0; j < all_bricks.length; j++) {
 				//if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
-					console.log("all_surprise_bricks ", all_surprise_bricks)
+					//console.log("all_surprise_bricks ", all_surprise_bricks)
 					if(all_bricks[j][3] == 1) {
 						enemy_quantity.push(1);
 						can_enemy_shoot = true;
@@ -484,6 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						console.log("yes! 3")
 					}
 					if(all_bricks[j][3] == 4) {
+						white_background = true;
 						console.log("yes! 4")
 					}
 					if(all_bricks[j][3] == 5) {
@@ -536,7 +556,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
-		console.log(which_key_pressed)
+		//console.log(which_key_pressed)
 		move = true;
 		
 		my_keys.keys =  (my_keys.keys || []); 
@@ -568,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		move_enemy_bullets()
 		//console.log("all_surprise_bricks ", all_surprise_bricks)
 
-		
+		//console.log("are_bricks_visible", are_bricks_visible);
 		move_bricks();
 		move_bullet();
 		bullet_collision();
@@ -577,6 +597,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_life();
 		draw_hearts();
 		heart_collision();
+		background();
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
