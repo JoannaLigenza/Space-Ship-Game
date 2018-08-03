@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	const context = canvas.getContext("2d");
 	const brick_width = 20;
 	const brick_height = 15;
-	//const brick_quantity = 17;
 	const brick_col = 17;
 	const brick_row = 3;
 	const all_bricks = [];
@@ -57,8 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	let interval_delay = 10;
 	let slow_down = false;
 	let slow_down_time = 150;
-	//let slow_down_time_arr = [];
-	//let trr = false;
 	
 	function draw_frame() {
 		for (i=0; i < canvas.width; i++) {
@@ -127,6 +124,18 @@ document.addEventListener('DOMContentLoaded', function() {
 				return;
 			}
 			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
+		}
+	}
+	
+	function brick_collision() {
+		if (is_brick_moving == true) {
+			for (i=0; i < all_bricks.length; i++) {
+				if (all_bricks[i][2] + brick_height >= ship_position_y) {
+					life_quantity -= 1;
+					//lost_life_refresh();
+					console.log("crash")
+				}
+			}
 		}
 	}
 
@@ -283,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			for (i = 0; i < all_enemy_bullets.length; i++) {
 				if ((all_enemy_bullets[i][2] + bullet_height) > ship_position_y && ( all_enemy_bullets[i][1] > ship_position_x && (all_enemy_bullets[i][1]) < ship_position_x + ship_width)) {
 					all_enemy_bullets.splice(i, 1);
+					life_quantity -= 1;
 					return;
 				}
 				if ((all_enemy_bullets[i][2] + bullet_height) > canvas.height - 5 ) {
@@ -611,6 +621,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		heart_collision();
 		background();
 		slow_down_game();
+		brick_collision();
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
