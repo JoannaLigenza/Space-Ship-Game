@@ -54,7 +54,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	let background_delay_arr = [];
 	let score = 0;
 	let level = 1;
-	let trr = false;
+	let interval_delay = 10;
+	let slow_down = false;
+	let slow_down_time = 150;
+	//let slow_down_time_arr = [];
+	//let trr = false;
 	
 	function draw_frame() {
 		for (i=0; i < canvas.width; i++) {
@@ -326,13 +330,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (white_background == true) {
 			background_delay_arr.push(1);
 			if(background_delay_arr.length < background_delay) {
-				console.log("jesttt");
-				//console.log("background_delay_arr", background_delay_arr);
 				canvas.style.backgroundColor = "rgb(250, 250, 250)";
 			}
-			console.log("background_delay_arr", background_delay_arr);
 			if(background_delay_arr.length > background_delay) {
-				console.log("nie ma");
 				canvas.style.backgroundColor = "rgb(6, 0, 135)";
 				background_delay_arr.splice(0, background_delay_arr.length);
 				white_background = false;
@@ -340,7 +340,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
-	
+	function slow_down_game() {
+		if (slow_down == true && slow_down_time > 0) {
+			interval_delay = 30;
+			slow_down_time -= 1;
+			
+		}
+		if (slow_down == true && slow_down_time == 0) {
+			slow_down = false;
+			slow_down_time = 50;
+			interval_delay = 10;
+		}
+	}
 
 	
 	function radianAngle(angle) {
@@ -492,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 					if(all_bricks[j][3] == 2) {
 						hearts_quantity.push(1);
-						trr = true;
+						//trr = true;
 						heart_position_x = all_bricks[j][1] + 6;
 						heart_position_y = all_bricks[j][2] + 5;
 						console.log("yes! 2")
@@ -507,6 +518,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						console.log("yes! 4")
 					}
 					if(all_bricks[j][3] == 5) {
+						slow_down = true;
 						console.log("yes! 5" )
 					}
 					
@@ -598,6 +610,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_hearts();
 		heart_collision();
 		background();
+		slow_down_game();
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
@@ -610,7 +623,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			const req = requestAnimationFrame(loop); 
 			
 			//console.log("test")
-		}, 10); 
+		}, interval_delay); 
 	}
 	
 	
