@@ -46,11 +46,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let first_surprise_quantity = [];
 	let second_surprise_quantity = [];
 	let get_life_heart = "";
-	let life_quantity = 2;
+	let life_quantity = 1;
 	let heart_position_x = 0;
 	let heart_position_y = 0;
 	let score = 0;
 	let level = 1;
+	let trr = false;
 	
 	function draw_frame() {
 		for (i=0; i < canvas.width; i++) {
@@ -307,7 +308,27 @@ document.addEventListener('DOMContentLoaded', function() {
 				context.putImageData(get_life_heart, heart_position_x, heart_position_y + heart_step);
 				//console.log("heart_position_x", heart_position_x);
 				heart_position_y = heart_position_y + heart_step;
-				//console.log("heart_position_y", heart_position_y);
+				console.log("heart_position_x, heart_position_y", heart_position_x, heart_position_y);
+			}
+		}
+	} 
+	
+	function heart_collision() {
+		if (second_surprise_quantity.length > 0) {
+		//if (trr == true) {
+			
+			for (i = 0; i < second_surprise_quantity.length; i++) {
+				console.log("test");
+				if (heart_position_y + 8 > ship_position_y && heart_position_x > ship_position_x && heart_position_x < ship_position_x + ship_width) {
+					second_surprise_quantity.splice(i, 1);
+					life_quantity += 1;
+					console.log("test2");
+					return;
+				}
+				if (heart_position_y + 8  > canvas.height - 5 ) {
+					second_surprise_quantity.splice(i, 1);
+					return;
+				}
 			}
 		}
 	} 
@@ -466,6 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 					if(all_bricks[j][3] == 2) {
 						second_surprise_quantity.push(1);
+						trr = true;
 						heart_position_x = all_bricks[j][1] + 6;
 						heart_position_y = all_bricks[j][2] + 5;
 						console.log("yes! 2")
@@ -567,6 +589,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		count_score();
 		draw_life();
 		draw_hearts();
+		heart_collision();
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
