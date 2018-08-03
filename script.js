@@ -132,8 +132,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			for (i=0; i < all_bricks.length; i++) {
 				if (all_bricks[i][2] + brick_height >= ship_position_y) {
 					life_quantity -= 1;
-					//lost_life_refresh();
-					console.log("crash")
+					is_brick_moving = false;
+					all_bricks.splice(0, all_bricks.length);
+					draw_all_bricks(9, 5);
+					context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
+					//refresh_game();
+					console.log("crash");
 				}
 			}
 		}
@@ -593,6 +597,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		my_keys.keys =  (my_keys.keys || []);
 		my_keys.keys[e.keyCode] = false;
 	});
+	
+	function refresh_game() {
+		if (life_quantity == 0) {
+			end_game();
+		}
+		if (life_quantity > 0) {
+			
+		}
+	}
 
 	
 	var t0 = performance.now();
