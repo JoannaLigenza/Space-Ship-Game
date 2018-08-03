@@ -131,13 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (is_brick_moving == true) {
 			for (i=0; i < all_bricks.length; i++) {
 				if (all_bricks[i][2] + brick_height >= ship_position_y) {
-					life_quantity -= 1;
-					is_brick_moving = false;
-					all_bricks.splice(0, all_bricks.length);
-					draw_all_bricks(9, 5);
-					context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
-					//refresh_game();
-					console.log("crash");
+					refresh_game();
 				}
 			}
 		}
@@ -310,8 +304,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (all_enemy_bullets.length > 0) {
 			for (i = 0; i < all_enemy_bullets.length; i++) {
 				if ((all_enemy_bullets[i][2] + bullet_height) > ship_position_y && ( all_enemy_bullets[i][1] > ship_position_x && (all_enemy_bullets[i][1]) < ship_position_x + ship_width)) {
-					all_enemy_bullets.splice(i, 1);
-					life_quantity -= 1;
+					//all_enemy_bullets.splice(i, 1);
+					//life_quantity = life_quantity - 1;
+					refresh_game();
 					return;
 				}
 				if ((all_enemy_bullets[i][2] + bullet_height) > canvas.height - 5 ) {
@@ -321,9 +316,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 	}
-	
-	
-
 	
 	function move_heart() {
 		const heart_step = 3;
@@ -620,7 +612,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			end_game();
 		}
 		if (life_quantity > 0) {
+			life_quantity -= 1;
+			is_brick_moving = false;
+			hearts_quantity.splice(0, hearts_quantity.length);
+			all_bricks.splice(0, all_bricks.length);
+			can_enemy_shoot = false;
+			draw_all_bricks(9, 5);
+			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
+			all_enemy_bullets.splice(0, all_enemy_bullets.length);
 			
+			//refresh_game();
+			console.log("crash");
 		}
 	}
 
