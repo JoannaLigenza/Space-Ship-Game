@@ -259,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function draw_enemy_bullets() {
 		enemy_bullet_delay_arr.push(1);
+		console.log("enemy_bullet_delay_arr ", enemy_bullet_delay_arr)
 		if (can_enemy_shoot == true && enemy_bullet_delay_arr.length > 10 && enemy_max_bullet > 0) { 
 			for (i=0; i < enemy_quantity.length; i++) {
 				//console.log("position enemy: ", enemy_position_x, enemy_position_y)
@@ -280,6 +281,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				//get_bullet();
 			}
 			enemy_bullet_delay_arr.splice(0, enemy_bullet_delay_arr.length);
+		}
+		if (enemy_max_bullet == 0) {
+			can_enemy_shoot = false;
 		}
 	}
 	
@@ -513,6 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					if(all_bricks[j][3] == 1) {
 						enemy_quantity.push(1);
 						can_enemy_shoot = true;
+						draw_enemy_bullets();
 						console.log("yes! 1")
 					}
 					if(all_bricks[j][3] == 2) {
@@ -614,12 +619,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		space_ship_move();
 		draw_frame();
-		put_enemy();
+		//put_enemy();
 		
 		//draw_enemy()
 		//second_surprise();
 		move_heart();
-		draw_enemy_bullets()
+		if (can_enemy_shoot == true) {
+			put_enemy();
+			draw_enemy_bullets();
+		}
 		move_enemy_bullets()
 		//console.log("all_surprise_bricks ", all_surprise_bricks)
 
