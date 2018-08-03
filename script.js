@@ -242,6 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		get_enemy = context.getImageData(329, 374, enemy_width, enemy_height);
 		shooting_enemy = get_enemy;
+		 
 		//context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
 	}
 	
@@ -259,9 +260,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function draw_enemy_bullets() {
 		enemy_bullet_delay_arr.push(1);
-		console.log("enemy_bullet_delay_arr ", enemy_bullet_delay_arr)
-		if (can_enemy_shoot == true && enemy_bullet_delay_arr.length > 10 && enemy_max_bullet > 0) { 
+		//console.log("enemy_bullet_delay_arr ", enemy_bullet_delay_arr)
+		if (enemy_bullet_delay_arr.length > 10){ //&& enemy_max_bullet > 0) { 
+			//for (j=0; j < enemy_quantity.length; j++) {
+			//	enemy_max_bullet[j] = 20;
+			//}
+			console.log("enemy_max_bullet 1 ", enemy_quantity)
 			for (i=0; i < enemy_quantity.length; i++) {
+				if (enemy_quantity[i] > 0) { 
 				//console.log("position enemy: ", enemy_position_x, enemy_position_y)
 				//console.log("position bullet: ", enemy_position_x + (enemy_width / 2), enemy_position_y + enemy_height)
 				context.beginPath();
@@ -273,17 +279,21 @@ document.addEventListener('DOMContentLoaded', function() {
 				
 				get_enemy_bullet = context.getImageData(enemy_position_x + 11, enemy_position_y + enemy_height, bullet_width, bullet_height);
 				all_enemy_bullets.push([get_enemy_bullet, enemy_position_x + 11, enemy_position_y + enemy_height]);
-				enemy_max_bullet -= 1;
+				enemy_quantity[i] = enemy_quantity[i] - 1;
+				
+				if (enemy_quantity[i] == 0) {
+					can_enemy_shoot = false;
+				}
+		
 				//console.log("all_enemy_bullets ", all_enemy_bullets[i][2]);
 				//bullets_counts.push(1);
 				//one_shoot = false;
 				//console.log(bullets_counts);
 				//get_bullet();
+				}
 			}
+			console.log("enemy_max_bullet 2 ", enemy_max_bullet)
 			enemy_bullet_delay_arr.splice(0, enemy_bullet_delay_arr.length);
-		}
-		if (enemy_max_bullet == 0) {
-			can_enemy_shoot = false;
 		}
 	}
 	
@@ -296,7 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function enemy_bullets_collision() {
-		if (can_enemy_shoot == true) {
+		//if (can_enemy_shoot == true) {
+		if (all_enemy_bullets.length > 0) {
 			for (i = 0; i < all_enemy_bullets.length; i++) {
 				if ((all_enemy_bullets[i][2] + bullet_height) > ship_position_y && ( all_enemy_bullets[i][1] > ship_position_x && (all_enemy_bullets[i][1]) < ship_position_x + ship_width)) {
 					all_enemy_bullets.splice(i, 1);
@@ -310,6 +321,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 	}
+	
+	
 
 	
 	function move_heart() {
@@ -515,9 +528,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
 					//console.log("all_surprise_bricks ", all_surprise_bricks)
 					if(all_bricks[j][3] == 1) {
-						enemy_quantity.push(1);
+						enemy_quantity.push(enemy_max_bullet);
 						can_enemy_shoot = true;
-						draw_enemy_bullets();
 						console.log("yes! 1")
 					}
 					if(all_bricks[j][3] == 2) {
