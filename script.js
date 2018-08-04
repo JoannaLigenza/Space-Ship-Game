@@ -56,6 +56,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	let interval_delay = 10;
 	let slow_down = false;
 	let slow_down_time = 150;
+	let refresh = false;
+	let refresh_delay_time = 10;
+	let animation = "";
+	let end_game = false;
 	
 	function draw_frame() {
 		for (i=0; i < canvas.width; i++) {
@@ -607,51 +611,91 @@ document.addEventListener('DOMContentLoaded', function() {
 		my_keys.keys[e.keyCode] = false;
 	});
 	
+	
 	function refresh_game() {
+		refresh = true;
 		if (life_quantity == 0) {
-			end_game();
+			end_game = true;
 		}
 		if (life_quantity > 0) {
 			life_quantity -= 1;
 			is_brick_moving = false;
 			hearts_quantity.splice(0, hearts_quantity.length);
 			all_bricks.splice(0, all_bricks.length);
-			can_enemy_shoot = false;
-			draw_all_bricks(9, 5);
-			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
 			all_enemy_bullets.splice(0, all_enemy_bullets.length);
-			
-			//refresh_game();
+			can_enemy_shoot = false;
+			console.log("refresh ", refresh )
+			refersh_delay();
 			console.log("crash");
 		}
+	}
+	
+	function refersh_delay() {
+		refresh_delay_time -= 1 
+		if (refresh_delay_time == 0) {
+			draw_all_bricks(9, 5);
+			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
+			refresh_delay_time = 10;
+			refresh = false;
+			console.log("refresh 2 ", refresh )
+		}
+	}
+	
+	function game_over() {
+		hearts_quantity.splice(0, hearts_quantity.length);
+		all_bricks.splice(0, all_bricks.length);
+		all_enemy_bullets.splice(0, all_enemy_bullets.length);
+		
+		context.font = "bold 16px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgb(255,0,0)";
+		context.fillText("Game Over ", 150 , 170);
+		
+		context.font = "bold 12px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgb(255,0,0)";
+		context.fillText("Your score: " + score, 150 , 200);
 	}
 
 	
 	var t0 = performance.now();
 	
 	function loop() {
+		console.log("hearts_quantity ", hearts_quantity)
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		space_ship_move();
 		draw_frame();
-		//put_enemy();
+		count_score();
+		draw_life();
+		//console.log(animation);
+		//console.log(end_game);
+		if (end_game == true) {
+			console.log("end_game");
+			game_over();
+			cancelAnimationFrame(animation);
+			return;
+		}
 		
-		//draw_enemy()
-		//second_surprise();
-		move_heart();
+		
 		if (can_enemy_shoot == true) {
 			put_enemy();
 			draw_enemy_bullets();
 		}
+		if (refresh == true) {
+			refersh_delay();
+		}
+		space_ship_move();
+		
+		move_heart();
 		move_enemy_bullets()
-		//console.log("all_surprise_bricks ", all_surprise_bricks)
 
-		//console.log("are_bricks_visible", are_bricks_visible);
 		move_bricks();
 		move_bullet();
 		bullet_collision();
 		enemy_bullets_collision();
-		count_score();
-		draw_life();
+		//count_score();
+		//draw_life();
 		draw_hearts();
 		heart_collision();
 		background();
@@ -663,12 +707,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (bullets_counts.length > bullet_limit) {
 			can_shoot = false;
 		}
-		//console.log("ilosc kul: ", bullets_counts.length);
-		//console.log("can_shoot: ", can_shoot);
 		setTimeout(function() {
-			const req = requestAnimationFrame(loop); 
-			
-			//console.log("test")
+			animation = requestAnimationFrame(loop); 
 		}, interval_delay); 
 	}
 	
