@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	const context = canvas.getContext("2d");
 	const brick_width = 20;
 	const brick_height = 15;
-	const brick_col = 17;
-	const brick_row = 1;
+	let brick_col = 10;
+	let brick_row = 2;
 	const all_bricks = [];
 	let ship_position_x = 160;
 	let ship_position_y = 300;
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [1,1,2,3,4,5];
+	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	//let bricks_with_enemy = [];
 	let move = false;
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_shoot = true;
 	let enemy_quantity = [];
 	const bullets_counts = [];
-	const bullet_limit = 20;
+	let bullet_limit = 4;
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let get_bullets = "";
@@ -608,10 +608,14 @@ document.addEventListener('DOMContentLoaded', function() {
 						console.log("yes! 4")
 					}
 					if(all_bricks[j][3] == 5) {
-						slow_down = true;
+						//slow_down = true;
 						is_slow_down_visible = true;
 						slow_down_icon_position = [all_bricks[j][1], all_bricks[j][2]]
 						console.log("yes! 5" )
+					}
+					if(all_bricks[j][3] == 6) {
+						bullet_limit += 2;
+						console.log("yes! 6" )
 					}
 					
 					all_bullets.splice(i, 1);
@@ -716,6 +720,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		hearts_quantity.splice(0, hearts_quantity.length);
 		all_bricks.splice(0, all_bricks.length);
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
+		bullets_counts.splice(0, bullets_counts.length);
 		all_bullets.splice(0, all_bullets.length);		// remove all bullets from all enemys - this is necessary for bullets moving
 		enemy_quantity.splice(0, enemy_quantity.length);
 	}
@@ -723,7 +728,23 @@ document.addEventListener('DOMContentLoaded', function() {
 	function refersh_delay() {
 		refresh_delay_time -= 1 
 		if (refresh_delay_time == 0) {
-			draw_all_bricks(9, 5);
+			if (level == 1) {
+				draw_all_bricks(80, 15);
+			}
+			if (level == 2) {
+				brick_col = 17;
+				brick_row = 3;
+				surprise_bricks_quantity.push(1, 3, 5);
+				draw_all_bricks(9, 5);
+			}
+			if (level == 3) {
+				brick_col = 17;
+				brick_row = 4;
+				surprise_bricks_quantity.splice(surprise_bricks_quantity.length-1, 0);
+				surprise_bricks_quantity.push(2);
+				draw_all_bricks(9, 5);
+			}
+			//draw_all_bricks(9, 5);
 			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
 			refresh_delay_time = 10;
 			refresh = false;
@@ -756,7 +777,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_bullets, ", all_bullets.length)
-		console.log("is_slow_down_visible ", is_slow_down_visible)
+		//console.log("bullets_counts ", bullets_counts.length)
 		
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
@@ -810,7 +831,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	
-	draw_all_bricks(9, 5);
+	draw_all_bricks(80, 15);
 	draw_space_ship();
 	//second_surprise();
 	draw_enemy();
