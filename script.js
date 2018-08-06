@@ -55,6 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_arrow = "";
 	let arrow_position = [];
 	let is_arrow_visible = false;
+	let get_slow_down_icon = "";
+	let slow_down_icon_position = [];
+	let is_slow_down_visible = false;
 	let score = 0;
 	let level = 1;
 	let change_level_delay = 10;
@@ -352,12 +355,32 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 
 		get_arrow = context.getImageData(337, 363, 6, 8);
-		console.log("test");
 	}
 	
 	function show_arrow() {
 		context.putImageData(get_arrow, arrow_position[0] + 7, arrow_position[1] + 5);
 	}
+	
+	function draw_slow_down_icon() {
+		context.beginPath();
+		context.moveTo(340,340); 
+		context.lineTo(340,350);
+		context.moveTo(337,342);
+		context.lineTo(343,348);
+		context.moveTo(337,348);
+		context.lineTo(343,342);
+		context.lineWidth = bullet_width;
+		context.strokeStyle = "rgb(250, 250, 250)";
+		context.lineWidth = bullet_width;
+		context.stroke();
+		
+		get_slow_down_icon = context.getImageData(337, 340, 6, 10);
+	}
+	
+	function show_slow_down_icon() {
+		context.putImageData(get_slow_down_icon, slow_down_icon_position[0] + 7, slow_down_icon_position[1] + 3);
+	}
+	
 	
 	function move_heart() {
 		const heart_step = 3;
@@ -412,7 +435,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (slow_down == true && slow_down_time == 0) {
 			slow_down = false;
-			slow_down_time = 50;
+			is_slow_down_visible = false;
+			slow_down_time = 150;
 			interval_delay = 10;
 		}
 	}
@@ -584,7 +608,9 @@ document.addEventListener('DOMContentLoaded', function() {
 						console.log("yes! 4")
 					}
 					if(all_bricks[j][3] == 5) {
-						//slow_down = true;
+						slow_down = true;
+						is_slow_down_visible = true;
+						slow_down_icon_position = [all_bricks[j][1], all_bricks[j][2]]
 						console.log("yes! 5" )
 					}
 					
@@ -686,6 +712,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		can_change_level = false;
 		is_brick_moving = false;
 		is_arrow_visible = false; 
+		is_slow_down_visible = false;
 		hearts_quantity.splice(0, hearts_quantity.length);
 		all_bricks.splice(0, all_bricks.length);
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
@@ -729,15 +756,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_bullets, ", all_bullets.length)
-		//console.log("all_bricks ", all_bricks.length)
+		console.log("is_slow_down_visible ", is_slow_down_visible)
 		
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
 		draw_level();
 		count_score();
-		draw_life();
-		
+		draw_life();		
 		if (end_game == true) {
 			console.log("end_game");
 			game_over();
@@ -753,6 +779,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (is_arrow_visible == true) {
 			show_arrow();
 		}
+		if (is_slow_down_visible == true) {
+			show_slow_down_icon();
+		}
+		
 		if (refresh == true) {
 			refersh_delay();
 		}
@@ -789,6 +819,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	get_heart();
 	draw_frame();
 	draw_arrow();
+	draw_slow_down_icon();
 	move_bricks();
 	//brick_with_enemy();
 	loop();
