@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	let white_background = false;
 	let background_delay = 100;
 	let background_delay_arr = [];
+	let get_arrow = "";
+	let arrow_position = [];
+	let is_arrow_visible = false;
 	let score = 0;
 	let level = 1;
 	let change_level_delay = 10;
@@ -256,17 +259,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		//context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
 	}
 	
-	
-/*	function brick_with_enemy() {
-		for (j=0; j < all_surprise_bricks.length; j++) {
-			if (all_surprise_bricks[j][3] == 1 ) {
-				bricks_with_enemy.push(all_surprise_bricks[j]); 
-				//console.log("all_surprise_bricks[j] ", all_surprise_bricks[j])
-			}
-		}
-	} */
-	
-	
 	function show_enemy() {
 			for (k=0; k < enemy_quantity.length; k++) { 
 			//console.log("enemy_quantity[i] ", enemy_quantity[i]);
@@ -344,6 +336,27 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			}
 		}
+	}
+	
+	function draw_arrow() {
+		context.beginPath();
+		context.moveTo(340,363); 
+		context.lineTo(340,370);
+		context.moveTo(337,367);
+		context.lineTo(340,370);
+		context.lineTo(343,367);
+		context.lineWidth = bullet_width;
+		context.strokeStyle = "rgb(250, 250, 250)";
+		context.lineWidth = bullet_width;
+		context.stroke();
+		
+
+		get_arrow = context.getImageData(337, 363, 6, 8);
+		console.log("test");
+	}
+	
+	function show_arrow() {
+		context.putImageData(get_arrow, arrow_position[0] + 7, arrow_position[1] + 5);
 	}
 	
 	function move_heart() {
@@ -562,6 +575,8 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 					if(all_bricks[j][3] == 3) {
 						is_brick_moving = true;
+						is_arrow_visible = true;
+						arrow_position = [all_bricks[j][1], all_bricks[j][2]]
 						console.log("yes! 3")
 					}
 					if(all_bricks[j][3] == 4) {
@@ -660,13 +675,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (life_quantity > 0) {
 			life_quantity -= 1;
-		//	is_brick_moving = false;
-			
-		//	hearts_quantity.splice(0, hearts_quantity.length);
-		//	all_bricks.splice(0, all_bricks.length);
-		//	all_enemy_bullets.splice(0, all_enemy_bullets.length);
-		//	all_bullets.splice(0, all_bullets.length);		// remove all bullets from all enemys - this is necessary for bullets moving
-		//	enemy_quantity.splice(0, enemy_quantity.length);
 
 			what_to_refresh();
 			refersh_delay();
@@ -677,6 +685,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function what_to_refresh() {
 		can_change_level = false;
 		is_brick_moving = false;
+		is_arrow_visible = false; 
 		hearts_quantity.splice(0, hearts_quantity.length);
 		all_bricks.splice(0, all_bricks.length);
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
@@ -720,13 +729,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_bullets, ", all_bullets.length)
-		console.log("all_bricks ", all_bricks.length)
+		//console.log("all_bricks ", all_bricks.length)
+		
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
 		draw_level();
 		count_score();
 		draw_life();
+		
 		if (end_game == true) {
 			console.log("end_game");
 			game_over();
@@ -738,6 +749,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			draw_enemy_bullets();
 			move_enemy_bullets();
 			enemy_bullets_collision();
+		}
+		if (is_arrow_visible == true) {
+			show_arrow();
 		}
 		if (refresh == true) {
 			refersh_delay();
@@ -774,6 +788,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	draw_hearts();
 	get_heart();
 	draw_frame();
+	draw_arrow();
 	move_bricks();
 	//brick_with_enemy();
 	loop();
