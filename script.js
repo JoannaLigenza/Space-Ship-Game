@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_width = 20;
 	const brick_height = 15;
 	const brick_col = 17;
-	const brick_row = 3;
+	const brick_row = 1;
 	const all_bricks = [];
 	let ship_position_x = 160;
 	let ship_position_y = 300;
@@ -54,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let background_delay_arr = [];
 	let score = 0;
 	let level = 1;
+	let change_level_delay = 10;
+	let can_change_level = true;
 	let interval_delay = 10;
 	let slow_down = false;
 	let slow_down_time = 150;
@@ -116,6 +118,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		const brick_step = 3;
 		brick_moving_delay_arr.push(1);
 		
+		if (all_bricks.length == 0 && can_change_level == true) {
+			change_level_delay -= 1;
+			if (change_level_delay == 0) {
+				change_level();
+				return;
+			}
+		}
 		for (i=0; i < all_bricks.length; i++) {
 			if (is_brick_moving == false) {
 				context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
@@ -556,11 +565,11 @@ document.addEventListener('DOMContentLoaded', function() {
 						console.log("yes! 3")
 					}
 					if(all_bricks[j][3] == 4) {
-						white_background = true;
+						//white_background = true;
 						console.log("yes! 4")
 					}
 					if(all_bricks[j][3] == 5) {
-						slow_down = true;
+						//slow_down = true;
 						console.log("yes! 5" )
 					}
 					
@@ -576,12 +585,20 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
+	function draw_level() {
+		context.font = "bold 12px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgb(255,0,0)";
+		context.fillText("Level: " + level, 5 , canvas.height - 15);
+	}
+	
 	function count_score() {
 		context.font = "bold 12px Arial";
 		context.textAlign = "left";
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Score: " + score, 5 , canvas.height - 15);
+		context.fillText("Score: " + score, 70 , canvas.height - 15);
 	}
 	
 	function draw_life() {
@@ -589,23 +606,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.textAlign = "left";
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Life: ", 100 , canvas.height - 15);
+		context.fillText("Life: ", 150 , canvas.height - 15);
 	}
 	
 	function draw_hearts() {
 		for (i=1; i < life_quantity + 1; i++) {
 			context.beginPath();
 			context.fillStyle = "rgb(255,0,0)";
-			context.moveTo(122 + (10 * i) ,canvas.height - 11);
-			context.bezierCurveTo(117 + (10 * i),canvas.height - 13, 117 + (10 * i),canvas.height - 21, 122 + (10 * i), canvas.height - 17);
-			context.moveTo(122 + (10 * i) ,canvas.height - 11);
-			context.bezierCurveTo(127 + (10 * i),canvas.height - 13, 127 + (10 * i),canvas.height - 21, 122 + (10 * i), canvas.height - 17);
+			context.moveTo(172 + (10 * i) ,canvas.height - 11);
+			context.bezierCurveTo(167 + (10 * i),canvas.height - 13, 167 + (10 * i),canvas.height - 21, 172 + (10 * i), canvas.height - 17);
+			context.moveTo(172 + (10 * i) ,canvas.height - 11);
+			context.bezierCurveTo(177 + (10 * i),canvas.height - 13, 177 + (10 * i),canvas.height - 21, 172 + (10 * i), canvas.height - 17);
 			context.fill();
 		}
 	}
 
 	function get_heart() {
-		get_life_heart = context.getImageData(127, canvas.height - 18, 10, 8);
+		get_life_heart = context.getImageData(177, canvas.height - 18, 10, 8);
 	}
 	
 	document.addEventListener("keydown", function(e) {
@@ -626,6 +643,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		my_keys.keys[e.keyCode] = false;
 	});
 	
+	function change_level() {
+			refresh = true;
+			level += 1; 
+			what_to_refresh();
+			refersh_delay();
+			change_level_delay = 10;
+			console.log("level ", level);	
+	}
+	
 	
 	function refresh_game() {
 		refresh = true;
@@ -634,18 +660,28 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (life_quantity > 0) {
 			life_quantity -= 1;
-			is_brick_moving = false;
+		//	is_brick_moving = false;
 			
-			hearts_quantity.splice(0, hearts_quantity.length);
-			all_bricks.splice(0, all_bricks.length);
-			all_enemy_bullets.splice(0, all_enemy_bullets.length);
-			all_bullets.splice(0, all_bullets.length);		// remove all bullets from all enemys - this is necessary for bullets moving
-			enemy_quantity.splice(0, enemy_quantity.length);
+		//	hearts_quantity.splice(0, hearts_quantity.length);
+		//	all_bricks.splice(0, all_bricks.length);
+		//	all_enemy_bullets.splice(0, all_enemy_bullets.length);
+		//	all_bullets.splice(0, all_bullets.length);		// remove all bullets from all enemys - this is necessary for bullets moving
+		//	enemy_quantity.splice(0, enemy_quantity.length);
 
-			//console.log("refresh ", refresh )
+			what_to_refresh();
 			refersh_delay();
-			//console.log("crash");
+			console.log("crash");
 		}
+	}
+	
+	function what_to_refresh() {
+		can_change_level = false;
+		is_brick_moving = false;
+		hearts_quantity.splice(0, hearts_quantity.length);
+		all_bricks.splice(0, all_bricks.length);
+		all_enemy_bullets.splice(0, all_enemy_bullets.length);
+		all_bullets.splice(0, all_bullets.length);		// remove all bullets from all enemys - this is necessary for bullets moving
+		enemy_quantity.splice(0, enemy_quantity.length);
 	}
 	
 	function refersh_delay() {
@@ -655,6 +691,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
 			refresh_delay_time = 10;
 			refresh = false;
+			can_change_level = true;  
 			//console.log("refresh 2 ", refresh )
 		}
 	}
@@ -682,11 +719,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
-		console.log("all_bullets, ", all_bullets.length)
-		
+		//console.log("all_bullets, ", all_bullets.length)
+		console.log("all_bricks ", all_bricks.length)
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
+		draw_level();
 		count_score();
 		draw_life();
 		if (end_game == true) {
