@@ -11,25 +11,27 @@ document.addEventListener('DOMContentLoaded', function() {
 	let ship_position_y = 300;
 	const ship_width = 40;
 	const ship_height = 70;
-	let enemy_position_x = 0;
-	let enemy_position_y = 0;
+	let enemy_position_x = [];
+	let enemy_position_y = [];
 	let space_ship = "";
 	let which_key_pressed = "";
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = 5;
+	let surprise_bricks_quantity = [1,1,2,3,4,5];
 	const all_surprise_bricks = [];
+	//let bricks_with_enemy = [];
 	let move = false;
 	let one_shoot = false;
 	let can_shoot = true;
-	let can_enemy_shoot = false;
+	let enemy_quantity = [];
 	const bullets_counts = [];
 	const bullet_limit = 20;
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let get_bullets = "";
 	let get_enemy = "";
+	let all_enemys = [];
 	let all_bullets = [];
 	let shooting_enemy = "";
 	const enemy_width = 20;
@@ -42,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	const all_enemy_bullets = [];
 	let get_enemy_bullet = "";
 	const my_keys = { 32: false };
-	let enemy_quantity = [];
 	let hearts_quantity = [];
 	let get_life_heart = "";
 	let life_quantity = 1;
@@ -197,16 +198,16 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	
 	function surprise_brick() {
-		let surprise_number = 1;
+		//let surprise_number = 1;
 		let brick_number = 0;
 		let all_bricks_copy = [];
 		//let random_surprise_brick_copy = "";
 		for(s=0; s < all_bricks.length; s++) {
 			all_bricks_copy.push(brick_number++);
 		}
-		for(i=0; i < surprise_bricks_quantity; i++) {
+		for(i=0; i < surprise_bricks_quantity.length; i++) {
 			//console.log("surprise_bricks_quantity2 " ,surprise_bricks_quantity);
-			let surprise_number_copy = surprise_number;
+			//let surprise_number_copy = surprise_number;
 			const random_surprise_brick = Math.floor(Math.random() * all_bricks_copy.length );
 			const random_surprise_brick_copy = all_bricks_copy[random_surprise_brick];
 		
@@ -214,10 +215,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			surprise_brick_positionY = all_bricks[random_surprise_brick_copy][2];
 			brick_pattern2(surprise_brick_positionX + (brick_width / 2), surprise_brick_positionY + (brick_height / 2));
 			
-			get_surprise_brick = context.getImageData(surprise_brick_positionX, surprise_brick_positionY, brick_width+1, brick_height+1);
-			all_bricks[random_surprise_brick_copy] = [get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_number++];
+			get_surprise_brick = context.getImageData(surprise_brick_positionX, surprise_brick_positionY, brick_width+1, brick_height+1);			
 			
-			all_surprise_bricks.push([get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_number_copy++]);
+			all_bricks[random_surprise_brick_copy] = [get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_bricks_quantity[i]];
+			all_surprise_bricks.push([get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_bricks_quantity[i]]);
+			//all_bricks[random_surprise_brick_copy] = [get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_number++];
+			//all_surprise_bricks.push([get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_number_copy++]);
 			
 			all_bricks_copy.splice(random_surprise_brick, 1);
 			//console.log(random_surprise_brick);
@@ -244,58 +247,71 @@ document.addEventListener('DOMContentLoaded', function() {
 		//context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
 	}
 	
-	function put_enemy() {
-		if (enemy_quantity.length > 0) { 
-			for (j=0; j < all_surprise_bricks.length; j++) {
-				if (all_surprise_bricks[j][3] == 1) { 
-					enemy_position_x = all_surprise_bricks[j][1];
-					enemy_position_y = all_surprise_bricks[j][2];
-					context.putImageData(shooting_enemy, enemy_position_x, enemy_position_y);
-				}
+	
+/*	function brick_with_enemy() {
+		for (j=0; j < all_surprise_bricks.length; j++) {
+			if (all_surprise_bricks[j][3] == 1 ) {
+				bricks_with_enemy.push(all_surprise_bricks[j]); 
+				//console.log("all_surprise_bricks[j] ", all_surprise_bricks[j])
 			}
 		}
+	} */
+	
+	
+	function show_enemy() {
+			for (k=0; k < enemy_quantity.length; k++) { 
+			//console.log("enemy_quantity[i] ", enemy_quantity[i]);
+				//if (typeof enemy_quantity[i] != "undefined" && enemy_quantity[i][1] == true) { 
+				if (enemy_quantity[k][1] == true) {
+					enemy_position_x[k] = enemy_quantity[k][2];
+					enemy_position_y[k] = enemy_quantity[k][3];
+					context.putImageData(shooting_enemy, enemy_position_x[k], enemy_position_y[k]);
+					//console.log("enemy_quantity[k][0] " ,k,  enemy_quantity[k][0])
+				}
+			} 
 	}
+
 	
 	function draw_enemy_bullets() {
 		enemy_bullet_delay_arr.push(1);
 		//console.log("enemy_bullet_delay_arr ", enemy_bullet_delay_arr)
 		if (enemy_bullet_delay_arr.length > 10){ //&& enemy_max_bullet > 0) { 
-			//for (j=0; j < enemy_quantity.length; j++) {
-			//	enemy_max_bullet[j] = 20;
-			//}
-			console.log("enemy_max_bullet 1 ", enemy_quantity)
+			
 			for (i=0; i < enemy_quantity.length; i++) {
-				if (enemy_quantity[i] > 0) { 
-				//console.log("position enemy: ", enemy_position_x, enemy_position_y)
-				//console.log("position bullet: ", enemy_position_x + (enemy_width / 2), enemy_position_y + enemy_height)
-				context.beginPath();
-				context.moveTo(enemy_position_x + 11, enemy_position_y + enemy_height); 
-				context.lineTo(enemy_position_x + 11, (enemy_position_y + enemy_height) + bullet_height);
-				context.lineWidth = bullet_width;
-				context.strokeStyle = "rgb(250, 250, 250)";
-				context.stroke();
-				
-				get_enemy_bullet = context.getImageData(enemy_position_x + 11, enemy_position_y + enemy_height, bullet_width, bullet_height);
-				all_enemy_bullets.push([get_enemy_bullet, enemy_position_x + 11, enemy_position_y + enemy_height]);
-				enemy_quantity[i] = enemy_quantity[i] - 1;
-				
-				if (enemy_quantity[i] == 0) {
-					can_enemy_shoot = false;
+				if (enemy_quantity[i][1] == true) { 
+					context.beginPath();
+					context.moveTo(enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height); 
+					context.lineTo(enemy_position_x[i] + 11, (enemy_position_y[i] + enemy_height) + bullet_height);
+					context.lineWidth = bullet_width;
+					context.strokeStyle = "rgb(250, 250, 250)";
+					context.stroke();
+					
+					get_enemy_bullet = context.getImageData(enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height, bullet_width, bullet_height);
+					all_enemy_bullets.push([get_enemy_bullet, enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height]);
+					enemy_quantity[i][0] = enemy_quantity[i][0] - 1;
+					//console.log("kula ", i)
+					
 				}
-		
-				//console.log("all_enemy_bullets ", all_enemy_bullets[i][2]);
-				//bullets_counts.push(1);
-				//one_shoot = false;
-				//console.log(bullets_counts);
-				//get_bullet();
+				if (enemy_quantity[i][0] == 0) {
+					enemy_quantity[i][1] = false;
+					//console.log("dziala " , i)
+					//enemy_quantity.splice(i, 1); 
+					//return;
 				}
+				if (enemy_quantity[i][0] == 0 && all_enemy_bullets.length == 0) {
+					//console.log("enemy_quantity " , enemy_quantity)
+					enemy_quantity.splice(0, enemy_quantity.splice.length); 
+					//console.log("enemy_quantity " , enemy_quantity)
+					return;
+				}
+				
 			}
-			console.log("enemy_max_bullet 2 ", enemy_max_bullet)
 			enemy_bullet_delay_arr.splice(0, enemy_bullet_delay_arr.length);
 		}
-	}
+	} 
 	
 	function move_enemy_bullets() {
+		//console.log("all_enemy_bullets.length ", all_enemy_bullets.length)
 		const bullet_step = 3;
 		for (i=0; i < all_enemy_bullets.length; i++) {
 			context.putImageData(all_enemy_bullets[i][0], all_enemy_bullets[i][1], all_enemy_bullets[i][2] + bullet_step);
@@ -304,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function enemy_bullets_collision() {
-		//if (can_enemy_shoot == true) {
+		//if (enemy_quantity[i][1] == true) {
 		if (all_enemy_bullets.length > 0) {
 			for (i = 0; i < all_enemy_bullets.length; i++) {
 				if ((all_enemy_bullets[i][2] + bullet_height) > ship_position_y && ( all_enemy_bullets[i][1] > ship_position_x && (all_enemy_bullets[i][1]) < ship_position_x + ship_width)) {
@@ -335,7 +351,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function heart_collision() {
 		if (hearts_quantity.length > 0) {
-		//if (trr == true) {
 			
 			for (i = 0; i < hearts_quantity.length; i++) {
 				//console.log("test");
@@ -524,13 +539,13 @@ document.addEventListener('DOMContentLoaded', function() {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
 					//console.log("all_surprise_bricks ", all_surprise_bricks)
 					if(all_bricks[j][3] == 1) {
-						enemy_quantity.push(enemy_max_bullet);
-						can_enemy_shoot = true;
+						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1], all_bricks[j][2]]);
+						//enemy_quantity[i][1] = true;
 						console.log("yes! 1")
+						console.log("enemy_quantity ", enemy_quantity)
 					}
 					if(all_bricks[j][3] == 2) {
 						hearts_quantity.push(1);
-						//trr = true;
 						heart_position_x = all_bricks[j][1] + 6;
 						heart_position_y = all_bricks[j][2] + 5;
 						console.log("yes! 2")
@@ -620,13 +635,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (life_quantity > 0) {
 			life_quantity -= 1;
 			is_brick_moving = false;
+			
 			hearts_quantity.splice(0, hearts_quantity.length);
 			all_bricks.splice(0, all_bricks.length);
 			all_enemy_bullets.splice(0, all_enemy_bullets.length);
-			can_enemy_shoot = false;
-			console.log("refresh ", refresh )
+			all_bullets.splice(0, all_bullets.length);		// remove all bullets from all enemys - this is necessary for bullets moving
+			enemy_quantity.splice(0, enemy_quantity.length);
+
+			//console.log("refresh ", refresh )
 			refersh_delay();
-			console.log("crash");
+			//console.log("crash");
 		}
 	}
 	
@@ -637,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
 			refresh_delay_time = 10;
 			refresh = false;
-			console.log("refresh 2 ", refresh )
+			//console.log("refresh 2 ", refresh )
 		}
 	}
 	
@@ -663,39 +681,36 @@ document.addEventListener('DOMContentLoaded', function() {
 	var t0 = performance.now();
 	
 	function loop() {
-		console.log("hearts_quantity ", hearts_quantity)
+		//console.log("enemy_quantity ", enemy_quantity)
+		console.log("all_bullets, ", all_bullets.length)
+		
+		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
 		count_score();
 		draw_life();
-		//console.log(animation);
-		//console.log(end_game);
 		if (end_game == true) {
 			console.log("end_game");
 			game_over();
 			cancelAnimationFrame(animation);
 			return;
 		}
-		
-		
-		if (can_enemy_shoot == true) {
-			put_enemy();
+		if (enemy_quantity.length > 0) {
+			show_enemy();
 			draw_enemy_bullets();
+			move_enemy_bullets();
+			enemy_bullets_collision();
 		}
 		if (refresh == true) {
 			refersh_delay();
 		}
 		space_ship_move();
-		
 		move_heart();
-		move_enemy_bullets()
-
+		//move_enemy_bullets()
 		move_bricks();
 		move_bullet();
 		bullet_collision();
-		enemy_bullets_collision();
-		//count_score();
-		//draw_life();
+		//enemy_bullets_collision();
 		draw_hearts();
 		heart_collision();
 		background();
@@ -722,8 +737,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	get_heart();
 	draw_frame();
 	move_bricks();
+	//brick_with_enemy();
 	loop();
 	
+	//console.log("all_bricks ", all_bricks)
+	//console.log("all_surprise_bricks ", all_surprise_bricks)
 	
 
 	//console.log("all_surprise_bricks ", all_surprise_bricks)
