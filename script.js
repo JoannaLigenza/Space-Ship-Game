@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
-	let change_color_delay = 10;
+	let change_color_delay = 3;
 	let yellow_bricks = 1;
 	let green_bricks = 1;
 	//let bricks_with_enemy = [];
@@ -635,24 +635,30 @@ document.addEventListener('DOMContentLoaded', function() {
 				//if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
 					//console.log("all_surprise_bricks ", all_surprise_bricks)
-				/*	if(all_bricks[j][4] == "yellow") {
-						change_color_delay -= 1
-						if (change_color_delay == 0) {
+					if(all_bricks[j][4] == "yellow") {
+						//change_color_delay -= 1
+						//if (change_color_delay == 0) {
 							all_bricks[j][4] = "orange";
 							console.log("yellow")
-							change_color_delay = 10;
-						}
+							//change_color_delay = 3;
+						//}
+						console.log("color ", all_bricks[j][4])
+						all_bullets.splice(i, 1);
+						bullets_counts.splice(i, 1);
 						return;
 					}
 					if(all_bricks[j][4] == "green") {
-						change_color_delay -= 1
-						if (change_color_delay == 0) {
+						//change_color_delay -= 1
+						//if (change_color_delay == 0) {
 							all_bricks[j][4] = "yellow";
 							console.log("green")
-							change_color_delay = 10;
-						}
+						//	change_color_delay = 3;
+						//}
+						console.log("color ", all_bricks[j][4])
+						all_bullets.splice(i, 1);
+						bullets_counts.splice(i, 1);
 						return;
-					} */
+					} 
 			/*		if(all_bricks[j][4] == "orange") {
 						
 						return;
@@ -861,7 +867,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_virtual_bricks ", all_virtual_bricks)
-		console.log("tesst")
+		//console.log("tesst")
 		
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
