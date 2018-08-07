@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
-	let change_color_delay = 3;
-	let yellow_bricks = 1;
-	let green_bricks = 1;
+	//let change_color_delay = 3;
+	let yellow_bricks = 8;
+	let green_bricks = 8;
 	//let bricks_with_enemy = [];
 	let move = false;
 	let one_shoot = false;
@@ -109,16 +109,40 @@ document.addEventListener('DOMContentLoaded', function() {
 				all_virtual_bricks.push(["get_brick", positionX + (brick_width * k), positionY + (brick_height * l), 0, color])
 			}
 		}
+		const all_virtual_bricks_copy = [];
+		for (j=0; j < all_virtual_bricks.length; j++) {
+			all_virtual_bricks_copy.push(j);
+		}
+		//console.log("all_virtual_bricks ", all_virtual_bricks)
+		//console.log("all_virtual_bricks_copy ", all_virtual_bricks_copy)
 		for(i=0; i < yellow_bricks; i++ ) {
-			const random_yellow_brick = Math.floor(Math.random() * all_virtual_bricks.length);
-			all_virtual_bricks[random_yellow_brick][4] = "yellow";
+			const random_yellow_brick = Math.floor(Math.random() * all_virtual_bricks_copy.length);
+			const number_of_yellow_brick = all_virtual_bricks_copy[random_yellow_brick];
+			
+			console.log("random_yellow_brick ", random_yellow_brick)
+			console.log("liczba z randoma ", number_of_yellow_brick)
+			
+			
+			all_virtual_bricks[number_of_yellow_brick][4] = "yellow";
+			all_virtual_bricks_copy.splice(random_yellow_brick ,1);
+			
+			console.log(" all_virtual_bricks_copy ",all_virtual_bricks_copy)
 		}
 		for(i=0; i < green_bricks; i++ ) {
-			const random_green_brick = Math.floor(Math.random() * all_virtual_bricks.length);
-			all_virtual_bricks[random_green_brick][4] = "green";
+			const random_green_brick = Math.floor(Math.random() * all_virtual_bricks_copy.length);
+			const number_of_green_brick = all_virtual_bricks_copy[random_green_brick];
+			
+			console.log("random_green_brick ", random_green_brick)
+			console.log("liczba z randoma ", number_of_green_brick)
+			
+			all_virtual_bricks[number_of_green_brick][4] = "green";
+			all_virtual_bricks_copy.splice(random_green_brick ,1);
+			
+			console.log(" all_virtual_bricks_copy ",all_virtual_bricks_copy)
 		}
-		console.log("all_virtual_bricks ", all_virtual_bricks)
-		//console.log("positionX, positionY ", all_virtual_bricks[3][1], all_virtual_bricks[3][2])
+		//console.log("all_virtual_bricks ", all_virtual_bricks)
+		
+		
 	}
 	
 	function draw_all_bricks(positionX, positionY) {
@@ -146,25 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		surprise_brick();
 		//console.log("all_bricks ", all_bricks);
 	}
-	
-/*	function draw_all_bricks(positionX, positionY) {
-		for (l=0; l < brick_row; l++) {
-			for (k=0; k < brick_col; k++) {
-				draw_one_brick(positionX + (brick_width * k), positionY + (brick_height * l));
-				
-				brick_color(positionX + (brick_width * k), positionY + (brick_height * l));
-				if (( k % 2 == 0 && l % 2 == 0) || (k % 2 != 0 && l % 2 != 0) ) { 
-					brick_pattern1(positionX + (brick_width * k), positionY + (brick_height * l));
-
-				}
-				get_brick = context.getImageData(positionX + (brick_width * k), positionY + (brick_height * l), brick_width+1, brick_height+1);
-				all_bricks.push([get_brick, positionX + (brick_width * k), positionY + (brick_height * l), 0, color])
-				//all_bullets.push([get_bullet, bullet_position_x, bullet_position_y]);
-			}
-		}
-		surprise_brick();
-		//console.log("all_bricks ", all_bricks);
-	} */
 	
 	function move_bricks() {
 		const brick_step = 3;
