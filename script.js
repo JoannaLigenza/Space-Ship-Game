@@ -4,8 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	const context = canvas.getContext("2d");
 	const brick_width = 20;
 	const brick_height = 15;
-	let brick_col = 10;
+	let brick_col = 11;
 	let brick_row = 2;
+	let all_virtual_bricks = [];
 	const all_bricks = [];
 	let ship_position_x = 160;
 	let ship_position_y = 300;
@@ -20,6 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	let brick_moving_delay_arr = [];
 	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
+	let color = "orange";
+	let change_color_delay = 10;
+	let yellow_bricks = 1;
+	let green_bricks = 1;
 	//let bricks_with_enemy = [];
 	let move = false;
 	let one_shoot = false;
@@ -45,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_enemy_bullet = "";
 	const my_keys = { 32: false };
 	let hearts_quantity = [];
+	let heart_visible = false;
 	let get_life_heart = "";
 	let life_quantity = 1;
 	let heart_position_x = 0;
@@ -95,30 +101,70 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			}
 		}
-		//all_bricks.push([positionX, positionY, brick_width, brick_height]);
+	}
+	
+	function draw_virtual_bricks(positionX, positionY) {
+		for (l=0; l < brick_row; l++) {
+			for (k=0; k < brick_col; k++) {
+				all_virtual_bricks.push(["get_brick", positionX + (brick_width * k), positionY + (brick_height * l), 0, color])
+			}
+		}
+		for(i=0; i < yellow_bricks; i++ ) {
+			const random_yellow_brick = Math.floor(Math.random() * all_virtual_bricks.length);
+			all_virtual_bricks[random_yellow_brick][4] = "yellow";
+		}
+		for(i=0; i < green_bricks; i++ ) {
+			const random_green_brick = Math.floor(Math.random() * all_virtual_bricks.length);
+			all_virtual_bricks[random_green_brick][4] = "green";
+		}
+		console.log("all_virtual_bricks ", all_virtual_bricks)
+		//console.log("positionX, positionY ", all_virtual_bricks[3][1], all_virtual_bricks[3][2])
 	}
 	
 	function draw_all_bricks(positionX, positionY) {
-		for (k=0; k < brick_col; k++) {
-			for (l=0; l < brick_row; l++) {
+		for (m=0; m < all_virtual_bricks.length; m++) {
+			//console.log("all_virtual_bricks.length ", all_virtual_bricks.length)
+			draw_one_brick(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
+				if (all_virtual_bricks[m][4] == "orange") {
+					color = "orange"
+				}
+				if (all_virtual_bricks[m][4] == "yellow") {
+					color = "yellow"
+				}
+				if (all_virtual_bricks[m][4] == "green") {
+					color = "green"
+				}
+				console.log()
+				brick_color(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
+				if ( m % 2 == 0) { 
+					brick_pattern1(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
+
+				}
+				get_brick = context.getImageData(all_virtual_bricks[m][1], all_virtual_bricks[m][2], brick_width+1, brick_height+1);
+				all_bricks.push([get_brick, all_virtual_bricks[m][1], all_virtual_bricks[m][2], 0, color])
+		}
+		surprise_brick();
+		//console.log("all_bricks ", all_bricks);
+	}
+	
+/*	function draw_all_bricks(positionX, positionY) {
+		for (l=0; l < brick_row; l++) {
+			for (k=0; k < brick_col; k++) {
 				draw_one_brick(positionX + (brick_width * k), positionY + (brick_height * l));
+				
+				brick_color(positionX + (brick_width * k), positionY + (brick_height * l));
 				if (( k % 2 == 0 && l % 2 == 0) || (k % 2 != 0 && l % 2 != 0) ) { 
-					brick_color_orange(positionX + (brick_width * k), positionY + (brick_height * l));
 					brick_pattern1(positionX + (brick_width * k), positionY + (brick_height * l));
-						
-						
-						
-					//get_bullet = context.getImageData(bullet_position_x, bullet_position_y, bullet_width, bullet_height);
-					//context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
+
 				}
 				get_brick = context.getImageData(positionX + (brick_width * k), positionY + (brick_height * l), brick_width+1, brick_height+1);
-				all_bricks.push([get_brick, positionX + (brick_width * k), positionY + (brick_height * l), 0])
+				all_bricks.push([get_brick, positionX + (brick_width * k), positionY + (brick_height * l), 0, color])
 				//all_bullets.push([get_bullet, bullet_position_x, bullet_position_y]);
 			}
 		}
 		surprise_brick();
 		//console.log("all_bricks ", all_bricks);
-	}
+	} */
 	
 	function move_bricks() {
 		const brick_step = 3;
@@ -148,23 +194,32 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function brick_collision() {
-		if (is_brick_moving == true) {
+		//if (is_brick_moving == true) {
 			for (i=0; i < all_bricks.length; i++) {
 				if (all_bricks[i][2] + brick_height >= ship_position_y) {
 					refresh_game();
 				}
 			}
-		}
+		//}
 	}
 
 	
-	function brick_color_orange(positionX, positionY) {
+	function brick_color(positionX, positionY) {
 		for (i = positionX + 1 ; i <= (positionX + brick_width) -1 ; i++) {
 			for (j = positionY + 1; j <= (positionY + brick_height) - 1; j++) {
-				//if (i == positionX || i == (positionX + brick_width) || j == positionY || j == (positionY + brick_height)) { 
-				context.fillStyle = "rgb(232, 169, 0)";
+				if (color == "orange") { 
+					context.fillStyle = "rgb(232, 169, 0)";
+				}
+				if (color == "yellow") { 
+					context.fillStyle = "rgb(240, 240, 34)";
+				}
+				if (color == "green") { 
+					context.fillStyle = "rgb(15, 120, 5)";
+				}
+				if (color == "transparent") { 
+					context.fillStyle = "rgba(232, 169, 0, 0)";
+				} 
 				context.fillRect(i,j,1,1);
-				//}
 			}
 		}
 	}
@@ -213,12 +268,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	
 	function surprise_brick() {
-		//let surprise_number = 1;
-		let brick_number = 0;
 		let all_bricks_copy = [];
-		//let random_surprise_brick_copy = "";
 		for(s=0; s < all_bricks.length; s++) {
-			all_bricks_copy.push(brick_number++);
+			all_bricks_copy.push(s);
 		}
 		for(i=0; i < surprise_bricks_quantity.length; i++) {
 			//console.log("surprise_bricks_quantity2 " ,surprise_bricks_quantity);
@@ -226,16 +278,15 @@ document.addEventListener('DOMContentLoaded', function() {
 			const random_surprise_brick = Math.floor(Math.random() * all_bricks_copy.length );
 			const random_surprise_brick_copy = all_bricks_copy[random_surprise_brick];
 		
-			surprise_brick_positionX = all_bricks[random_surprise_brick_copy][1];
-			surprise_brick_positionY = all_bricks[random_surprise_brick_copy][2];
+			const surprise_brick_positionX = all_bricks[random_surprise_brick_copy][1];
+			const surprise_brick_positionY = all_bricks[random_surprise_brick_copy][2];
+			const surprise_brick_color = all_bricks[random_surprise_brick_copy][4];
 			brick_pattern2(surprise_brick_positionX + (brick_width / 2), surprise_brick_positionY + (brick_height / 2));
 			
 			get_surprise_brick = context.getImageData(surprise_brick_positionX, surprise_brick_positionY, brick_width+1, brick_height+1);			
 			
-			all_bricks[random_surprise_brick_copy] = [get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_bricks_quantity[i]];
+			all_bricks[random_surprise_brick_copy] = [get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_bricks_quantity[i],  surprise_brick_color];
 			all_surprise_bricks.push([get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_bricks_quantity[i]]);
-			//all_bricks[random_surprise_brick_copy] = [get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_number++];
-			//all_surprise_bricks.push([get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_number_copy++]);
 			
 			all_bricks_copy.splice(random_surprise_brick, 1);
 			//console.log(random_surprise_brick);
@@ -414,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 
 	function background() {
-		if (white_background == true) {
+		//if (white_background == true) {
 			background_delay_arr.push(1);
 			if(background_delay_arr.length < background_delay) {
 				canvas.style.backgroundColor = "rgb(250, 250, 250)";
@@ -424,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				background_delay_arr.splice(0, background_delay_arr.length);
 				white_background = false;
 			}
-		}
+		//}
 	}
 	
 	function slow_down_game() {
@@ -584,6 +635,29 @@ document.addEventListener('DOMContentLoaded', function() {
 				//if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
 					//console.log("all_surprise_bricks ", all_surprise_bricks)
+				/*	if(all_bricks[j][4] == "yellow") {
+						change_color_delay -= 1
+						if (change_color_delay == 0) {
+							all_bricks[j][4] = "orange";
+							console.log("yellow")
+							change_color_delay = 10;
+						}
+						return;
+					}
+					if(all_bricks[j][4] == "green") {
+						change_color_delay -= 1
+						if (change_color_delay == 0) {
+							all_bricks[j][4] = "yellow";
+							console.log("green")
+							change_color_delay = 10;
+						}
+						return;
+					} */
+			/*		if(all_bricks[j][4] == "orange") {
+						
+						return;
+					} */
+					
 					if(all_bricks[j][3] == 1) {
 						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1], all_bricks[j][2]]);
 						//enemy_quantity[i][1] = true;
@@ -594,8 +668,8 @@ document.addEventListener('DOMContentLoaded', function() {
 						hearts_quantity.push(1);
 						heart_position_x = all_bricks[j][1] + 6;
 						heart_position_y = all_bricks[j][2] + 5;
+						heart_visible = true;
 						console.log("yes! 2")
-						//second_surprise();
 					}
 					if(all_bricks[j][3] == 3) {
 						is_brick_moving = true;
@@ -621,6 +695,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
 					all_bricks.splice(j, 1);
+					all_virtual_bricks.splice(j, 1);
 					score += 10;
 					//console.log(all_bullets);
 					
@@ -717,6 +792,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		is_brick_moving = false;
 		is_arrow_visible = false; 
 		is_slow_down_visible = false;
+		heart_visible = false;
 		hearts_quantity.splice(0, hearts_quantity.length);
 		all_bricks.splice(0, all_bricks.length);
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
@@ -740,8 +816,16 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (level == 3) {
 				brick_col = 17;
 				brick_row = 4;
-				surprise_bricks_quantity.splice(surprise_bricks_quantity.length-1, 0);
+				surprise_bricks_quantity.splice(surprise_bricks_quantity.length-1, 1);
 				surprise_bricks_quantity.push(2);
+				draw_all_bricks(9, 5);
+			}
+			if (level == 4) {
+				brick_col = 17;
+				brick_row = 4;
+				yellow_bricks = 10;
+				surprise_bricks_quantity.splice(surprise_bricks_quantity.length-1, 1);
+				surprise_bricks_quantity.push(5, 1, 4);
 				draw_all_bricks(9, 5);
 			}
 			//draw_all_bricks(9, 5);
@@ -776,15 +860,16 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
-		//console.log("all_bullets, ", all_bullets.length)
-		//console.log("bullets_counts ", bullets_counts.length)
+		//console.log("all_virtual_bricks ", all_virtual_bricks)
+		console.log("tesst")
 		
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
 		draw_level();
 		count_score();
-		draw_life();		
+		draw_life();
+		draw_hearts();		
 		if (end_game == true) {
 			console.log("end_game");
 			game_over();
@@ -802,23 +887,35 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (is_slow_down_visible == true) {
 			show_slow_down_icon();
+			slow_down_game();
 		}
-		
+		if (heart_visible == true) {
+			move_heart();
+			heart_collision();
+		}
 		if (refresh == true) {
 			refersh_delay();
 		}
+		if (all_bullets.length > 0) {
+			move_bullet();
+			bullet_collision();
+		}
+		if (is_brick_moving == true) {
+			brick_collision();
+		}
+		if (white_background == true) {
+			background();
+		}
 		space_ship_move();
-		move_heart();
-		//move_enemy_bullets()
 		move_bricks();
-		move_bullet();
-		bullet_collision();
+		//move_bullet();
+		//bullet_collision();
 		//enemy_bullets_collision();
-		draw_hearts();
-		heart_collision();
-		background();
-		slow_down_game();
-		brick_collision();
+		
+		
+		//background();
+		//slow_down_game();
+		//brick_collision();
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
@@ -831,9 +928,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	
-	draw_all_bricks(80, 15);
+	draw_virtual_bricks(70, 15);
+	draw_all_bricks();
 	draw_space_ship();
-	//second_surprise();
 	draw_enemy();
 	get_space_ship();
 	draw_hearts();
@@ -849,7 +946,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	//console.log("all_surprise_bricks ", all_surprise_bricks)
 	
 
-	//console.log("all_surprise_bricks ", all_surprise_bricks)
+	console.log("all_bricks ", all_bricks)
 	var t1 = performance.now();
 	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
 })
