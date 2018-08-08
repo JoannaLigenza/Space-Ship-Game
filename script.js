@@ -74,7 +74,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_spider = "";
 	let spider_pos_x = 140;
 	let spider_pos_y = 15;
+	let spider_width = 80;
+	let spider_height = 75;
 	let direction_of_spider_move = "left";
+	let all_spider_bullets = [];
+	let spider_bullet_delay_arr = [];
 	let refresh = false;
 	let refresh_delay_time = 10;
 	let animation = "";
@@ -800,7 +804,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineTo(220, 90);
 		context.stroke();
 		
-		get_spider = context.getImageData(140, 15, 80, 75);
+		get_spider = context.getImageData(140, 15, spider_width, spider_height);
 	}
 	
 	function move_spider() {
@@ -814,8 +818,38 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (spider_pos_x == (canvas.width - (canvas.width-2) )) {
 			direction_of_spider_move = "right"
 		}
-		if (spider_pos_x == (canvas.width -2) - 80 ) {
+		if (spider_pos_x == (canvas.width -2) - spider_width ) {
 			direction_of_spider_move = "left"
+		}
+	}
+	
+	function draw_spider_bullets() {
+		spider_bullet_delay_arr.push(1);
+		
+		if (spider_bullet_delay_arr.length > 10) { 
+		
+			context.beginPath();
+			context.moveTo(spider_pos_x + (spider_width / 2), spider_pos_y + (spider_height)); 
+			context.lineTo(spider_pos_x + (spider_width / 2), (spider_pos_y + (spider_height)) + bullet_height);
+			context.lineWidth = bullet_width;
+			context.strokeStyle = "rgb(250, 250, 250)";
+			context.stroke();
+			
+			spider_bullet_pos_x = spider_pos_x + (spider_width / 2);
+			spider_bullet_pos_y = spider_pos_y + (spider_height)
+				
+			get_bullet = context.getImageData(spider_bullet_pos_x, spider_bullet_pos_y, bullet_width, bullet_height);
+			all_spider_bullets.push([get_bullet, spider_bullet_pos_x, spider_bullet_pos_y]);
+			
+			spider_bullet_delay_arr.splice(0, spider_bullet_delay_arr.length);
+		}
+	}
+	
+	function move_spider_bullet() {
+		const bullet_step = 3;
+		for (i=0; i < all_spider_bullets.length; i++) {
+			context.putImageData(all_spider_bullets[i][0], all_spider_bullets[i][1], all_spider_bullets[i][2] + bullet_step);
+			all_spider_bullets[i][2] = all_spider_bullets[i][2] + bullet_step;
 		}
 	}
 	
@@ -1048,6 +1082,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		// chwilowo
 		//draw_spider();
 		move_spider();
+		draw_spider_bullets();
+		move_spider_bullet()
 
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
