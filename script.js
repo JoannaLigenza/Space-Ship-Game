@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 11;
-	let brick_row = 2;
+	let brick_row = 1;
 	let all_virtual_bricks = [];
 	const all_bricks = [];
 	let ship_position_x = 160;
@@ -118,13 +118,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			const number_of_yellow_brick = all_virtual_bricks_copy[random_yellow_brick];
 			all_virtual_bricks[number_of_yellow_brick][4] = "yellow";
 			all_virtual_bricks_copy.splice(random_yellow_brick ,1);
+			console.log("zolty kolcek")
 		}
 		for(i=0; i < green_bricks; i++ ) {
 			const random_green_brick = Math.floor(Math.random() * all_virtual_bricks_copy.length);
 			const number_of_green_brick = all_virtual_bricks_copy[random_green_brick];
 			all_virtual_bricks[number_of_green_brick][4] = "green";
 			all_virtual_bricks_copy.splice(random_green_brick ,1);
+			console.log("zielony kolcek")
 		}
+		
+		//console.log("all_virtual_bricks koniec", all_virtual_bricks)
 		console.log("yellow green ", yellow_bricks, green_bricks)
 	}
 	
@@ -262,8 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		for(s=0; s < all_bricks.length; s++) {
 			all_bricks_copy.push(s);
 		}
-		console.log("all_bricks", all_bricks)
-		console.log("all_bricks_copy", all_bricks_copy)
 		for(i=0; i < surprise_bricks_quantity.length; i++) {
 			//console.log("surprise_bricks_quantity2 " ,surprise_bricks_quantity);
 			//let surprise_number_copy = surprise_number;
@@ -816,6 +818,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
 		bullets_counts.splice(0, bullets_counts.length);
 		enemy_quantity.splice(0, enemy_quantity.length);
+		yellow_bricks = 0;
+		green_bricks = 0;
 		//all_virtual_bricks_copy.splice(0, all_virtual_bricks_copy.length);
 	}
 	
@@ -855,9 +859,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 			if (level == 6) {
 				brick_col = 17;
-				brick_row = 6;
+				brick_row = 7;
 				yellow_bricks = 40;
-				//green_bricks = 10;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4];
 				draw_virtual_bricks(9, 5)
 				console.log("yellow_bricks", yellow_bricks)
@@ -894,7 +897,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				console.log("green_bricks", green_bricks)
 			}
 			draw_all_bricks();
-			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
+			//context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
 			refresh_delay_time = 10;
 			refresh = false;
 			can_change_level = true;  
