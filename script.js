@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const context = canvas.getContext("2d");
 	const brick_width = 20;
 	const brick_height = 15;
-	let brick_col = 11;
+	let brick_col = 1 //11;
 	let brick_row = 1;
 	let all_virtual_bricks = [];
 	const all_bricks = [];
@@ -71,6 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	let interval_delay = 10;
 	let slow_down = false;
 	let slow_down_time = 150;
+	let get_spider = "";
+	let spider_pos_x = 140;
+	let spider_pos_y = 15;
+	let direction_of_spider_move = "left";
 	let refresh = false;
 	let refresh_delay_time = 10;
 	let animation = "";
@@ -118,18 +122,18 @@ document.addEventListener('DOMContentLoaded', function() {
 			const number_of_yellow_brick = all_virtual_bricks_copy[random_yellow_brick];
 			all_virtual_bricks[number_of_yellow_brick][4] = "yellow";
 			all_virtual_bricks_copy.splice(random_yellow_brick ,1);
-			console.log("zolty kolcek")
+			//console.log("zolty kolcek")
 		}
 		for(i=0; i < green_bricks; i++ ) {
 			const random_green_brick = Math.floor(Math.random() * all_virtual_bricks_copy.length);
 			const number_of_green_brick = all_virtual_bricks_copy[random_green_brick];
 			all_virtual_bricks[number_of_green_brick][4] = "green";
 			all_virtual_bricks_copy.splice(random_green_brick ,1);
-			console.log("zielony kolcek")
+			//console.log("zielony kolcek")
 		}
 		
 		//console.log("all_virtual_bricks koniec", all_virtual_bricks)
-		console.log("yellow green ", yellow_bricks, green_bricks)
+		//console.log("yellow green ", yellow_bricks, green_bricks)
 	}
 	
 	function draw_all_bricks(positionX, positionY) {
@@ -145,7 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (all_virtual_bricks[m][4] == "green") {
 					color = "green"
 				}
-				console.log()
 				brick_color(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
 				if ( m % 2 == 0) { 
 					brick_pattern1(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
@@ -154,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				get_brick = context.getImageData(all_virtual_bricks[m][1], all_virtual_bricks[m][2], brick_width+1, brick_height+1);
 				all_bricks.push([get_brick, all_virtual_bricks[m][1], all_virtual_bricks[m][2], 0, color])
 				
-				console.log("kolor klocka: ", color)
+				//console.log("kolor klocka: ", color)
 		}
 		surprise_brick();
 		//console.log("all_bricks ", all_bricks);
@@ -315,7 +318,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					enemy_position_x[k] = enemy_quantity[k][2];
 					enemy_position_y[k] = enemy_quantity[k][3];
 					context.putImageData(shooting_enemy, enemy_position_x[k], enemy_position_y[k]);
-					//console.log("enemy_quantity[k][0] " ,k,  enemy_quantity[k][0])
 				}
 			} 
 	}
@@ -337,20 +339,13 @@ document.addEventListener('DOMContentLoaded', function() {
 					
 					get_enemy_bullet = context.getImageData(enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height, bullet_width, bullet_height);
 					all_enemy_bullets.push([get_enemy_bullet, enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height]);
-					enemy_quantity[i][0] = enemy_quantity[i][0] - 1;
-					//console.log("kula ", i)
-					
+					enemy_quantity[i][0] = enemy_quantity[i][0] - 1;					
 				}
 				if (enemy_quantity[i][0] == 0) {
 					enemy_quantity[i][1] = false;
-					//console.log("dziala " , i)
-					//enemy_quantity.splice(i, 1); 
-					//return;
 				}
 				if (enemy_quantity[i][0] == 0 && all_enemy_bullets.length == 0) {
-					//console.log("enemy_quantity " , enemy_quantity)
 					enemy_quantity.splice(0, enemy_quantity.splice.length); 
-					//console.log("enemy_quantity " , enemy_quantity)
 					return;
 				}
 				
@@ -763,6 +758,67 @@ document.addEventListener('DOMContentLoaded', function() {
 		get_life_heart = context.getImageData(177, canvas.height - 18, 10, 8);
 	}
 	
+	function draw_spider() {
+		// Body of spider
+		context.beginPath();
+		context.fillStyle = "rgb(28, 28, 28)";
+		context.moveTo(180,15);
+		context.bezierCurveTo(165,25, 165,40, 170,60);
+		context.bezierCurveTo(170,70, 170,80, 180,90);
+		context.bezierCurveTo(190,80, 190,70, 190,60);
+		context.bezierCurveTo(195,40, 195,25, 180,15);
+		//context.closePath();
+		context.fill();
+		
+		// Spider eye
+		context.beginPath();
+		context.fillStyle = "rgb(250, 250, 250)";
+		context.moveTo(170,80); 
+		context.arc(175, 80, 2, radianAngle(0), radianAngle(360));
+		context.moveTo(190,80); 
+		context.arc(185, 80, 2, radianAngle(0), radianAngle(360));
+		context.fill();
+		
+		// Spider legs
+		context.beginPath();
+		context.strokeStyle = "rgb(28, 28, 28)";
+		context.lineWidth = 4;
+		context.moveTo(170, 45); 
+		context.lineTo(150, 40);
+		context.lineTo(140, 20);
+		
+		context.moveTo(190, 45);
+		context.lineTo(210, 40);
+		context.lineTo(220, 20);
+		
+		context.moveTo(170, 65); 
+		context.lineTo(150, 70);
+		context.lineTo(140, 90);
+		
+		context.moveTo(190, 65);
+		context.lineTo(210, 70);
+		context.lineTo(220, 90);
+		context.stroke();
+		
+		get_spider = context.getImageData(140, 15, 80, 75);
+	}
+	
+	function move_spider() {
+		context.putImageData(get_spider, spider_pos_x, spider_pos_y);
+		if (direction_of_spider_move == "left") {
+			spider_pos_x = spider_pos_x - 3
+		}
+		if (direction_of_spider_move == "right") {
+			spider_pos_x = spider_pos_x + 3
+		}
+		if (spider_pos_x == (canvas.width - (canvas.width-2) )) {
+			direction_of_spider_move = "right"
+		}
+		if (spider_pos_x == (canvas.width -2) - 80 ) {
+			direction_of_spider_move = "left"
+		}
+	}
+	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
 		//console.log(which_key_pressed)
@@ -820,7 +876,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		enemy_quantity.splice(0, enemy_quantity.length);
 		yellow_bricks = 0;
 		green_bricks = 0;
-		//all_virtual_bricks_copy.splice(0, all_virtual_bricks_copy.length);
 	}
 	
 	function refersh_delay() {
@@ -895,6 +950,20 @@ document.addEventListener('DOMContentLoaded', function() {
 				draw_virtual_bricks(9, 5)
 				console.log("yellow_bricks", yellow_bricks)
 				console.log("green_bricks", green_bricks)
+			}
+			if (level == 10) {
+				brick_col = 0;
+				brick_row = 0;
+				green_bricks = 0;
+				yellow_bricks = 0;
+				surprise_bricks_quantity = [];
+				//draw_virtual_bricks(9, 5)
+				draw_spider();
+				move_spider();
+				
+				console.log("yellow_bricks", yellow_bricks)
+				console.log("green_bricks", green_bricks)
+				return;
 			}
 			draw_all_bricks();
 			//context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
@@ -976,15 +1045,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		space_ship_move();
 		move_bricks();
-		//move_bullet();
-		//bullet_collision();
-		//enemy_bullets_collision();
-		
-		
+		// chwilowo
+		//draw_spider();
+		move_spider();
 
-		//background();
-		//slow_down_game();
-		//brick_collision();
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
@@ -1009,6 +1073,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	draw_slow_down_icon();
 	move_bricks();
 	//brick_with_enemy();
+	draw_spider(); // tymc
+	
 	loop();
 	
 	//console.log("all_bricks ", all_bricks)
