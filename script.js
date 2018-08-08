@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	const all_surprise_bricks = [];
 	let color = "orange";
 	//let change_color_delay = 3;
-	let yellow_bricks = 8;
-	let green_bricks = 8;
+	let yellow_bricks = 3;
+	let green_bricks = 3;
 	//let bricks_with_enemy = [];
 	let move = false;
 	let one_shoot = false;
@@ -113,36 +113,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		for (j=0; j < all_virtual_bricks.length; j++) {
 			all_virtual_bricks_copy.push(j);
 		}
-		//console.log("all_virtual_bricks ", all_virtual_bricks)
-		//console.log("all_virtual_bricks_copy ", all_virtual_bricks_copy)
 		for(i=0; i < yellow_bricks; i++ ) {
 			const random_yellow_brick = Math.floor(Math.random() * all_virtual_bricks_copy.length);
 			const number_of_yellow_brick = all_virtual_bricks_copy[random_yellow_brick];
-			
-			console.log("random_yellow_brick ", random_yellow_brick)
-			console.log("liczba z randoma ", number_of_yellow_brick)
-			
-			
 			all_virtual_bricks[number_of_yellow_brick][4] = "yellow";
 			all_virtual_bricks_copy.splice(random_yellow_brick ,1);
-			
-			console.log(" all_virtual_bricks_copy ",all_virtual_bricks_copy)
 		}
 		for(i=0; i < green_bricks; i++ ) {
 			const random_green_brick = Math.floor(Math.random() * all_virtual_bricks_copy.length);
 			const number_of_green_brick = all_virtual_bricks_copy[random_green_brick];
-			
-			console.log("random_green_brick ", random_green_brick)
-			console.log("liczba z randoma ", number_of_green_brick)
-			
 			all_virtual_bricks[number_of_green_brick][4] = "green";
 			all_virtual_bricks_copy.splice(random_green_brick ,1);
-			
-			console.log(" all_virtual_bricks_copy ",all_virtual_bricks_copy)
 		}
-		//console.log("all_virtual_bricks ", all_virtual_bricks)
-		
-		
 	}
 	
 	function draw_all_bricks(positionX, positionY) {
@@ -641,34 +623,52 @@ document.addEventListener('DOMContentLoaded', function() {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
 					//console.log("all_surprise_bricks ", all_surprise_bricks)
 					if(all_bricks[j][4] == "yellow") {
-						//change_color_delay -= 1
-						//if (change_color_delay == 0) {
-							all_bricks[j][4] = "orange";
-							console.log("yellow")
-							//change_color_delay = 3;
-						//}
+						const yellow_brick_data = all_bricks[j][0];
+						
+						all_bricks[j][4] = "orange";
+						console.log("yellow")
 						console.log("color ", all_bricks[j][4])
 						all_bullets.splice(i, 1);
 						bullets_counts.splice(i, 1);
+						
+						for (let m=0; m < yellow_brick_data.data.length; m += 4) {
+							if (yellow_brick_data.data[m] === 240) {
+								yellow_brick_data.data[m] = 232;
+							}
+							if (yellow_brick_data.data[m+1] === 240) {
+								yellow_brick_data.data[m+1] = 169;
+							}
+							if (yellow_brick_data.data[m+2] === 34) {
+								yellow_brick_data.data[m+2] = 0;
+							}
+							// rgb(232, 169, 0) - orange, // (240, 240, 34 - yellow,  //  15, 120, 5) - green
+						} 
+						
+						all_bricks[j][0] = yellow_brick_data;
 						return;
 					}
 					if(all_bricks[j][4] == "green") {
-						//change_color_delay -= 1
-						//if (change_color_delay == 0) {
-							all_bricks[j][4] = "yellow";
-							console.log("green")
-						//	change_color_delay = 3;
-						//}
+						const green_brick_data = all_bricks[j][0];
+						all_bricks[j][4] = "yellow";
+						console.log("green")
 						console.log("color ", all_bricks[j][4])
 						all_bullets.splice(i, 1);
 						bullets_counts.splice(i, 1);
-						return;
-					} 
-			/*		if(all_bricks[j][4] == "orange") {
+						for (let m=0; m < green_brick_data.data.length; m += 4) {
+							if (green_brick_data.data[m] === 15) {
+								green_brick_data.data[m] = 240;
+							}
+							if (green_brick_data.data[m+1] === 120) {
+								green_brick_data.data[m+1] = 240;
+							}
+							if (green_brick_data.data[m+2] === 5) {
+								green_brick_data.data[m+2] = 34;
+							}
+							// rgb(232, 169, 0) - orange, // (240, 240, 34 - yellow,  //  15, 120, 5) - green
+						} 
 						
 						return;
-					} */
-					
+					} 
 					if(all_bricks[j][3] == 1) {
 						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1], all_bricks[j][2]]);
 						//enemy_quantity[i][1] = true;
@@ -924,6 +924,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		//enemy_bullets_collision();
 		
 		
+
 		//background();
 		//slow_down_game();
 		//brick_collision();
