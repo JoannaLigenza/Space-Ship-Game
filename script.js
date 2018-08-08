@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	const all_surprise_bricks = [];
 	let color = "orange";
 	//let change_color_delay = 3;
-	let yellow_bricks = 3;
-	let green_bricks = 3;
+	let yellow_bricks = 0;
+	let green_bricks = 0;
 	//let bricks_with_enemy = [];
 	let move = false;
 	let one_shoot = false;
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const bullet_height = 10;
 	let get_bullets = "";
 	let get_enemy = "";
-	let all_enemys = [];
+	//let all_enemys = [];
 	let all_bullets = [];
 	let shooting_enemy = "";
 	const enemy_width = 20;
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const enemy_bullet_height = 10;
 	const enemy_bullet_delay = 10;
 	let enemy_bullet_delay_arr = [];
-	let enemy_max_bullet = 20;
+	let enemy_max_bullet = 28;
 	const all_enemy_bullets = [];
 	let get_enemy_bullet = "";
 	const my_keys = { 32: false };
@@ -125,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			all_virtual_bricks[number_of_green_brick][4] = "green";
 			all_virtual_bricks_copy.splice(random_green_brick ,1);
 		}
+		console.log("yellow green ", yellow_bricks, green_bricks)
 	}
 	
 	function draw_all_bricks(positionX, positionY) {
@@ -148,6 +149,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 				get_brick = context.getImageData(all_virtual_bricks[m][1], all_virtual_bricks[m][2], brick_width+1, brick_height+1);
 				all_bricks.push([get_brick, all_virtual_bricks[m][1], all_virtual_bricks[m][2], 0, color])
+				
+				console.log("kolor klocka: ", color)
 		}
 		surprise_brick();
 		//console.log("all_bricks ", all_bricks);
@@ -259,6 +262,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		for(s=0; s < all_bricks.length; s++) {
 			all_bricks_copy.push(s);
 		}
+		console.log("all_bricks", all_bricks)
+		console.log("all_bricks_copy", all_bricks_copy)
 		for(i=0; i < surprise_bricks_quantity.length; i++) {
 			//console.log("surprise_bricks_quantity2 " ,surprise_bricks_quantity);
 			//let surprise_number_copy = surprise_number;
@@ -805,41 +810,90 @@ document.addEventListener('DOMContentLoaded', function() {
 		is_slow_down_visible = false;
 		heart_visible = false;
 		hearts_quantity.splice(0, hearts_quantity.length);
+		all_bullets.splice(0, all_bullets.length);
 		all_bricks.splice(0, all_bricks.length);
+		all_virtual_bricks.splice(0 , all_virtual_bricks.length);
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
 		bullets_counts.splice(0, bullets_counts.length);
-		all_bullets.splice(0, all_bullets.length);		// remove all bullets from all enemys - this is necessary for bullets moving
 		enemy_quantity.splice(0, enemy_quantity.length);
+		//all_virtual_bricks_copy.splice(0, all_virtual_bricks_copy.length);
 	}
 	
 	function refersh_delay() {
 		refresh_delay_time -= 1 
 		if (refresh_delay_time == 0) {
 			if (level == 1) {
-				draw_all_bricks(80, 15);
+				draw_virtual_bricks(70, 15)
 			}
 			if (level == 2) {
 				brick_col = 17;
 				brick_row = 3;
-				surprise_bricks_quantity.push(1, 3, 5);
-				draw_all_bricks(9, 5);
+				surprise_bricks_quantity = [6, 1, 3, 5];
+				draw_virtual_bricks(9, 5)
 			}
 			if (level == 3) {
 				brick_col = 17;
 				brick_row = 4;
-				surprise_bricks_quantity.splice(surprise_bricks_quantity.length-1, 1);
-				surprise_bricks_quantity.push(2);
-				draw_all_bricks(9, 5);
+				surprise_bricks_quantity = [6, 1, 3, 2];
+				draw_virtual_bricks(9, 5)
 			}
 			if (level == 4) {
 				brick_col = 17;
 				brick_row = 4;
 				yellow_bricks = 10;
-				surprise_bricks_quantity.splice(surprise_bricks_quantity.length-1, 1);
-				surprise_bricks_quantity.push(5, 1, 4);
-				draw_all_bricks(9, 5);
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4];
+				draw_virtual_bricks(9, 5)
+				console.log("yellow_bricks", yellow_bricks)
 			}
-			//draw_all_bricks(9, 5);
+			if (level == 5) {
+				brick_col = 17;
+				brick_row = 6;
+				yellow_bricks = 20;
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 1, 2];
+				draw_virtual_bricks(9, 5)
+				console.log("yellow_bricks", yellow_bricks)
+			}
+			if (level == 6) {
+				brick_col = 17;
+				brick_row = 6;
+				yellow_bricks = 40;
+				//green_bricks = 10;
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4];
+				draw_virtual_bricks(9, 5)
+				console.log("yellow_bricks", yellow_bricks)
+				console.log("green_bricks", green_bricks)
+			}
+			if (level == 7) {
+				brick_col = 17;
+				brick_row = 8;
+				//green_bricks = 10;
+				yellow_bricks = (brick_col * brick_row);
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2];
+				draw_virtual_bricks(9, 5)
+				console.log("yellow_bricks", yellow_bricks)
+				console.log("green_bricks", green_bricks)
+			}
+			if (level == 8) {
+				brick_col = 17;
+				brick_row = 8;
+				green_bricks = 20;
+				yellow_bricks = (brick_col * brick_row) - green_bricks;
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 6];
+				draw_virtual_bricks(9, 5)
+				console.log("yellow_bricks", yellow_bricks)
+				console.log("green_bricks", green_bricks)
+			}
+			if (level == 9) {
+				brick_col = 17;
+				brick_row = 8;
+				green_bricks = (brick_col * brick_row);
+				yellow_bricks = 0;
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 6];
+				draw_virtual_bricks(9, 5)
+				console.log("yellow_bricks", yellow_bricks)
+				console.log("green_bricks", green_bricks)
+			}
+			draw_all_bricks();
 			context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
 			refresh_delay_time = 10;
 			refresh = false;
