@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_spider_shoot = false;
 	let spider_stop_moving = 250; 
 	let spider_start_moving = 100;
+	let spider_power_line = 190;
+	let spider_power = 100;
 	let refresh = false;
 	let refresh_delay_time = 10;
 	let animation = "";
@@ -633,6 +635,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (all_bullets[i][1] >= (spider_pos_x + 30) && all_bullets[i][1] <= ((spider_pos_x + spider_width) - 30) && all_bullets[i][2] <= (spider_pos_y + spider_height) ) {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
+					score += 50;
 					return;
 				}
 			//}
@@ -774,6 +777,25 @@ document.addEventListener('DOMContentLoaded', function() {
 		get_life_heart = context.getImageData(177, canvas.height - 18, 10, 8);
 	}
 	
+	function draw_spider_power() {
+		context.font = "bold 12px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgb(255,0,0)";
+		context.fillText("Spider power: ", 5 , 10);
+	}
+	
+	function draw_spider_power_line() {
+		context.beginPath();
+		context.strokeStyle = "rgb(255,0,0)";
+		context.lineWidth = 3;
+		context.moveTo(90, 11); 
+		context.lineTo(spider_power_line, 11);
+		
+		context.stroke();
+	}
+	
+	
 	function draw_spider() {
 		// Body of spider
 		context.beginPath();
@@ -905,31 +927,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 	}
-	
-	
-	
-/*	function stop_spider() {
-		spider_stop_moving -= 1;
-		if (spider_stop_moving <= 0) {
-			spider_stop_moving = 0;
-			if(spider_start_moving > 0) {
-				spider_start_moving -= 1;
-			}
-			can_spider_move = false;
-			can_spider_shoot = true;
-			
-			draw_spider_bullets();
-			move_spider_bullet();
-			
-			if(spider_start_moving == 0 && all_spider_bullets.length == 0) {
-				spider_start_moving = 0
-				spider_stop_moving = 280;
-				can_spider_move = true;
-				max_spider_bullets = 15;
-				//can_spider_shoot = false;
-			}
-		}
-	} */
 	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
@@ -1135,6 +1132,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		
 //		if (level == 10) {
+			draw_spider_power();
+			draw_spider_power_line();
 			if (can_spider_shoot == true) {
 				draw_spider_bullets();
 				move_spider_bullet();
