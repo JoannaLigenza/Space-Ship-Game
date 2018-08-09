@@ -636,6 +636,8 @@ document.addEventListener('DOMContentLoaded', function() {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
 					score += 50;
+					spider_power -= 1;
+					spider_power_line -= 1;
 					return;
 				}
 			//}
@@ -783,6 +785,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
 		context.fillText("Spider power: ", 5 , 10);
+		
+		context.fillText(spider_power + " %", 200 , 10);
 	}
 	
 	function draw_spider_power_line() {
@@ -1108,6 +1112,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillStyle = "rgb(255,0,0)";
 		context.fillText("Your score: " + score, 150 , 200);
 	}
+	
+	function win_game() {
+		if(spider_power <= 0) {
+			spider_power = 0;
+			spider_power_line = 0;
+			console.log("winning")
+		}
+	}
 
 	
 	var t0 = performance.now();
@@ -1134,6 +1146,10 @@ document.addEventListener('DOMContentLoaded', function() {
 //		if (level == 10) {
 			draw_spider_power();
 			draw_spider_power_line();
+			if(spider_power <= 0) {
+				win_game();
+				return;
+			}
 			if (can_spider_shoot == true) {
 				draw_spider_bullets();
 				move_spider_bullet();
