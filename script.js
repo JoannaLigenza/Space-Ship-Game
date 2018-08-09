@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_shoot = true;
 	let enemy_quantity = [];
 	const bullets_counts = [];
-	let bullet_limit = 4;
+	let bullet_limit = 20;
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let get_bullets = "";
@@ -77,8 +77,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	let spider_width = 80;
 	let spider_height = 75;
 	let direction_of_spider_move = "left";
+	let max_spider_bullets = 15;
 	let all_spider_bullets = [];
 	let spider_bullet_delay_arr = [];
+	let can_spider_move = true;
+	let can_spider_shoot = false;
+	let spider_stop_moving = 250; 
+	let spider_start_moving = 100;
 	let refresh = false;
 	let refresh_delay_time = 10;
 	let animation = "";
@@ -624,6 +629,13 @@ document.addEventListener('DOMContentLoaded', function() {
 				bullets_counts.splice(i, 1);
 				return;
 			}
+			//if (level == 10) {
+				if (all_bullets[i][1] >= (spider_pos_x + 30) && all_bullets[i][1] <= ((spider_pos_x + spider_width) - 30) && all_bullets[i][2] <= (spider_pos_y + spider_height) ) {
+					all_bullets.splice(i, 1);
+					bullets_counts.splice(i, 1);
+					return;
+				}
+			//}
 			for (j = 0; j < all_bricks.length; j++) {
 				//if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
@@ -808,26 +820,33 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function move_spider() {
-		context.putImageData(get_spider, spider_pos_x, spider_pos_y);
-		if (direction_of_spider_move == "left") {
-			spider_pos_x = spider_pos_x - 3
+		if (can_spider_move == false) {
+			context.putImageData(get_spider, spider_pos_x, spider_pos_y);
 		}
-		if (direction_of_spider_move == "right") {
-			spider_pos_x = spider_pos_x + 3
+		if (can_spider_move == true) {
+			context.putImageData(get_spider, spider_pos_x, spider_pos_y);
+			if (direction_of_spider_move == "left") {
+				spider_pos_x = spider_pos_x - 3
+			}
+			if (direction_of_spider_move == "right") {
+				spider_pos_x = spider_pos_x + 3
+			}
+			if (spider_pos_x == (canvas.width - (canvas.width-2) )) {
+				direction_of_spider_move = "right"
+			}
+			if (spider_pos_x == (canvas.width -2) - spider_width ) {
+				direction_of_spider_move = "left"
+			}
 		}
-		if (spider_pos_x == (canvas.width - (canvas.width-2) )) {
-			direction_of_spider_move = "right"
-		}
-		if (spider_pos_x == (canvas.width -2) - spider_width ) {
-			direction_of_spider_move = "left"
-		}
+		
+		
 	}
 	
 	function draw_spider_bullets() {
 		spider_bullet_delay_arr.push(1);
-		
-		if (spider_bullet_delay_arr.length > 10) { 
-		
+		if (spider_bullet_delay_arr.length > 10 && max_spider_bullets > 0) { 
+			max_spider_bullets -= 1;
+			
 			context.beginPath();
 			context.moveTo(spider_pos_x + (spider_width / 2), spider_pos_y + (spider_height)); 
 			context.lineTo(spider_pos_x + (spider_width / 2), (spider_pos_y + (spider_height)) + bullet_height);
@@ -838,10 +857,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			spider_bullet_pos_x = spider_pos_x + (spider_width / 2);
 			spider_bullet_pos_y = spider_pos_y + (spider_height)
 				
-			get_bullet = context.getImageData(spider_bullet_pos_x, spider_bullet_pos_y, bullet_width, bullet_height);
-			all_spider_bullets.push([get_bullet, spider_bullet_pos_x, spider_bullet_pos_y]);
+			get_spider_bullet = context.getImageData(spider_bullet_pos_x, spider_bullet_pos_y, bullet_width, bullet_height);
+			all_spider_bullets.push([get_spider_bullet, spider_bullet_pos_x, spider_bullet_pos_y]);
 			
 			spider_bullet_delay_arr.splice(0, spider_bullet_delay_arr.length);
+			
 		}
 	}
 	
@@ -852,6 +872,64 @@ document.addEventListener('DOMContentLoaded', function() {
 			all_spider_bullets[i][2] = all_spider_bullets[i][2] + bullet_step;
 		}
 	}
+	
+	function spider_bullets_collision() {
+		for (i = 0; i < all_spider_bullets.length; i++) {
+			if ((all_spider_bullets[i][2] + bullet_height) > ship_position_y && ( all_spider_bullets[i][1] > ship_position_x && (all_spider_bullets[i][1]) < ship_position_x + ship_width)) {
+				//all_enemy_bullets.splice(i, 1);
+				//life_quantity = life_quantity - 1;
+				refresh_game();
+				return;
+			}
+			if ((all_spider_bullets[i][2] + bullet_height) > canvas.height - 5 ) {
+				all_spider_bullets.splice(i, 1);
+				return;
+			}
+		}
+	}
+	
+	function stop_spider() {
+		spider_stop_moving -= 1;
+		if (spider_stop_moving <= 0) {
+			spider_stop_moving = 0;
+			can_spider_move = false;
+			can_spider_shoot = true;
+			console.log("staje i strzela")
+			console.log("all_spider_bullets.length ", all_spider_bullets.length)
+			if(all_spider_bullets.length == max_spider_bullets) {
+				can_spider_move = true;
+				can_spider_shoot = false;
+				max_spider_bullets = 15;
+				spider_stop_moving = 250;
+				console.log("rusza sie")
+			}
+		}
+	}
+	
+	
+	
+/*	function stop_spider() {
+		spider_stop_moving -= 1;
+		if (spider_stop_moving <= 0) {
+			spider_stop_moving = 0;
+			if(spider_start_moving > 0) {
+				spider_start_moving -= 1;
+			}
+			can_spider_move = false;
+			can_spider_shoot = true;
+			
+			draw_spider_bullets();
+			move_spider_bullet();
+			
+			if(spider_start_moving == 0 && all_spider_bullets.length == 0) {
+				spider_start_moving = 0
+				spider_stop_moving = 280;
+				can_spider_move = true;
+				max_spider_bullets = 15;
+				//can_spider_shoot = false;
+			}
+		}
+	} */
 	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
@@ -908,8 +986,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
 		bullets_counts.splice(0, bullets_counts.length);
 		enemy_quantity.splice(0, enemy_quantity.length);
-		yellow_bricks = 0;
-		green_bricks = 0;
+		
+		//if (level == 10) {
+			can_spider_move = true;
+			can_spider_shoot = false;
+			max_spider_bullets = 15;
+			spider_stop_moving = 250;
+			all_spider_bullets.splice(0, all_spider_bullets.length);
+		//}
+		//yellow_bricks = 0;
+		//green_bricks = 0;
 	}
 	
 	function refersh_delay() {
@@ -1047,6 +1133,19 @@ document.addEventListener('DOMContentLoaded', function() {
 			cancelAnimationFrame(animation);
 			return;
 		}
+		
+//		if (level == 10) {
+			if (can_spider_shoot == true) {
+				draw_spider_bullets();
+				move_spider_bullet();
+			}
+			if (all_spider_bullets.length > 0) {
+				spider_bullets_collision();
+			}
+			move_spider();
+			stop_spider();	
+//		}
+		
 		if (enemy_quantity.length > 0) {
 			show_enemy();
 			draw_enemy_bullets();
@@ -1081,9 +1180,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		move_bricks();
 		// chwilowo
 		//draw_spider();
-		move_spider();
-		draw_spider_bullets();
-		move_spider_bullet()
+	/*	if(can_spider_move == true) {
+			move_spider();
+		} */
+		
+		console.log("spider_stop_moving ", spider_stop_moving)
+		//console.log("spider_start_moving ", spider_start_moving)
 
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
