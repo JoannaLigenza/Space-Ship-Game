@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let shooting_sound_stoped = false;
 	const brick_width = 20;
 	const brick_height = 15;
-	let brick_col = 1 //11;
+	let brick_col = 11 //11;
 	let brick_row = 1;
 	let all_virtual_bricks = [];
 	const all_bricks = [];
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let slow_down_icon_position = [];
 	let is_slow_down_visible = false;
 	let score = 0;
-	let level = 10;
+	let level = 1;
 	let change_level_delay = 10;
 	let can_change_level = true;
 	let interval_delay = 10;
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let spider_stop_moving = 250; 
 	let spider_start_moving = 100;
 	let spider_power_line = 190;
-	let spider_power = 20;
+	let spider_power = 100;
 	let refresh = false;
 	let refresh_delay_time = 10;
 	let animation = "";
@@ -108,6 +108,29 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			}
 		}		
+	}
+	
+	function start_screen() {
+		context.font = "bold 16px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgb(255,0,0)";
+		context.fillText("Press space to play", 100 , 170);
+		//console.log("grr")
+		loop1();
+	}
+	
+	function loop1() {
+		if (which_key_pressed == "32") {
+			cancelAnimationFrame(animation3);
+			init();
+			//console.log("test")
+			return;
+		}
+		
+		setTimeout(function() {
+			animation3 = requestAnimationFrame(loop1); 
+		}, interval_delay); 
 	}
 	
 	function draw_one_brick(positionX, positionY) {
@@ -637,7 +660,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				bullets_counts.splice(i, 1);
 				return;
 			}
-			//if (level == 10) {
+			if (level == 10) {
 				if (all_bullets[i][1] >= (spider_pos_x + 30) && all_bullets[i][1] <= ((spider_pos_x + spider_width) - 30) && all_bullets[i][2] <= (spider_pos_y + spider_height) ) {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
@@ -664,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						
 					return;
 				}
-			//}
+			}
 			for (j = 0; j < all_bricks.length; j++) {
 				//if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
@@ -973,7 +996,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
-		//console.log(which_key_pressed)
+		console.log(which_key_pressed)
 		move = true;
 		
 		my_keys.keys =  (my_keys.keys || []); 
@@ -1109,14 +1132,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
 		bullets_counts.splice(0, bullets_counts.length);
 		enemy_quantity.splice(0, enemy_quantity.length);
+		yellow_bricks = 0;
+		green_bricks = 0;
 		
-		//if (level == 10) {
+		if (level == 10) {
 			can_spider_move = true;
 			can_spider_shoot = false;
 			max_spider_bullets = 15;
 			spider_stop_moving = 250;
 			all_spider_bullets.splice(0, all_spider_bullets.length);
-		//}
+		}
 
 	}
 	
@@ -1310,7 +1335,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 		
-//		if (level == 10) {
+		if (level == 10) {
 			draw_spider_power();
 			draw_spider_power_line();
 			if(spider_power <= 0) {
@@ -1328,7 +1353,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 			move_spider();
 			stop_spider();	
-//		}
+		}
 		
 		if (enemy_quantity.length > 0) {
 			show_enemy();
@@ -1382,23 +1407,28 @@ document.addEventListener('DOMContentLoaded', function() {
 		}, interval_delay); 
 	}
 	
+	start_screen();
 	
-	draw_virtual_bricks(70, 15);
-	draw_all_bricks();
-	draw_space_ship();
-	draw_enemy();
-	get_space_ship();
-	draw_hearts();
-	get_heart();
-	draw_frame();
-	draw_arrow();
-	draw_slow_down_icon();
-	move_bricks();
-	//brick_with_enemy();
-	draw_spider(); // tymc
-	//change_level_sound();
+	function init() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		draw_virtual_bricks(70, 15);
+		draw_all_bricks();
+		draw_space_ship();
+		draw_enemy();
+		get_space_ship();
+		draw_hearts();
+		get_heart();
+		draw_frame();
+		draw_arrow();
+		draw_slow_down_icon();
+		move_bricks();
+		//brick_with_enemy();
+		draw_spider(); // tymc
+		//change_level_sound();
+		
+		loop();
+	}
 	
-	loop();
 	
 	//console.log("all_bricks ", all_bricks)
 	//console.log("all_surprise_bricks ", all_surprise_bricks)
