@@ -643,6 +643,24 @@ document.addEventListener('DOMContentLoaded', function() {
 					score += 50;
 					spider_power -= 1;
 					spider_power_line -= 1;
+					
+			/*		const spider_data = get_spider; 
+					const spider_temp_data = spider_data;
+					for (let m=0; m < spider_data.data.length; m += 4) {
+							if (spider_data.data[m] === 28) {
+								spider_data.data[m] = 255;
+							}
+							if (spider_data.data[m+1] === 28) {
+								spider_data.data[m+1] = 0;
+							}
+							if (spider_data.data[m+2] === 28) {
+								spider_data.data[m+2] = 0;
+							}
+						} 
+						
+						get_spider = spider_data; */
+						
+						
 					return;
 				}
 			//}
@@ -851,21 +869,28 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function move_spider() {
+		let spider_step = 3;
+		if (spider_power < 50) {
+			spider_step = 4;
+		}
+		if (spider_power < 20) {
+			spider_step = 5;
+		}
 		if (can_spider_move == false) {
 			context.putImageData(get_spider, spider_pos_x, spider_pos_y);
 		}
 		if (can_spider_move == true) {
 			context.putImageData(get_spider, spider_pos_x, spider_pos_y);
 			if (direction_of_spider_move == "left") {
-				spider_pos_x = spider_pos_x - 3
+				spider_pos_x = spider_pos_x - spider_step
 			}
 			if (direction_of_spider_move == "right") {
-				spider_pos_x = spider_pos_x + 3
+				spider_pos_x = spider_pos_x + spider_step
 			}
-			if (spider_pos_x == (canvas.width - (canvas.width-2) )) {
+			if (spider_pos_x <= (canvas.width - (canvas.width-2) )) {
 				direction_of_spider_move = "right"
 			}
-			if (spider_pos_x == (canvas.width -2) - spider_width ) {
+			if (spider_pos_x >= (canvas.width -2) - spider_width ) {
 				direction_of_spider_move = "left"
 			}
 		}
