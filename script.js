@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let slow_down_icon_position = [];
 	let is_slow_down_visible = false;
 	let score = 0;
-	let level = 1;
+	let level = 10;
 	let change_level_delay = 10;
 	let can_change_level = true;
 	let interval_delay = 10;
@@ -87,11 +87,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let spider_stop_moving = 250; 
 	let spider_start_moving = 100;
 	let spider_power_line = 190;
-	let spider_power = 100;
+	let spider_power = 20;
 	let refresh = false;
 	let refresh_delay_time = 10;
 	let animation = "";
 	let end_game = false;
+	let who_made_it = [["Graphic: ", 110, 400], ["Sounds: ",110, 450], ["Realisation: ", 105, 500], ["Ideas and inspirations: ",20, 550]]
 	
 	function draw_frame() {
 		for (i=0; i < canvas.width; i++) {
@@ -1100,6 +1101,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		is_arrow_visible = false; 
 		is_slow_down_visible = false;
 		heart_visible = false;
+		shooting_sound_stoped = false;
 		hearts_quantity.splice(0, hearts_quantity.length);
 		all_bullets.splice(0, all_bullets.length);
 		all_bricks.splice(0, all_bricks.length);
@@ -1236,8 +1238,54 @@ document.addEventListener('DOMContentLoaded', function() {
 		if(spider_power <= 0) {
 			spider_power = 0;
 			spider_power_line = 0;
-			console.log("winning")
+			end_screen();
+			//author();
+			//console.log("winning")
 		}
+	}
+	
+	function end_screen() {
+		context.font = "bold 16px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgb(255,0,0)";
+		context.fillText("You won! ", 150 , 170);
+	}
+	
+	function author() {
+	// who_made_it = ["Graphic: " 200, "Sounds: " 250, "Ideas: " 300];
+	console.log("leci")
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		interval_delay = 30;
+		win_game();
+		
+		context.font = "bold 12px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgb(255,0,0)";
+		
+		let JL = "Joanna Ligenza";
+		let CLT = " Pawel Ligenza";
+		
+		
+		
+		for (i=0; i < who_made_it.length; i++) {
+			if (who_made_it[who_made_it.length - 1][2] < 0 ) {
+				cancelAnimationFrame(animation2);
+				return;
+			}
+			if ( i !== 3) {
+				context.fillText(who_made_it[i][0] + JL, who_made_it[i][1] , who_made_it[i][2]);
+			}
+			if (i === 3) {
+				context.fillText(who_made_it[i][0] + JL + CLT, who_made_it[i][1] , who_made_it[i][2]);
+			}
+			who_made_it[i][2] = who_made_it[i][2] - 1 ;
+		}
+		
+		setTimeout(function() {
+			animation2 = requestAnimationFrame(author); 
+		}, interval_delay);
 	}
 
 	
@@ -1266,7 +1314,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			draw_spider_power();
 			draw_spider_power_line();
 			if(spider_power <= 0) {
-				win_game();
+				//win_game();
+				author();
+				cancelAnimationFrame(animation);
 				return;
 			}
 			if (can_spider_shoot == true) {
