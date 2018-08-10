@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
+	const cont = new AudioContext();
+	let shooting_sound_stoped = false;
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 1 //11;
@@ -600,6 +602,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			bullets_counts.push(1);
 			one_shoot = false;
 			
+			if (shooting_sound_stoped == false) {
+				shooting_sound(60);
+			}
 			get_bullet();
 		}
 	}
@@ -888,6 +893,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			spider_bullet_delay_arr.splice(0, spider_bullet_delay_arr.length);
 			
+			shooting_sound_stoped = true;
+			shooting_sound(90);
+		}
+		if (max_spider_bullets == 0) {
+			shooting_sound_stoped = false;
 		}
 	}
 	
@@ -920,14 +930,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			spider_stop_moving = 0;
 			can_spider_move = false;
 			can_spider_shoot = true;
-			console.log("staje i strzela")
-			console.log("all_spider_bullets.length ", all_spider_bullets.length)
-			if(all_spider_bullets.length == max_spider_bullets) {
+			//console.log("staje i strzela")
+			//console.log("all_spider_bullets.length ", all_spider_bullets.length)
+			if(max_spider_bullets == 0) {
 				can_spider_move = true;
+			}
+			if(all_spider_bullets.length == max_spider_bullets) {
+				
 				can_spider_shoot = false;
 				max_spider_bullets = 15;
 				spider_stop_moving = 250;
-				console.log("rusza sie")
+				//console.log("rusza sie")
 			}
 		}
 	}
@@ -950,15 +963,97 @@ document.addEventListener('DOMContentLoaded', function() {
 		my_keys.keys[e.keyCode] = false;
 	});
 	
+	function shooting_sound(freq) {
+		
+		let oscillator = cont.createOscillator();
+		let gain = cont.createGain();
+		oscillator.connect(gain);
+		gain.connect(cont.destination);
+			
+		oscillator.type = "sine";
+		oscillator.frequency.value = freq;
+			
+		let now = cont.currentTime;
+		gain.gain.setValueAtTime(100, now);
+		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+		oscillator.start(now);
+		oscillator.stop(now + 1);
+		console.log("gram")
+	}
+	
+	function change_level_sound() {
+		let now = cont.currentTime,
+		osc = cont.createOscillator(),
+		gain = cont.createGain();				
+		osc.connect(gain);
+		gain.connect(cont.destination);
+			position = 0,
+			scale = {
+				f: 698.46,
+				c: 523.25,       
+			},
+			
+			song = "cccf-cf--";
+
+		setInterval(play, 1000 / 5);
+	}
+
+		function createOscillator(freq) {
+			let attack = 10,
+				decay = 400,
+				gain = cont.createGain(),
+				osc = cont.createOscillator();
+
+			gain.connect(cont.destination);
+			gain.gain.setValueAtTime(0, cont.currentTime);
+			gain.gain.linearRampToValueAtTime(5, cont.currentTime + attack / 1000);
+			gain.gain.linearRampToValueAtTime(0, cont.currentTime + decay / 1000);
+
+			osc.frequency.value = freq;
+			osc.type = "square";
+			osc.connect(gain);
+			osc.start(0);
+
+			setTimeout(function() {
+				osc.stop(0);
+				osc.disconnect(gain);
+				gain.disconnect(cont.destination);
+			}, decay)
+		}
+	
+		function play() {
+			var note = song.charAt(position),
+				freq = scale[note];
+			position += 1;
+			if(position >= song.length) {
+				//position = 0;
+				//osc.stop(now + 5);	
+				return;
+			}
+			if(freq) {
+				createOscillator(freq);
+			}
+		}
+	
 	function change_level() {
 			refresh = true;
 			level += 1; 
 			what_to_refresh();
+			change_level_sound();
 			refersh_delay();
 			change_level_delay = 10;
 			console.log("level ", level);	
 	}
 	
+	function show_next_level_info() {
+			context.font = "bold 16px Arial";
+			context.textAlign = "left";
+			context.textBaseline = "middle";
+			context.fillStyle = "rgb(255,0,0)";
+			context.fillText("Next Level: " + level, 150 , 170);
+
+			//change_level_sound();
+	}
 	
 	function refresh_game() {
 		refresh = true;
@@ -995,8 +1090,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			spider_stop_moving = 250;
 			all_spider_bullets.splice(0, all_spider_bullets.length);
 		//}
-		//yellow_bricks = 0;
-		//green_bricks = 0;
+
 	}
 	
 	function refersh_delay() {
@@ -1199,7 +1293,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			move_spider();
 		} */
 		
-		console.log("spider_stop_moving ", spider_stop_moving)
+		//console.log("spider_stop_moving ", spider_stop_moving)
 		//console.log("spider_start_moving ", spider_start_moving)
 
 		if (bullets_counts.length < bullet_limit) {
@@ -1227,6 +1321,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	move_bricks();
 	//brick_with_enemy();
 	draw_spider(); // tymc
+	//change_level_sound();
 	
 	loop();
 	
