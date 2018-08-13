@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
 	const cont = new AudioContext();
+	let myV = "";
 	let shooting_sound_stoped = false;
 	const brick_width = 20;
 	const brick_height = 15;
@@ -206,6 +207,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		if (all_bricks.length == 0 && can_change_level == true) {
 			change_level_delay -= 1;
+			if (change_level_delay == 9) {
+				cancelAnimationFrame(animation);
+				change_level_sound();
+				requestAnimationFrame(loop);
+				return;
+			}
 			if (change_level_delay == 0) {
 				change_level();
 				return;
@@ -1044,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			song = "cccf-cf--";
 
-		setInterval(play, 1000 / 5);
+		myV = setInterval(play, 1000 / 5);
 	}
 
 		function createOscillator(freq) {
@@ -1074,10 +1081,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			var note = song.charAt(position),
 				freq = scale[note];
 			position += 1;
-			if(position >= song.length) {
-				//position = 0;
-				//osc.stop(now + 5);	
-				return;
+			if(position == song.length) {
+				clearInterval(myV)
 			}
 			if(freq) {
 				createOscillator(freq);
@@ -1088,7 +1093,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			refresh = true;
 			level += 1; 
 			what_to_refresh();
-			change_level_sound();
+			//change_level_sound();
 			refersh_delay();
 			change_level_delay = 10;
 			console.log("level ", level);	
@@ -1111,7 +1116,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (life_quantity > 0) {
 			life_quantity -= 1;
-
 			what_to_refresh();
 			refersh_delay();
 			console.log("crash");
