@@ -4,10 +4,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	const context = canvas.getContext("2d");
 	const cont = new AudioContext();
 	let myV = "";
+	let position = "";
+	let song = "";
+	let scale = "";
 	let shooting_sound_stoped = false;
 	const brick_width = 20;
 	const brick_height = 15;
-	let brick_col = 11 //11;
+	let brick_col = 11
 	let brick_row = 1;
 	let all_virtual_bricks = [];
 	const all_bricks = [];
@@ -25,10 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
-	//let change_color_delay = 3;
 	let yellow_bricks = 0;
 	let green_bricks = 0;
-	//let bricks_with_enemy = [];
 	let move = false;
 	let one_shoot = false;
 	let can_shoot = true;
@@ -39,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	const bullet_height = 10;
 	let get_bullets = "";
 	let get_enemy = "";
-	//let all_enemys = [];
 	let all_bullets = [];
 	let shooting_enemy = "";
 	const enemy_width = 20;
@@ -98,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	function draw_frame() {
 		for (i=0; i < canvas.width; i++) {
 			for (j=0; j < canvas.height; j++) {
-				//console.log("test")
 				if (i == 0 || i == (canvas.width -1) || j == 0 || j == (canvas.height -1)) { 
 				context.fillStyle = "rgb(232, 169, 0)";
 				context.fillRect(i,j,1,1);
@@ -116,19 +115,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.textAlign = "left";
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Press space to play", 100 , 170);
-		//console.log("grr")
+		context.fillText("Press enter to play", 100 , 170);
 		loop1();
 	}
 	
 	function loop1() {
-		if (which_key_pressed == "32") {
+		if (which_key_pressed == "13") {
 			cancelAnimationFrame(animation3);
 			init();
-			//console.log("test")
 			return;
 		}
-		
 		setTimeout(function() {
 			animation3 = requestAnimationFrame(loop1); 
 		}, interval_delay); 
@@ -160,23 +156,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			const number_of_yellow_brick = all_virtual_bricks_copy[random_yellow_brick];
 			all_virtual_bricks[number_of_yellow_brick][4] = "yellow";
 			all_virtual_bricks_copy.splice(random_yellow_brick ,1);
-			//console.log("zolty kolcek")
 		}
 		for(i=0; i < green_bricks; i++ ) {
 			const random_green_brick = Math.floor(Math.random() * all_virtual_bricks_copy.length);
 			const number_of_green_brick = all_virtual_bricks_copy[random_green_brick];
 			all_virtual_bricks[number_of_green_brick][4] = "green";
 			all_virtual_bricks_copy.splice(random_green_brick ,1);
-			//console.log("zielony kolcek")
 		}
-		
-		//console.log("all_virtual_bricks koniec", all_virtual_bricks)
-		//console.log("yellow green ", yellow_bricks, green_bricks)
 	}
 	
 	function draw_all_bricks(positionX, positionY) {
 		for (m=0; m < all_virtual_bricks.length; m++) {
-			//console.log("all_virtual_bricks.length ", all_virtual_bricks.length)
 			draw_one_brick(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
 				if (all_virtual_bricks[m][4] == "orange") {
 					color = "orange"
@@ -190,15 +180,11 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_color(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
 				if ( m % 2 == 0) { 
 					brick_pattern1(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
-
 				}
 				get_brick = context.getImageData(all_virtual_bricks[m][1], all_virtual_bricks[m][2], brick_width+1, brick_height+1);
 				all_bricks.push([get_brick, all_virtual_bricks[m][1], all_virtual_bricks[m][2], 0, color])
-				
-				//console.log("kolor klocka: ", color)
 		}
 		surprise_brick();
-		//console.log("all_bricks ", all_bricks);
 	}
 	
 	function move_bricks() {
@@ -207,12 +193,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		if (all_bricks.length == 0 && can_change_level == true) {
 			change_level_delay -= 1;
-			if (change_level_delay == 9) {
-				cancelAnimationFrame(animation);
-				change_level_sound();
-				requestAnimationFrame(loop);
-				return;
-			}
 			if (change_level_delay == 0) {
 				change_level();
 				return;
@@ -235,13 +215,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function brick_collision() {
-		//if (is_brick_moving == true) {
-			for (i=0; i < all_bricks.length; i++) {
-				if (all_bricks[i][2] + brick_height >= ship_position_y) {
-					refresh_game();
-				}
+		for (i=0; i < all_bricks.length; i++) {
+			if (all_bricks[i][2] + brick_height >= ship_position_y) {
+				refresh_game();
 			}
-		//}
+		}
 	}
 
 	
@@ -300,11 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function brick_pattern2(positionX, positionY) {
-		context.font = "bold 12px Arial";
-		context.textAlign = "center";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgba(255,0,0)";
-		context.fillText("?", positionX, positionY);
+		draw_text("", "?", "", positionX, positionY, "center");
 	}
 	
 	
@@ -314,8 +288,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			all_bricks_copy.push(s);
 		}
 		for(i=0; i < surprise_bricks_quantity.length; i++) {
-			//console.log("surprise_bricks_quantity2 " ,surprise_bricks_quantity);
-			//let surprise_number_copy = surprise_number;
 			const random_surprise_brick = Math.floor(Math.random() * all_bricks_copy.length );
 			const random_surprise_brick_copy = all_bricks_copy[random_surprise_brick];
 		
@@ -330,7 +302,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			all_surprise_bricks.push([get_surprise_brick, surprise_brick_positionX, surprise_brick_positionY, surprise_bricks_quantity[i]]);
 			
 			all_bricks_copy.splice(random_surprise_brick, 1);
-			//console.log(random_surprise_brick);
 		}
 	}
 	
@@ -350,14 +321,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		get_enemy = context.getImageData(329, 374, enemy_width, enemy_height);
 		shooting_enemy = get_enemy;
-		 
-		//context.putImageData(all_bullets[i][0], all_bullets[i][1], all_bullets[i][2] - bullet_step);
 	}
 	
 	function show_enemy() {
 			for (k=0; k < enemy_quantity.length; k++) { 
-			//console.log("enemy_quantity[i] ", enemy_quantity[i]);
-				//if (typeof enemy_quantity[i] != "undefined" && enemy_quantity[i][1] == true) { 
 				if (enemy_quantity[k][1] == true) {
 					enemy_position_x[k] = enemy_quantity[k][2];
 					enemy_position_y[k] = enemy_quantity[k][3];
@@ -369,8 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function draw_enemy_bullets() {
 		enemy_bullet_delay_arr.push(1);
-		//console.log("enemy_bullet_delay_arr ", enemy_bullet_delay_arr)
-		if (enemy_bullet_delay_arr.length > 10){ //&& enemy_max_bullet > 0) { 
+		if (enemy_bullet_delay_arr.length > 10){
 			
 			for (i=0; i < enemy_quantity.length; i++) {
 				if (enemy_quantity[i][1] == true) { 
@@ -399,7 +365,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 	
 	function move_enemy_bullets() {
-		//console.log("all_enemy_bullets.length ", all_enemy_bullets.length)
 		const bullet_step = 3;
 		for (i=0; i < all_enemy_bullets.length; i++) {
 			context.putImageData(all_enemy_bullets[i][0], all_enemy_bullets[i][1], all_enemy_bullets[i][2] + bullet_step);
@@ -408,12 +373,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function enemy_bullets_collision() {
-		//if (enemy_quantity[i][1] == true) {
 		if (all_enemy_bullets.length > 0) {
 			for (i = 0; i < all_enemy_bullets.length; i++) {
 				if ((all_enemy_bullets[i][2] + bullet_height) > ship_position_y && ( all_enemy_bullets[i][1] > ship_position_x && (all_enemy_bullets[i][1]) < ship_position_x + ship_width)) {
-					//all_enemy_bullets.splice(i, 1);
-					//life_quantity = life_quantity - 1;
 					refresh_game();
 					return;
 				}
@@ -437,7 +399,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineWidth = bullet_width;
 		context.stroke();
 		
-
 		get_arrow = context.getImageData(337, 363, 6, 8);
 	}
 	
@@ -471,16 +432,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (hearts_quantity.length > 0) { 
 			for (i=0; i < hearts_quantity.length; i++) {
 				context.putImageData(get_life_heart, heart_position_x, heart_position_y + heart_step);
-				//console.log("heart_position_x", heart_position_x);
 				heart_position_y = heart_position_y + heart_step;
-				//console.log("heart_position_x, heart_position_y", heart_position_x, heart_position_y);
 			}
 		}
 	} 
 	
 	function heart_collision() {
-		if (hearts_quantity.length > 0) {
-			
+		if (hearts_quantity.length > 0) {	
 			for (i = 0; i < hearts_quantity.length; i++) {
 				//console.log("test");
 				if (heart_position_y + 8 > ship_position_y && heart_position_x > ship_position_x && heart_position_x < ship_position_x + ship_width) {
@@ -498,17 +456,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 
 	function background() {
-		//if (white_background == true) {
-			background_delay_arr.push(1);
-			if(background_delay_arr.length < background_delay) {
-				canvas.style.backgroundColor = "rgb(250, 250, 250)";
-			}
-			if(background_delay_arr.length > background_delay) {
-				canvas.style.backgroundColor = "rgb(6, 0, 135)";
-				background_delay_arr.splice(0, background_delay_arr.length);
-				white_background = false;
-			}
-		//}
+		background_delay_arr.push(1);
+		if(background_delay_arr.length < background_delay) {
+			canvas.style.backgroundColor = "rgb(250, 250, 250)";
+		}
+		if(background_delay_arr.length > background_delay) {
+			canvas.style.backgroundColor = "rgb(6, 0, 135)";
+			background_delay_arr.splice(0, background_delay_arr.length);
+			white_background = false;
+		}
 	}
 	
 	function slow_down_game() {
@@ -696,9 +652,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			}
 			for (j = 0; j < all_bricks.length; j++) {
-				//if ((all_bullets[i][1] >= all_bricks[j][0] && all_bullets[i][1] <= all_bricks[j][0] + brick_width && all_bullets[i][2] >= all_bricks[j][1] && all_bullets[i][2] <= all_bricks[j][1] + brick_height) || all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
-					//console.log("all_surprise_bricks ", all_surprise_bricks)
 					if(all_bricks[j][4] == "yellow") {
 						const yellow_brick_data = all_bricks[j][0];
 						
@@ -718,7 +672,6 @@ document.addEventListener('DOMContentLoaded', function() {
 							if (yellow_brick_data.data[m+2] === 34) {
 								yellow_brick_data.data[m+2] = 0;
 							}
-							// rgb(232, 169, 0) - orange, // (240, 240, 34 - yellow,  //  15, 120, 5) - green
 						} 
 						
 						all_bricks[j][0] = yellow_brick_data;
@@ -741,14 +694,12 @@ document.addEventListener('DOMContentLoaded', function() {
 							if (green_brick_data.data[m+2] === 5) {
 								green_brick_data.data[m+2] = 34;
 							}
-							// rgb(232, 169, 0) - orange, // (240, 240, 34 - yellow,  //  15, 120, 5) - green
 						} 
 						
 						return;
 					} 
 					if(all_bricks[j][3] == 1) {
 						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1], all_bricks[j][2]]);
-						//enemy_quantity[i][1] = true;
 						console.log("yes! 1")
 						console.log("enemy_quantity ", enemy_quantity)
 					}
@@ -766,11 +717,11 @@ document.addEventListener('DOMContentLoaded', function() {
 						console.log("yes! 3")
 					}
 					if(all_bricks[j][3] == 4) {
-						//white_background = true;
+						white_background = true;
 						console.log("yes! 4")
 					}
 					if(all_bricks[j][3] == 5) {
-						//slow_down = true;
+						slow_down = true;
 						is_slow_down_visible = true;
 						slow_down_icon_position = [all_bricks[j][1], all_bricks[j][2]]
 						console.log("yes! 5" )
@@ -793,28 +744,24 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
-	function draw_level() {
+	function draw_text(before, text, after, posX , posY, align) {
 		context.font = "bold 12px Arial";
-		context.textAlign = "left";
+		context.textAlign = align;
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Level: " + level, 5 , canvas.height - 15);
+		context.fillText(before + text + after, posX , posY);
+	}
+	
+	function draw_level() {
+		draw_text("", "Level: ", level, 5, canvas.height - 15, "left");
 	}
 	
 	function count_score() {
-		context.font = "bold 12px Arial";
-		context.textAlign = "left";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Score: " + score, 70 , canvas.height - 15);
+		draw_text("", "Score: ", score, 70 , canvas.height - 15, "left");
 	}
 	
 	function draw_life() {
-		context.font = "bold 12px Arial";
-		context.textAlign = "left";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Life: ", 150 , canvas.height - 15);
+		draw_text("", "Life: ", "", 150 , canvas.height - 15, "left");
 	}
 	
 	function draw_hearts() {
@@ -834,13 +781,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_spider_power() {
-		context.font = "bold 12px Arial";
-		context.textAlign = "left";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Spider power: ", 5 , 10);
-		
-		context.fillText(spider_power + " %", 200 , 10);
+		draw_text("", "Spider power: ", "", 5, 10);
+		draw_text("", spider_power , " %", 200 , 10);
 	}
 	
 	function draw_spider_power_line() {
@@ -849,7 +791,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineWidth = 3;
 		context.moveTo(90, 11); 
 		context.lineTo(spider_power_line, 11);
-		
 		context.stroke();
 	}
 	
@@ -986,8 +927,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			spider_stop_moving = 0;
 			can_spider_move = false;
 			can_spider_shoot = true;
-			//console.log("staje i strzela")
-			//console.log("all_spider_bullets.length ", all_spider_bullets.length)
 			if(max_spider_bullets == 0) {
 				can_spider_move = true;
 			}
@@ -996,7 +935,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				can_spider_shoot = false;
 				max_spider_bullets = 15;
 				spider_stop_moving = 250;
-				//console.log("rusza sie")
 			}
 		}
 	}
@@ -1038,9 +976,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function change_level_sound() {
-		let now = cont.currentTime,
-		osc = cont.createOscillator(),
-		gain = cont.createGain();				
+		//let now = cont.currentTime,
+		let osc = cont.createOscillator(),
+		gain = cont.createGain();
+			
 		osc.connect(gain);
 		gain.connect(cont.destination);
 			position = 0,
@@ -1054,46 +993,46 @@ document.addEventListener('DOMContentLoaded', function() {
 		myV = setInterval(play, 1000 / 5);
 	}
 
-		function createOscillator(freq) {
-			let attack = 10,
-				decay = 400,
-				gain = cont.createGain(),
-				osc = cont.createOscillator();
+	function createOscillator(freq) {
+		let attack = 10,
+			decay = 400,
+			gain = cont.createGain(),
+			osc = cont.createOscillator();
 
-			gain.connect(cont.destination);
-			gain.gain.setValueAtTime(0, cont.currentTime);
-			gain.gain.linearRampToValueAtTime(5, cont.currentTime + attack / 1000);
-			gain.gain.linearRampToValueAtTime(0, cont.currentTime + decay / 1000);
+		gain.connect(cont.destination);
+		gain.gain.setValueAtTime(0, cont.currentTime);
+		gain.gain.linearRampToValueAtTime(5, cont.currentTime + attack / 1000);
+		gain.gain.linearRampToValueAtTime(0, cont.currentTime + decay / 1000);
 
-			osc.frequency.value = freq;
-			osc.type = "square";
-			osc.connect(gain);
-			osc.start(0);
+		osc.frequency.value = freq;
+		osc.type = "square";
+		osc.connect(gain);
+		osc.start(0);
 
-			setTimeout(function() {
-				osc.stop(0);
-				osc.disconnect(gain);
-				gain.disconnect(cont.destination);
-			}, decay)
-		}
+		setTimeout(function() {
+			osc.stop(0);
+			osc.disconnect(gain);
+			gain.disconnect(cont.destination);
+		}, decay)
+	}
 	
-		function play() {
-			var note = song.charAt(position),
-				freq = scale[note];
-			position += 1;
-			if(position == song.length) {
-				clearInterval(myV)
-			}
-			if(freq) {
-				createOscillator(freq);
-			}
+	function play() {
+		var note = song.charAt(position),
+			freq = scale[note];
+		position += 1;
+		if(position == song.length) {
+			clearInterval(myV)
 		}
+		if(freq) {
+			createOscillator(freq);
+		}
+	}
 	
 	function change_level() {
 			refresh = true;
 			level += 1; 
 			what_to_refresh();
-			//change_level_sound();
+			change_level_sound();
 			refersh_delay();
 			change_level_delay = 10;
 			console.log("level ", level);	
@@ -1105,8 +1044,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.textBaseline = "middle";
 			context.fillStyle = "rgb(255,0,0)";
 			context.fillText("Next Level: " + level, 150 , 170);
-
-			//change_level_sound();
 	}
 	
 	function refresh_game() {
@@ -1173,7 +1110,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				yellow_bricks = 10;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4];
 				draw_virtual_bricks(9, 5)
-				console.log("yellow_bricks", yellow_bricks)
 			}
 			if (level == 5) {
 				brick_col = 17;
@@ -1181,7 +1117,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				yellow_bricks = 20;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 1, 2];
 				draw_virtual_bricks(9, 5)
-				console.log("yellow_bricks", yellow_bricks)
 			}
 			if (level == 6) {
 				brick_col = 17;
@@ -1189,8 +1124,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				yellow_bricks = 40;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4];
 				draw_virtual_bricks(9, 5)
-				console.log("yellow_bricks", yellow_bricks)
-				console.log("green_bricks", green_bricks)
 			}
 			if (level == 7) {
 				brick_col = 17;
@@ -1199,8 +1132,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				yellow_bricks = (brick_col * brick_row);
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2];
 				draw_virtual_bricks(9, 5)
-				console.log("yellow_bricks", yellow_bricks)
-				console.log("green_bricks", green_bricks)
 			}
 			if (level == 8) {
 				brick_col = 17;
@@ -1209,8 +1140,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				yellow_bricks = (brick_col * brick_row) - green_bricks;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 6];
 				draw_virtual_bricks(9, 5)
-				console.log("yellow_bricks", yellow_bricks)
-				console.log("green_bricks", green_bricks)
 			}
 			if (level == 9) {
 				brick_col = 17;
@@ -1219,8 +1148,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				yellow_bricks = 0;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 6];
 				draw_virtual_bricks(9, 5)
-				console.log("yellow_bricks", yellow_bricks)
-				console.log("green_bricks", green_bricks)
 			}
 			if (level == 10) {
 				brick_col = 0;
@@ -1228,20 +1155,13 @@ document.addEventListener('DOMContentLoaded', function() {
 				green_bricks = 0;
 				yellow_bricks = 0;
 				surprise_bricks_quantity = [];
-				//draw_virtual_bricks(9, 5)
-				draw_spider();
 				move_spider();
-				
-				console.log("yellow_bricks", yellow_bricks)
-				console.log("green_bricks", green_bricks)
 				return;
 			}
 			draw_all_bricks();
-			//context.putImageData(all_bricks[i][0], all_bricks[i][1], all_bricks[i][2]);
 			refresh_delay_time = 10;
 			refresh = false;
 			can_change_level = true;  
-			//console.log("refresh 2 ", refresh )
 		}
 	}
 	
@@ -1268,8 +1188,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			spider_power = 0;
 			spider_power_line = 0;
 			end_screen();
-			//author();
-			//console.log("winning")
 		}
 	}
 	
@@ -1282,8 +1200,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function author() {
-	// who_made_it = ["Graphic: " 200, "Sounds: " 250, "Ideas: " 300];
-	console.log("leci")
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		interval_delay = 30;
 		win_game();
@@ -1295,9 +1211,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		let JL = "Joanna Ligenza";
 		let CLT = " Pawel Ligenza";
-		
-		
-		
+
 		for (i=0; i < who_made_it.length; i++) {
 			if (who_made_it[who_made_it.length - 1][2] < 0 ) {
 				cancelAnimationFrame(animation2);
@@ -1355,6 +1269,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (all_spider_bullets.length > 0) {
 				spider_bullets_collision();
 			}
+			//draw_spider();
 			move_spider();
 			stop_spider();	
 		}
@@ -1391,15 +1306,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		space_ship_move();
 		move_bricks();
-		// chwilowo
-		//draw_spider();
-	/*	if(can_spider_move == true) {
-			move_spider();
-		} */
-		
-		//console.log("spider_stop_moving ", spider_stop_moving)
-		//console.log("spider_start_moving ", spider_start_moving)
-
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
@@ -1415,6 +1321,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function init() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		draw_spider();
 		draw_virtual_bricks(70, 15);
 		draw_all_bricks();
 		draw_space_ship();
@@ -1426,16 +1333,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_arrow();
 		draw_slow_down_icon();
 		move_bricks();
-		//brick_with_enemy();
-		draw_spider(); // tymc
-		//change_level_sound();
-		
 		loop();
 	}
-	
-	
-	//console.log("all_bricks ", all_bricks)
-	//console.log("all_surprise_bricks ", all_surprise_bricks)
+
 	
 
 	console.log("all_bricks ", all_bricks)
