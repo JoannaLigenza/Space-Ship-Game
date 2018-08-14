@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const context = canvas.getContext("2d");
 	const cont = new AudioContext();	// must be outside of function
 	const cont2 = new AudioContext();
+	const cont3 = new AudioContext();
 	let position = "";
 	let song = "";
 	let scale = "";
@@ -25,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6];
+	let surprise_bricks_quantity = [6, 2, 7];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -71,13 +72,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_draw_plus_two_icon = "";
 	let plus_two_icon_position = [];
 	let is_plus_two_visible = false;
-	let score = 0;
-	let level = 9;
-	let change_level_delay = 30;
-	let can_change_level = true;
-	let interval_delay = 5;
 	let slow_down = false;
 	let slow_down_time = 150;
+	let get_star_icon = "";
+	//let is_star_icon_visible = false;
+	let star_icon_quantity = [];
 	let get_spider = "";
 	let spider_pos_x = 140;
 	let spider_pos_y = 15;
@@ -92,7 +91,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let spider_stop_moving = 250; 
 	let spider_start_moving = 100;
 	let spider_power_line = 190;
-	let spider_power = 20;
+	let spider_power = 100;
+	let score = 0;
+	let level = 1;
+	let change_level_delay = 30;
+	let can_change_level = true;
+	let interval_delay = 5;
 	let refresh = false;
 	let refresh_delay_time = 10;
 	let animation = "";
@@ -358,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					enemy_quantity.splice(0, enemy_quantity.splice.length); 
 					return;
 				}
-				
+				enemy_shooting_sound(190);
 			}
 			enemy_bullet_delay_arr.splice(0, enemy_bullet_delay_arr.length);
 		}
@@ -403,6 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (heart_position_y + 8 > ship_position_y && heart_position_x > ship_position_x && heart_position_x < ship_position_x + ship_width) {
 					hearts_quantity.splice(i, 1);
 					life_quantity += 1;
+					life_star_catch(660);
 					return;
 				}
 				if (heart_position_y + 8  > canvas.height - 5 ) {
@@ -474,6 +479,72 @@ document.addEventListener('DOMContentLoaded', function() {
 	function show_plus_two_icon() {
 		context.putImageData(get_draw_plus_two_icon, plus_two_icon_position[0] + 3, plus_two_icon_position[1] + 3);
 	}
+	
+	function draw_star_icon() {
+/*		context.beginPath();
+		context.moveTo(341,305); 
+		context.lineTo(340,307);
+		context.lineTo(337,308);
+		context.lineTo(340,309);
+		context.lineTo(341,311);
+		context.lineTo(342,309);
+		context.lineTo(345,308);
+		context.lineTo(342,307);
+		context.closePath(); 
+		context.lineWidth = 1;
+		context.strokeStyle = "rgb(240, 240, 34)";
+		context.lineWidth = bullet_width;
+		context.stroke();  */
+		
+		context.beginPath();
+		context.moveTo(341,303); 
+		context.lineTo(340,307);
+		context.lineTo(339,306);
+		context.lineTo(340,308);
+		context.lineTo(339,310);
+		context.lineTo(340,309);
+		context.lineTo(341,313);
+		context.lineTo(342,309);
+		context.lineTo(343,310);
+		context.lineTo(342,308); 
+		context.lineTo(343,306);
+		context.lineTo(342,307);
+		context.closePath(); 
+		//context.lineTo(341,305);
+		context.lineWidth = 1;
+		context.strokeStyle = "rgb(240, 240, 34)";
+		context.lineWidth = bullet_width;
+		context.stroke();
+		
+		get_star_icon = context.getImageData(335, 300, 12, 16);
+	}
+	
+	function move_star_icon() {
+		const star_icon_step = 3;
+		for (i=0; i < star_icon_quantity.length; i++) {
+			context.putImageData(get_star_icon, star_icon_quantity[i][0] + 4, star_icon_quantity[i][1]);
+			star_icon_quantity[i][1] = star_icon_quantity[i][1] + star_icon_step
+		}
+	}
+	
+	function star_icon_collision() {
+		console.log("collision")
+		if (star_icon_quantity.length > 0) {	
+			for (i = 0; i < star_icon_quantity.length; i++) {
+			//	if (heart_position_y + 8 > ship_position_y && heart_position_x > ship_position_x && heart_position_x < ship_position_x + ship_width) {
+				if (star_icon_quantity[i][1] + 16 > ship_position_y && star_icon_quantity[i][0] > ship_position_x && star_icon_quantity[i][0] + 12 < ship_position_x + ship_width) {
+					star_icon_quantity.splice(i, 1);
+					score += 200;
+					life_star_catch(660);
+					return;
+				}
+				if (star_icon_quantity[i][1] + 16  > canvas.height - 5 ) {
+					star_icon_quantity.splice(i, 1);
+					return;
+				}
+			}
+		}
+	} 
 	
 	function radianAngle(angle) {
 		return radians = (Math.PI/180)*angle;
@@ -707,7 +778,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					if(all_bricks[j][3] == 3) {
 						is_brick_moving = true;
 						is_arrow_visible = true;
-						arrow_position = [all_bricks[j][1], all_bricks[j][2]]
+						arrow_position = [all_bricks[j][1], all_bricks[j][2]];
 						console.log("yes! 3")
 					}
 					if(all_bricks[j][3] == 4) {
@@ -717,14 +788,19 @@ document.addEventListener('DOMContentLoaded', function() {
 					if(all_bricks[j][3] == 5) {
 						slow_down = true;
 						is_slow_down_visible = true;
-						slow_down_icon_position = [all_bricks[j][1], all_bricks[j][2]]
+						slow_down_icon_position = [all_bricks[j][1], all_bricks[j][2]];
 						console.log("yes! 5" )
 					}
 					if(all_bricks[j][3] == 6) {
 						bullet_limit += 2;
 						is_plus_two_visible = true;
-						plus_two_icon_position = [all_bricks[j][1], all_bricks[j][2]]
+						plus_two_icon_position = [all_bricks[j][1], all_bricks[j][2]];
 						console.log("yes! 6" )
+					}
+					if(all_bricks[j][3] == 7) {
+						//is_star_icon_visible = true;
+						star_icon_quantity.push([all_bricks[j][1], all_bricks[j][2]]);
+						console.log("yes! 7" )
 					}
 					
 					all_bullets.splice(i, 1);
@@ -949,6 +1025,24 @@ document.addEventListener('DOMContentLoaded', function() {
 		my_keys.keys[e.keyCode] = false;
 	});
 	
+	function life_star_catch(freq2) {
+		let oscillator = cont3.createOscillator();
+		let gain = cont3.createGain();
+		oscillator.connect(gain);
+		gain.connect(cont3.destination);
+			
+		oscillator.type = "sine";
+		oscillator.frequency.value = freq2;
+			
+		let now = cont3.currentTime;
+		gain.gain.setValueAtTime(100, now);
+		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+		
+		oscillator.start(now);
+		oscillator.stop(now + 1);
+		oscillator.frequency.setValueAtTime(freq2+100, cont3.currentTime + 0.15);
+	}
+	
 	function ship_shooting_sound(freq2) {
 		//const cont2 = new AudioContext();
 		let oscillator = cont2.createOscillator();
@@ -1063,7 +1157,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (life_quantity > 0) {
 			life_quantity -= 1;
-			score -= ((brick_col*brick_row) - all_bricks.length)*10
+			if (level > 2) {
+				score -= (((brick_col*brick_row) - all_bricks.length)*10)-200
+			}
+			if (level <=2) {
+				score -= ((brick_col*brick_row) - all_bricks.length)*10
+			}
 			console.log(score)
 			what_to_refresh();
 			refersh_delay();
@@ -1113,28 +1212,28 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (level == 3) {
 				brick_col = 17;
 				brick_row = 4;
-				surprise_bricks_quantity = [6, 1, 3, 2];
+				surprise_bricks_quantity = [6, 1, 3, 2, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 4) {
 				brick_col = 17;
 				brick_row = 4;
 				yellow_bricks = 10;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 5) {
 				brick_col = 17;
 				brick_row = 6;
 				yellow_bricks = 20;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 1, 2];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 1, 2, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 6) {
 				brick_col = 17;
 				brick_row = 7;
 				yellow_bricks = 40;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 7) {
@@ -1142,7 +1241,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				//green_bricks = 10;
 				yellow_bricks = (brick_col * brick_row);
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 8) {
@@ -1150,7 +1249,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				green_bricks = 20;
 				yellow_bricks = (brick_col * brick_row) - green_bricks;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 6];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 6, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 9) {
@@ -1158,7 +1257,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				green_bricks = (brick_col * brick_row);
 				yellow_bricks = 0;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 6];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 6, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 10) {
@@ -1322,6 +1421,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			move_heart();
 			heart_collision();
 		}
+		if (star_icon_quantity.length > 0) {
+			move_star_icon();
+			star_icon_collision();
+		}
 		if (is_plus_two_visible == true) {
 			plus_two_visible_delay -= 1;
 			show_plus_two_icon()
@@ -1366,6 +1469,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_all_bricks();
 		draw_space_ship();
 		draw_enemy();
+		draw_star_icon();
 		//get_space_ship();
 		draw_hearts();
 		get_heart();
