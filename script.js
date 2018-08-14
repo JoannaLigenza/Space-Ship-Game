@@ -67,11 +67,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_slow_down_icon = "";
 	let slow_down_icon_position = [];
 	let is_slow_down_visible = false;
+	let plus_two_visible_delay = 50;
+	let get_draw_plus_two_icon = "";
+	let plus_two_icon_position = [];
+	let is_plus_two_visible = false;
 	let score = 0;
 	let level = 1;
-	let change_level_delay = 10;
+	let change_level_delay = 30;
 	let can_change_level = true;
-	let interval_delay = 10;
+	let interval_delay = 5;
 	let slow_down = false;
 	let slow_down_time = 150;
 	let get_spider = "";
@@ -193,6 +197,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		if (all_bricks.length == 0 && can_change_level == true) {
 			change_level_delay -= 1;
+			show_next_level_info();
+			if (change_level_delay == 29) {
+				change_level_sound();
+				return;
+			}
 			if (change_level_delay == 0) {
 				change_level();
 				return;
@@ -278,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function brick_pattern2(positionX, positionY) {
-		draw_text("", "?", "", positionX, positionY, "center");
+		draw_text("", "?", "", positionX, positionY,"bold 12px Arial", "center", "rgb(255,0,0)");
 	}
 	
 	
@@ -333,7 +342,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			} 
 	}
 
-	
 	function draw_enemy_bullets() {
 		enemy_bullet_delay_arr.push(1);
 		if (enemy_bullet_delay_arr.length > 10){
@@ -387,46 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
-	function draw_arrow() {
-		context.beginPath();
-		context.moveTo(340,363); 
-		context.lineTo(340,370);
-		context.moveTo(337,367);
-		context.lineTo(340,370);
-		context.lineTo(343,367);
-		context.lineWidth = bullet_width;
-		context.strokeStyle = "rgb(250, 250, 250)";
-		context.lineWidth = bullet_width;
-		context.stroke();
-		
-		get_arrow = context.getImageData(337, 363, 6, 8);
-	}
-	
-	function show_arrow() {
-		context.putImageData(get_arrow, arrow_position[0] + 7, arrow_position[1] + 5);
-	}
-	
-	function draw_slow_down_icon() {
-		context.beginPath();
-		context.moveTo(340,340); 
-		context.lineTo(340,350);
-		context.moveTo(337,342);
-		context.lineTo(343,348);
-		context.moveTo(337,348);
-		context.lineTo(343,342);
-		context.lineWidth = bullet_width;
-		context.strokeStyle = "rgb(250, 250, 250)";
-		context.lineWidth = bullet_width;
-		context.stroke();
-		
-		get_slow_down_icon = context.getImageData(337, 340, 6, 10);
-	}
-	
-	function show_slow_down_icon() {
-		context.putImageData(get_slow_down_icon, slow_down_icon_position[0] + 7, slow_down_icon_position[1] + 3);
-	}
-	
-	
 	function move_heart() {
 		const heart_step = 3;
 		if (hearts_quantity.length > 0) { 
@@ -454,7 +422,26 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 	} 
-
+	
+	function draw_arrow() {
+		context.beginPath();
+		context.moveTo(340,363); 
+		context.lineTo(340,370);
+		context.moveTo(337,367);
+		context.lineTo(340,370);
+		context.lineTo(343,367);
+		context.lineWidth = bullet_width;
+		context.strokeStyle = "rgb(250, 250, 250)";
+		context.lineWidth = bullet_width;
+		context.stroke();
+		
+		get_arrow = context.getImageData(337, 363, 6, 8);
+	}
+	
+	function show_arrow() {
+		context.putImageData(get_arrow, arrow_position[0] + 7, arrow_position[1] + 5);
+	}
+	
 	function background() {
 		background_delay_arr.push(1);
 		if(background_delay_arr.length < background_delay) {
@@ -467,18 +454,59 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
+	function draw_slow_down_icon() {
+	/*	context.beginPath();
+		context.moveTo(340,340); 
+		context.lineTo(340,350);
+		context.moveTo(337,342);
+		context.lineTo(343,348);
+		context.moveTo(337,348);
+		context.lineTo(343,342);
+		context.lineWidth = bullet_width;
+		context.strokeStyle = "rgb(250, 250, 250)";
+		context.lineWidth = bullet_width;
+		context.stroke(); */
+		//draw_text("", "SLOW", "", 5, 5, "bold 12px Arial", "left", "rgb(255,0,0)");
+		//draw_text("", "?", "", positionX, positionY,"bold 12px Arial", "center", "rgb(255,0,0)")
+		
+		//get_slow_down_icon = context.getImageData(337, 340, 10, 10);
+		
+	/*	context.font = "bold 12px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgb(255,255,255)";
+		context.fillText("S", 337 , 340); */
+		
+		draw_text("", "S", "", 337, 340,"bold 10px Arial", "left", "rgb(255,255,255)")
+		
+		get_slow_down_icon = context.getImageData(337, 335, 8, 10);
+	}
+	
+	function show_slow_down_icon() {
+		context.putImageData(get_slow_down_icon, slow_down_icon_position[0] + 7, slow_down_icon_position[1] + 3);
+	}
+	
 	function slow_down_game() {
 		if (slow_down == true && slow_down_time > 0) {
-			interval_delay = 30;
-			slow_down_time -= 1;
-			
+			interval_delay = 20;
+			slow_down_time -= 1;	
 		}
 		if (slow_down == true && slow_down_time == 0) {
 			slow_down = false;
 			is_slow_down_visible = false;
 			slow_down_time = 150;
-			interval_delay = 10;
+			interval_delay = 5;
 		}
+	}
+
+	function draw_plus_two_icon() {
+		draw_text("", "+2", "", 337, 325,"bold 10px Arial", "left", "rgb(255,255,255)")
+		
+		get_draw_plus_two_icon = context.getImageData(337, 320, 13, 10);
+	}
+	
+	function show_plus_two_icon() {
+		context.putImageData(get_draw_plus_two_icon, plus_two_icon_position[0] + 3, plus_two_icon_position[1] + 3);
 	}
 
 	
@@ -728,6 +756,8 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 					if(all_bricks[j][3] == 6) {
 						bullet_limit += 2;
+						is_plus_two_visible = true;
+						plus_two_icon_position = [all_bricks[j][1], all_bricks[j][2]]
 						console.log("yes! 6" )
 					}
 					
@@ -744,24 +774,24 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
-	function draw_text(before, text, after, posX , posY, align) {
-		context.font = "bold 12px Arial";
+	function draw_text(before, text, after, posX , posY, font, align, rgb) {
+		context.font = font;
 		context.textAlign = align;
 		context.textBaseline = "middle";
-		context.fillStyle = "rgb(255,0,0)";
+		context.fillStyle = rgb;
 		context.fillText(before + text + after, posX , posY);
 	}
 	
 	function draw_level() {
-		draw_text("", "Level: ", level, 5, canvas.height - 15, "left");
+		draw_text("", "Level: ", level, 5, canvas.height - 15, "bold 12px Arial", "left", "rgb(255,0,0)");
 	}
 	
 	function count_score() {
-		draw_text("", "Score: ", score, 70 , canvas.height - 15, "left");
+		draw_text("", "Score: ", score, 70 , canvas.height - 15, "bold 12px Arial", "left", "rgb(255,0,0)");
 	}
 	
 	function draw_life() {
-		draw_text("", "Life: ", "", 150 , canvas.height - 15, "left");
+		draw_text("", "Life: ", "", 150 , canvas.height - 15, "bold 12px Arial", "left", "rgb(255,0,0)");
 	}
 	
 	function draw_hearts() {
@@ -781,8 +811,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_spider_power() {
-		draw_text("", "Spider power: ", "", 5, 10);
-		draw_text("", spider_power , " %", 200 , 10);
+		draw_text("", "Spider power: ", "", 5, 10, "bold 12px Arial", "left", "rgb(255,0,0)");
+		draw_text("", spider_power , " %", 200 , 10, "bold 12px Arial", "left", "rgb(255,0,0)");
 	}
 	
 	function draw_spider_power_line() {
@@ -958,16 +988,16 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 	
 	function shooting_sound(freq2) {
-		const cont2 = new AudioContext();
-		let oscillator = cont2.createOscillator();
-		let gain = cont2.createGain();
+		//const cont2 = new AudioContext();
+		let oscillator = cont.createOscillator();
+		let gain = cont.createGain();
 		oscillator.connect(gain);
-		gain.connect(cont2.destination);
+		gain.connect(cont.destination);
 			
 		oscillator.type = "sine";
 		oscillator.frequency.value = freq2;
 			
-		let now = cont2.currentTime;
+		let now = cont.currentTime;
 		gain.gain.setValueAtTime(100, now);
 		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
 		oscillator.start(now);
@@ -1032,9 +1062,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			refresh = true;
 			level += 1; 
 			what_to_refresh();
-			change_level_sound();
+			//change_level_sound();
 			refersh_delay();
-			change_level_delay = 10;
+			change_level_delay = 30;
 			console.log("level ", level);	
 	}
 	
@@ -1043,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.textAlign = "left";
 			context.textBaseline = "middle";
 			context.fillStyle = "rgb(255,0,0)";
-			context.fillText("Next Level: " + level, 150 , 170);
+			context.fillText("Next Level: " + (level+1), 150 , 170);
 	}
 	
 	function refresh_game() {
@@ -1066,6 +1096,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		is_brick_moving = false;
 		is_arrow_visible = false; 
 		is_slow_down_visible = false;
+		is_plus_two_visible = false;
 		heart_visible = false;
 		shooting_sound_stoped = false;
 		hearts_quantity.splice(0, hearts_quantity.length);
@@ -1240,8 +1271,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_virtual_bricks ", all_virtual_bricks)
-		//console.log("tesst")
-		
+		//console.log("interval_delay", interval_delay)
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
@@ -1294,6 +1324,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			move_heart();
 			heart_collision();
 		}
+		if (is_plus_two_visible == true) {
+			plus_two_visible_delay -= 1;
+			show_plus_two_icon()
+			if(plus_two_visible_delay == 0) {
+				is_plus_two_visible = false;
+				plus_two_visible_delay = 50;
+			}
+		}
 		if (refresh == true) {
 			refersh_delay();
 		}
@@ -1335,6 +1373,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_frame();
 		draw_arrow();
 		draw_slow_down_icon();
+		draw_plus_two_icon();
 		move_bricks();
 		loop();
 	}
