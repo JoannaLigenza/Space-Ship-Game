@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_shoot = true;
 	let enemy_quantity = [];
 	const bullets_counts = [];
-	let bullet_limit = 5;
+	let bullet_limit = 20;
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let get_bullets = "";
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let plus_two_icon_position = [];
 	let is_plus_two_visible = false;
 	let score = 0;
-	let level = 1;
+	let level = 9;
 	let change_level_delay = 30;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -92,12 +92,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let spider_stop_moving = 250; 
 	let spider_start_moving = 100;
 	let spider_power_line = 190;
-	let spider_power = 100;
+	let spider_power = 1;
 	let refresh = false;
 	let refresh_delay_time = 10;
 	let animation = "";
 	let end_game = false;
-	let who_made_it = [["Graphic: ", 110, 400], ["Sounds: ",110, 450], ["Realisation: ", 105, 500], ["Ideas and inspirations: ",20, 550]]
+	let who_made_it = [["Graphic: ", 110, 400], ["Sounds: ",110, 450], ["Realisation: ", 105, 500], ["Ideas and inspirations: ",20, 550], ["Press F5 to play again", 110, 620]]
 
 	
 	function draw_frame() {
@@ -400,11 +400,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	function heart_collision() {
 		if (hearts_quantity.length > 0) {	
 			for (i = 0; i < hearts_quantity.length; i++) {
-				//console.log("test");
 				if (heart_position_y + 8 > ship_position_y && heart_position_x > ship_position_x && heart_position_x < ship_position_x + ship_width) {
 					hearts_quantity.splice(i, 1);
 					life_quantity += 1;
-					//console.log("test2");
 					return;
 				}
 				if (heart_position_y + 8  > canvas.height - 5 ) {
@@ -447,30 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_slow_down_icon() {
-	/*	context.beginPath();
-		context.moveTo(340,340); 
-		context.lineTo(340,350);
-		context.moveTo(337,342);
-		context.lineTo(343,348);
-		context.moveTo(337,348);
-		context.lineTo(343,342);
-		context.lineWidth = bullet_width;
-		context.strokeStyle = "rgb(250, 250, 250)";
-		context.lineWidth = bullet_width;
-		context.stroke(); */
-		//draw_text("", "SLOW", "", 5, 5, "bold 12px Arial", "left", "rgb(255,0,0)");
-		//draw_text("", "?", "", positionX, positionY,"bold 12px Arial", "center", "rgb(255,0,0)")
-		
-		//get_slow_down_icon = context.getImageData(337, 340, 10, 10);
-		
-	/*	context.font = "bold 12px Arial";
-		context.textAlign = "left";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgb(255,255,255)";
-		context.fillText("S", 337 , 340); */
-		
 		draw_text("", "S", "", 337, 340,"bold 10px Arial", "left", "rgb(255,255,255)")
-		
 		get_slow_down_icon = context.getImageData(337, 335, 8, 10);
 	}
 	
@@ -493,14 +468,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function draw_plus_two_icon() {
 		draw_text("", "+2", "", 337, 325,"bold 10px Arial", "left", "rgb(255,255,255)")
-		
 		get_draw_plus_two_icon = context.getImageData(337, 320, 13, 10);
 	}
 	
 	function show_plus_two_icon() {
 		context.putImageData(get_draw_plus_two_icon, plus_two_icon_position[0] + 3, plus_two_icon_position[1] + 3);
 	}
-
 	
 	function radianAngle(angle) {
 		return radians = (Math.PI/180)*angle;
@@ -1067,7 +1040,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.textAlign = "left";
 			context.textBaseline = "middle";
 			context.fillStyle = "rgb(255,0,0)";
-			context.fillText("Next Level: " + (level+1), 150 , 170);
+			context.fillText("Next Level: " + (level+1), 120 , 170);
 	}
 	
 	function refresh_game() {
@@ -1214,8 +1187,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		if(spider_power <= 0) {
 			spider_power = 0;
 			spider_power_line = 0;
-			score += life_quantity*500*10;
 			end_screen();
+			return;
 		}
 	}
 	
@@ -1224,40 +1197,58 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.textAlign = "left";
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("You won! ", 150 , 170);
+		context.fillText("You won! ", 150 , 70);
+		context.fillText("Your score: " + score, 120 , 100);
 	}
-	
-	function author() {
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		interval_delay = 30;
-		win_game();
-		
+	function draw_author() {
 		context.font = "bold 12px Arial";
 		context.textAlign = "left";
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
 		
 		let JL = "Joanna Ligenza";
-		let CLT = " Pawel Ligenza";
+		let CLT = ", Pawel Ligenza";
 
 		for (i=0; i < who_made_it.length; i++) {
-			if (who_made_it[who_made_it.length - 1][2] < 0 ) {
-				cancelAnimationFrame(animation2);
-				return;
-			}
-			if ( i !== 3) {
+			//if (who_made_it[who_made_it.length - 1][2] < 0 ) {
+			
+			if ( i !== 3 && i !== 4) {
 				context.fillText(who_made_it[i][0] + JL, who_made_it[i][1] , who_made_it[i][2]);
 			}
 			if (i === 3) {
 				context.fillText(who_made_it[i][0] + JL + CLT, who_made_it[i][1] , who_made_it[i][2]);
 			}
+			if (i === 4) {
+				context.fillText(who_made_it[i][0], who_made_it[i][1] , who_made_it[i][2]);
+			}
 			who_made_it[i][2] = who_made_it[i][2] - 1 ;
+			
 		}
+	}
+	
+	function author() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		interval_delay = 30;
+		draw_frame();
+		win_game();
+		draw_author();
+		
+		if (who_made_it[0][2] < 140 ) {
+				cancelAnimationFrame(animation2);
+				//reload_game();
+				return;
+			}
 		
 		setTimeout(function() {
 			animation2 = requestAnimationFrame(author); 
 		}, interval_delay);
 	}
+	
+/*	function reload_game() {
+		if (which_key_pressed == "13") {
+			location.reload();
+		}
+	} */
 
 	
 	var t0 = performance.now();
@@ -1285,6 +1276,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			draw_spider_power_line();
 			if(spider_power <= 0) {
 				//win_game();
+				score = score + life_quantity*500*10;
 				author();
 				cancelAnimationFrame(animation);
 				return;
