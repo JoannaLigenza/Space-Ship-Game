@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let spider_stop_moving = 250; 
 	let spider_start_moving = 100;
 	let spider_power_line = 190;
-	let spider_power = 1;
+	let spider_power = 20;
 	let refresh = false;
 	let refresh_delay_time = 10;
 	let animation = "";
@@ -585,7 +585,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			one_shoot = false;
 			
 			if (shooting_sound_stoped == false) {
-				shooting_sound(60);
+				ship_shooting_sound(60);
 			}
 			get_bullet();
 		}
@@ -888,7 +888,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			spider_bullet_delay_arr.splice(0, spider_bullet_delay_arr.length);
 			
 			//shooting_sound_stoped = true;
-			shooting_sound(90);
+			enemy_shooting_sound(190);
 		}
 		if (max_spider_bullets == 0) {
 			shooting_sound_stoped = false;
@@ -954,8 +954,26 @@ document.addEventListener('DOMContentLoaded', function() {
 		my_keys.keys[e.keyCode] = false;
 	});
 	
-	function shooting_sound(freq2) {
+	function ship_shooting_sound(freq2) {
 		//const cont2 = new AudioContext();
+		let oscillator = cont.createOscillator();
+		let gain = cont.createGain();
+		oscillator.connect(gain);
+		gain.connect(cont.destination);
+			
+		oscillator.type = "sine";
+		oscillator.frequency.value = freq2;
+			
+		let now = cont.currentTime;
+		gain.gain.setValueAtTime(100, now);
+		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+		oscillator.start(now);
+		oscillator.stop(now + 1);
+		console.log("gram")
+	}
+	
+	function enemy_shooting_sound(freq2) {
+		const cont = new AudioContext();
 		let oscillator = cont.createOscillator();
 		let gain = cont.createGain();
 		oscillator.connect(gain);
