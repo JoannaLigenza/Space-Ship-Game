@@ -2,12 +2,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
-	const cont = new AudioContext();
-	let myV = "";
+	const cont = new AudioContext();	// must be outside of function
+	const cont2 = new AudioContext();
 	let position = "";
 	let song = "";
 	let scale = "";
-	let shooting_sound_stoped = false;
+	let myV = "";
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 11
@@ -584,9 +584,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			bullets_counts.push(1);
 			one_shoot = false;
 			
-			if (shooting_sound_stoped == false) {
-				ship_shooting_sound(60);
-			}
+			ship_shooting_sound(60);
+
 			get_bullet();
 		}
 	}
@@ -887,11 +886,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			spider_bullet_delay_arr.splice(0, spider_bullet_delay_arr.length);
 			
-			//shooting_sound_stoped = true;
 			enemy_shooting_sound(190);
-		}
-		if (max_spider_bullets == 0) {
-			shooting_sound_stoped = false;
 		}
 	}
 	
@@ -956,15 +951,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function ship_shooting_sound(freq2) {
 		//const cont2 = new AudioContext();
-		let oscillator = cont.createOscillator();
-		let gain = cont.createGain();
+		let oscillator = cont2.createOscillator();
+		let gain = cont2.createGain();
 		oscillator.connect(gain);
-		gain.connect(cont.destination);
+		gain.connect(cont2.destination);
 			
 		oscillator.type = "sine";
 		oscillator.frequency.value = freq2;
 			
-		let now = cont.currentTime;
+		let now = cont2.currentTime;
 		gain.gain.setValueAtTime(100, now);
 		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
 		oscillator.start(now);
@@ -973,7 +968,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function enemy_shooting_sound(freq2) {
-		const cont = new AudioContext();
+		//const cont = new AudioContext();
 		let oscillator = cont.createOscillator();
 		let gain = cont.createGain();
 		oscillator.connect(gain);
@@ -1082,8 +1077,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		is_arrow_visible = false; 
 		is_slow_down_visible = false;
 		is_plus_two_visible = false;
-		heart_visible = false;
-		shooting_sound_stoped = false;
+		heart_visible = false
 		hearts_quantity.splice(0, hearts_quantity.length);
 		all_bullets.splice(0, all_bullets.length);
 		all_bricks.splice(0, all_bricks.length);
