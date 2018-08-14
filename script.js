@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_shoot = true;
 	let enemy_quantity = [];
 	const bullets_counts = [];
-	let bullet_limit = 20;
+	let bullet_limit = 5;
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let get_bullets = "";
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const enemy_bullet_height = 10;
 	const enemy_bullet_delay = 10;
 	let enemy_bullet_delay_arr = [];
-	let enemy_max_bullet = 28;
+	let enemy_max_bullet = 20;
 	const all_enemy_bullets = [];
 	let get_enemy_bullet = "";
 	const my_keys = { 32: false };
@@ -890,7 +890,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			spider_bullet_delay_arr.splice(0, spider_bullet_delay_arr.length);
 			
-			shooting_sound_stoped = true;
+			//shooting_sound_stoped = true;
 			shooting_sound(90);
 		}
 		if (max_spider_bullets == 0) {
@@ -957,17 +957,17 @@ document.addEventListener('DOMContentLoaded', function() {
 		my_keys.keys[e.keyCode] = false;
 	});
 	
-	function shooting_sound(freq) {
-		
-		let oscillator = cont.createOscillator();
-		let gain = cont.createGain();
+	function shooting_sound(freq2) {
+		const cont2 = new AudioContext();
+		let oscillator = cont2.createOscillator();
+		let gain = cont2.createGain();
 		oscillator.connect(gain);
-		gain.connect(cont.destination);
+		gain.connect(cont2.destination);
 			
 		oscillator.type = "sine";
-		oscillator.frequency.value = freq;
+		oscillator.frequency.value = freq2;
 			
-		let now = cont.currentTime;
+		let now = cont2.currentTime;
 		gain.gain.setValueAtTime(100, now);
 		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
 		oscillator.start(now);
@@ -1053,9 +1053,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (life_quantity > 0) {
 			life_quantity -= 1;
+			score -= ((brick_col*brick_row) - all_bricks.length)*10
+			console.log(score)
 			what_to_refresh();
 			refersh_delay();
-			console.log("crash");
+			//console.log("crash");
 		}
 	}
 	
@@ -1187,6 +1189,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if(spider_power <= 0) {
 			spider_power = 0;
 			spider_power_line = 0;
+			score += life_quantity*500*10;
 			end_screen();
 		}
 	}
