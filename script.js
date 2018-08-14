@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6, 2, 7];
+	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let slow_down = false;
 	let slow_down_time = 150;
 	let get_star_icon = "";
-	//let is_star_icon_visible = false;
+	let catched_stars = [];
 	let star_icon_quantity = [];
 	let get_spider = "";
 	let spider_pos_x = 140;
@@ -534,6 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			//	if (heart_position_y + 8 > ship_position_y && heart_position_x > ship_position_x && heart_position_x < ship_position_x + ship_width) {
 				if (star_icon_quantity[i][1] + 16 > ship_position_y && star_icon_quantity[i][0] > ship_position_x && star_icon_quantity[i][0] + 12 < ship_position_x + ship_width) {
 					star_icon_quantity.splice(i, 1);
+					catched_stars.push(1);
 					score += 200;
 					life_star_catch(660);
 					return;
@@ -798,7 +799,6 @@ document.addEventListener('DOMContentLoaded', function() {
 						console.log("yes! 6" )
 					}
 					if(all_bricks[j][3] == 7) {
-						//is_star_icon_visible = true;
 						star_icon_quantity.push([all_bricks[j][1], all_bricks[j][2]]);
 						console.log("yes! 7" )
 					}
@@ -1157,13 +1157,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (life_quantity > 0) {
 			life_quantity -= 1;
-			if (level > 2) {
-				score -= (((brick_col*brick_row) - all_bricks.length)*10)-200
-			}
-			if (level <=2) {
-				score -= ((brick_col*brick_row) - all_bricks.length)*10
-			}
 			console.log(score)
+			score -= ( (((brick_col*brick_row) - all_bricks.length)*10) + (catched_stars.length*200));
+			console.log("zbite klocki: ", ((brick_col*brick_row) - (all_bricks.length))*10)
+			console.log("punkty za gwiazdke: ", catched_stars.length*200)
+			//score -= ((brick_col*brick_row) - all_bricks.length)*10
+			console.log(score)
+			console.log("catched_stars.length", catched_stars.length)
 			what_to_refresh();
 			refersh_delay();
 			//console.log("crash");
@@ -1184,6 +1184,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
 		bullets_counts.splice(0, bullets_counts.length);
 		enemy_quantity.splice(0, enemy_quantity.length);
+		catched_stars.splice(0, catched_stars.length);
 		yellow_bricks = 0;
 		green_bricks = 0;
 		
@@ -1206,7 +1207,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (level == 2) {
 				brick_col = 17;
 				brick_row = 3;
-				surprise_bricks_quantity = [6, 1, 3, 5];
+				surprise_bricks_quantity = [6, 1, 3, 5, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 3) {
