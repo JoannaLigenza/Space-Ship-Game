@@ -98,23 +98,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	let animation = "";
 	let end_game = false;
 	let who_made_it = [["Graphic: ", 110, 400], ["Sounds: ",110, 450], ["Realisation: ", 105, 500], ["Ideas and inspirations: ",20, 550]]
+
 	
 	function draw_frame() {
-		for (i=0; i < canvas.width; i++) {
-			for (j=0; j < canvas.height; j++) {
-				if (i == 0 || i == (canvas.width -1) || j == 0 || j == (canvas.height -1)) { 
-				context.fillStyle = "rgb(232, 169, 0)";
-				context.fillRect(i,j,1,1);
-				}
-				if (i == 1 || i == (canvas.width -2) || j == 1 || j == (canvas.height -2)) { 
-				context.fillStyle = "rgb(255, 195, 35)";
-				context.fillRect(i,j,1,1);
-				}
-			}
-		}		
+		context.fillStyle = "rgb(6, 0, 135)";
+		context.fillRect(2,2, canvas.width-4, canvas.height-4 );	
 	}
 	
 	function start_screen() {
+		draw_frame();
 		context.font = "bold 16px Arial";
 		context.textAlign = "left";
 		context.textBaseline = "middle";
@@ -488,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function slow_down_game() {
 		if (slow_down == true && slow_down_time > 0) {
-			interval_delay = 20;
+			interval_delay = 30;
 			slow_down_time -= 1;	
 		}
 		if (slow_down == true && slow_down_time == 0) {
@@ -569,6 +561,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineTo(59,370);
 		context.closePath();
 		context.fill();
+		
+		space_ship = context.getImageData(30, 300, ship_width, ship_height);
 	}
 	
 	function get_space_ship() {
@@ -1362,15 +1356,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function init() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		draw_frame();
 		draw_spider();
 		draw_virtual_bricks(70, 15);
 		draw_all_bricks();
 		draw_space_ship();
 		draw_enemy();
-		get_space_ship();
+		//get_space_ship();
 		draw_hearts();
 		get_heart();
-		draw_frame();
 		draw_arrow();
 		draw_slow_down_icon();
 		draw_plus_two_icon();
