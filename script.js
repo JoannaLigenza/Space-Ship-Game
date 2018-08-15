@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
 	const cont = new AudioContext();	// must be outside of function
+	const cont1 = new AudioContext();
 	const cont2 = new AudioContext();
 	const cont3 = new AudioContext();
 	let position = "";
@@ -1093,15 +1094,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function enemy_shooting_sound(freq2) {
 		//const cont = new AudioContext();
-		let oscillator = cont.createOscillator();
-		let gain = cont.createGain();
+		let oscillator = cont1.createOscillator();
+		let gain = cont1.createGain();
 		oscillator.connect(gain);
-		gain.connect(cont.destination);
+		gain.connect(cont1.destination);
 			
 		oscillator.type = "sine";
 		oscillator.frequency.value = freq2;
 			
-		let now = cont.currentTime;
+		let now = cont1.currentTime;
 		gain.gain.setValueAtTime(100, now);
 		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
 		oscillator.start(now);
