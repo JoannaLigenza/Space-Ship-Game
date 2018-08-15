@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let song = "";
 	let scale = "";
 	let myV = "";
+	let can_draw_frame = true;
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 11
@@ -26,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6];
+	let surprise_bricks_quantity = [6, 4];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -440,13 +441,42 @@ document.addEventListener('DOMContentLoaded', function() {
 	function background() {
 		background_delay_arr.push(1);
 		if(background_delay_arr.length < background_delay) {
-			canvas.style.backgroundColor = "rgb(250, 250, 250)";
+			context.fillStyle = "rgb(250, 250, 250)";
+			context.fillRect(2,2, canvas.width-4, canvas.height-4 );
+			
+			const ship_data = space_ship; 
+				for (let m=0; m < ship_data.data.length; m += 4) {
+						if (ship_data.data[m] === 6) {
+							ship_data.data[m] = 251;
+						}
+						if (ship_data.data[m+1] === 0) {
+							ship_data.data[m+1] = 251;
+						}
+						if (ship_data.data[m+2] === 135) {
+							ship_data.data[m+2] = 251;
+						}
+					} 
+						
+			space_ship = ship_data 
 		}
 		if(background_delay_arr.length > background_delay) {
-			canvas.style.backgroundColor = "rgb(6, 0, 135)";
 			background_delay_arr.splice(0, background_delay_arr.length);
 			white_background = false;
-		}
+			const ship_data = space_ship; 
+				for (let m=0; m < ship_data.data.length; m += 4) {
+						if (ship_data.data[m] === 251) {
+							ship_data.data[m] = 6;
+						}
+						if (ship_data.data[m+1] === 251) {
+							ship_data.data[m+1] = 0;
+						}
+						if (ship_data.data[m+2] === 251) {
+							ship_data.data[m+2] = 135;
+						}
+					} 
+						
+			space_ship = ship_data 
+		} 
 	}
 	
 	function draw_slow_down_icon() {
@@ -1207,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (level == 2) {
 				brick_col = 17;
 				brick_row = 3;
-				surprise_bricks_quantity = [6, 1, 3, 5, 7];
+				surprise_bricks_quantity = [6, 1, 3, 5, 4];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 3) {
@@ -1250,7 +1280,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				green_bricks = 20;
 				yellow_bricks = (brick_col * brick_row) - green_bricks;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 6, 7];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 6, 7, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 9) {
@@ -1258,7 +1288,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				green_bricks = (brick_col * brick_row);
 				yellow_bricks = 0;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 6, 7];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 6, 7, 7];
 				draw_virtual_bricks(9, 5)
 			}
 			if (level == 10) {
