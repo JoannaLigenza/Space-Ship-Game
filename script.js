@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	const all_bricks = [];
 	let ship_position_x = 160;
 	let ship_position_y = 300;
-	const ship_width = 40;
-	const ship_height = 70;
+	const ship_width = 70;
+	const ship_height = 77;
 	let enemy_position_x = [];
 	let enemy_position_y = [];
 	let space_ship = "";
@@ -118,11 +118,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
 		context.fillText("Press enter to play", 100 , 170);
+		draw_space_ship2();
 		loop1();
 	}
 	
 	function loop1() {
-		draw_space_ship2();
+		//context.clearRect(0, 0, canvas.width, canvas.height);
+		
 		if (which_key_pressed == "13") {
 			cancelAnimationFrame(animation3);
 			init();
@@ -1510,7 +1512,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_spider();
 		draw_virtual_bricks(70, 15);
 		draw_all_bricks();
-		draw_space_ship();
+		//draw_space_ship();
+		draw_space_ship2();
 		draw_enemy();
 		draw_star_icon();
 		//get_space_ship();
@@ -1524,94 +1527,24 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_space_ship2() {
-/*		context.beginPath();
-		context.fillStyle = "rgb(0, 5, 76)";
-		context.moveTo(30, 300);
-		context.bezierCurveTo(20,300, 15,300, 10,310);
-		context.bezierCurveTo(15,323, 20,327, 25,320);
-		context.lineTo(23, 315);
-		context.lineTo(28, 315);
-		context.lineTo(30, 320);
-		context.lineTo(32, 315);
-		context.lineTo(37, 315);
-		context.lineTo(35, 320);
-		context.bezierCurveTo(40,325, 45,325, 50,310);
-		context.bezierCurveTo(45,300, 40,300, 30,300);
-		context.fill();
 		
+		// left small wing
 		context.beginPath();
-		context.fillStyle = "rgb(255, 195, 35)";
-		context.moveTo(27, 297);
-		context.lineTo(24, 306);
-		context.lineTo(30, 306);
-		context.lineTo(27, 297);
-		context.fill();
-		
-		context.beginPath();
-		context.fillStyle = "rgb(255, 195, 35)";
-		context.moveTo(33, 297);
-		context.lineTo(30, 306);
-		context.lineTo(36, 306);
-		context.lineTo(33, 297);
-		context.fill(); */
-
-/*		context.beginPath();
-		context.fillStyle = "rgb(250, 250, 250)";
-		context.moveTo(30, 300);
-		context.lineTo(20, 330);
-		context.lineTo(10, 350);
-		context.lineTo(10, 360);
-		context.lineTo(50, 360);
-		context.lineTo(50, 350);
-		context.lineTo(40, 330);
-		context.lineTo(30, 300);
-		context.fill();
-		
-		context.beginPath();
-		context.strokeStyle = "rgb(38, 53, 255)";
-		context.lineWidth = 1;
-		context.moveTo(30, 300);
-		context.lineTo(20, 331);
-		context.lineTo(10, 351);
-		context.stroke();
-
-		context.beginPath()
-		context.strokeStyle = "rgb(38, 53, 255)";
-		context.lineWidth = 1;
-		context.moveTo(50, 351);
-		context.lineTo(40, 331);
-		context.lineTo(30, 300);
-		context.stroke(); 
-		
-		context.beginPath()
-		context.fillStyle = "rgb(38, 53, 255)";
-		context.moveTo(30, 320);
-		context.lineTo(25, 340);
-		context.lineTo(20, 350);
-		context.lineTo(20, 360);
-		context.lineTo(40, 360);
-		context.lineTo(40, 350);
-		context.lineTo(35, 340);
-		context.lineTo(30, 320);
-		context.fill();
-		
-		// Left bottom engine
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(20,361); 
-		context.lineTo(16,370);
-		context.lineTo(24,370);
+		context.fillStyle = "rgb(36, 82, 55)";
+		context.moveTo(50, 350);
+		context.lineTo(40, 341);
+		context.lineTo(47, 360);
 		context.closePath();
 		context.fill();
-		
-		// Right bottom engine
+
+		// right small wing
 		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(40,361); 
-		context.lineTo(36,370);
-		context.lineTo(44,370);
+		context.fillStyle = "rgb(36, 82, 55)";
+		context.moveTo(60, 350);
+		context.lineTo(70, 341);
+		context.lineTo(63, 360);
 		context.closePath();
-		context.fill();   */
+		context.fill();
 		
 		// Left wing
 		context.beginPath();
@@ -1628,13 +1561,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		// Thins on left wing
 		context.beginPath();
 		context.fillStyle = "rgb(36, 82, 55)";
-		context.moveTo(45, 319);
+		context.moveTo(45, 320);
 		context.lineTo(40, 317);
 		context.lineTo(38, 322);
 		context.lineTo(44, 327);
 		context.closePath();
 		
-		context.moveTo(37, 315);
+		context.moveTo(37, 316);
 		context.lineTo(32, 313);
 		context.lineTo(30, 317);
 		context.lineTo(36, 322);
@@ -1666,7 +1599,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// Thins on right wing
 		context.beginPath();
 		context.fillStyle = "rgb(36, 82, 55)";
-		context.moveTo(65, 319);
+		context.moveTo(65, 320);
 		context.lineTo(70, 317);
 		context.lineTo(72, 322);
 		context.lineTo(66, 327);
@@ -1743,36 +1676,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineTo(52, 305);
 		context.fill();
 		
-		// left small wing
-		context.beginPath();
-		context.fillStyle = "rgb(36, 82, 55)";
-		context.moveTo(50, 350);
-		context.lineTo(40, 341);
-		context.lineTo(47, 360);
-		context.closePath();
-		context.fill();
-
-		// right small wing
-		context.beginPath();
-		context.fillStyle = "rgb(36, 82, 55)";
-		context.moveTo(60, 350);
-		context.lineTo(70, 341);
-		context.lineTo(63, 360);
-		context.closePath();
-		context.fill();
-		
 		// left yellow circle
 		context.beginPath();
 		context.fillStyle = "rgb(229, 247, 26)";
-		context.moveTo(29, 297); 
-		context.arc(29, 297, 3, radianAngle(0), radianAngle(360));
+		context.moveTo(30, 297); 
+		context.arc(30, 297, 3, radianAngle(0), radianAngle(360));
 		context.fill();
 		
 		// right yellow circle
 		context.beginPath();
 		context.fillStyle = "rgb(229, 247, 26)";
-		context.moveTo(81, 297); 
-		context.arc(81, 297, 3, radianAngle(0), radianAngle(360));
+		context.moveTo(80, 297); 
+		context.arc(80, 297, 3, radianAngle(0), radianAngle(360));
 		context.fill();
 		
 		// engine
@@ -1792,55 +1707,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineTo(55, 370);
 		context.moveTo(58, 362);
 		context.lineTo(58, 367);
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 		context.stroke();
 		
+		space_ship = context.getImageData(20, 294, ship_width, ship_height);
 	}
-	
-	/*
-	context.beginPath();
-		context.fillStyle = "rgb(28, 28, 28)";
-		context.moveTo(180,15);
-		context.bezierCurveTo(165,25, 165,40, 170,60);
-		context.bezierCurveTo(170,70, 170,80, 180,90);
-		context.bezierCurveTo(190,80, 190,70, 190,60);
-		context.bezierCurveTo(195,40, 195,25, 180,15);
-		//context.closePath();
-		context.fill();
-		
-		// Spider eye
-		context.beginPath();
-		context.fillStyle = "rgb(250, 250, 250)";
-		context.moveTo(170,80); 
-		context.arc(175, 80, 2, radianAngle(0), radianAngle(360));
-		context.moveTo(190,80); 
-		context.arc(185, 80, 2, radianAngle(0), radianAngle(360));
-		context.fill();
-		
-		// Spider legs
-		context.beginPath();
-		context.strokeStyle = "rgb(28, 28, 28)";
-		context.lineWidth = 4;
-		context.moveTo(170, 45); 
-		context.lineTo(150, 40);
-		context.lineTo(140, 20);
-		
-		context.moveTo(190, 45);
-		context.lineTo(210, 40);
-		context.lineTo(220, 20);
-		
-		context.moveTo(170, 65); 
-		context.lineTo(150, 70);
-		context.lineTo(140, 90);
-		
-		context.moveTo(190, 65);
-		context.lineTo(210, 70);
-		context.lineTo(220, 90);
-		context.stroke();
-		
-		get_spider = context.getImageData(140, 15, spider_width, spider_height);
-	
-	*/
 
 	//console.log("all_bricks ", all_bricks)
 	var t1 = performance.now();
