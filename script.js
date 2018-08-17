@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6, 4];
+	let surprise_bricks_quantity = [6, 8];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -44,6 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_bullets = "";
 	let get_enemy = "";
 	let all_bullets = [];
+	let all_additional_bullets = [];
+	let turbo_shooting = false;
+	let turbo_shooting_delay = 450;
 	let shooting_enemy = "";
 	const enemy_width = 20;
 	const enemy_height = 14;
@@ -74,6 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_draw_plus_two_icon = "";
 	let plus_two_icon_position = [];
 	let is_plus_two_visible = false;
+	let get_lightning_icon = "";
+	let lightning_icon_position = [];
 	let slow_down = false;
 	let slow_down_time = 150;
 	let get_star_icon = "";
@@ -97,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let spider_power_line = 190;
 	let spider_power = 100;
 	let score = 0;
-	let level = 9;
+	let level = 1;
 	let change_level_delay = 30;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -372,7 +377,9 @@ document.addEventListener('DOMContentLoaded', function() {
 					
 					get_enemy_bullet = context.getImageData(enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height, bullet_width, bullet_height);
 					all_enemy_bullets.push([get_enemy_bullet, enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height]);
-					enemy_quantity[i][0] = enemy_quantity[i][0] - 1;					
+					enemy_quantity[i][0] = enemy_quantity[i][0] - 1;	
+						
+					enemy_shooting_sound(190);
 				}
 				if (enemy_quantity[i][0] == 0) {
 					enemy_quantity[i][1] = false;
@@ -381,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					enemy_quantity.splice(0, enemy_quantity.splice.length); 
 					return;
 				}
-				enemy_shooting_sound(190);
+				//enemy_shooting_sound(190);
 			}
 			enemy_bullet_delay_arr.splice(0, enemy_bullet_delay_arr.length);
 		}
@@ -579,6 +586,26 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	} 
 	
+	function draw_lightning_icon() {
+		context.beginPath();
+		context.moveTo(342,282); 
+		context.lineTo(335,295);
+		context.lineTo(341,291);
+		context.lineTo(338,300);
+		context.lineTo(344,288);
+		context.lineTo(339,291);
+		context.closePath(); 
+		context.lineWidth = 1;
+		context.fillStyle = "rgb(240, 240, 34)";
+		context.fill();
+		get_lightning_icon = context.getImageData(335, 282, 9, 18);
+	}
+	
+	function show_lightning_icon() {
+		context.putImageData(get_lightning_icon, lightning_icon_position[0] + 5, lightning_icon_position[1]);
+	}
+	
+	
 	function radianAngle(angle) {
 		return radians = (Math.PI/180)*angle;
 	}
@@ -686,11 +713,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.stroke();
 			
 			bullets_counts.push(1);
+			
+			if (turbo_shooting == true) {
+				draw_additional_bullets();     
+			}
+			
 			one_shoot = false;
 			
 			ship_shooting_sound(60);
 
 			get_bullet();
+			
 		}
 	}
 	
@@ -706,6 +739,39 @@ document.addEventListener('DOMContentLoaded', function() {
 		all_bullets.push([get_bullet, bullet_position_x, bullet_position_y]);
 	}
 	
+	function draw_additional_bullets() {
+		if (which_key_pressed == "32" && one_shoot == true && can_shoot == true) { 
+			
+			context.beginPath();
+			context.moveTo(ship_position_x + 10, ship_position_y - bullet_height); 
+			context.lineTo(ship_position_x + 10, ship_position_y);
+			
+			context.moveTo((ship_position_x + ship_width) - 10, ship_position_y - bullet_height); 
+			context.lineTo((ship_position_x + ship_width) - 10, ship_position_y);
+			
+			context.lineWidth = bullet_width;
+			context.strokeStyle = "rgb(250, 250, 250)";
+			context.stroke();
+			
+			bullets_counts.push(1);
+			//one_shoot = false;
+			
+			//ship_shooting_sound(60);
+
+			add_1_bullet_position_x = ship_position_x + 10 -1;
+			add_1_bullet_position_y = ship_position_y - bullet_height;
+			get_1_bullet = context.getImageData(add_1_bullet_position_x, add_1_bullet_position_y, bullet_width, bullet_height);
+			
+			add_2_bullet_position_x = (ship_position_x + ship_width) - 10 -1;
+			add_2_bullet_position_y = ship_position_y - bullet_height;
+			get_2_bullet = context.getImageData(add_2_bullet_position_x, add_2_bullet_position_y, bullet_width, bullet_height);
+		
+			all_bullets.push([get_1_bullet, add_1_bullet_position_x, add_1_bullet_position_y]);
+			all_bullets.push([get_2_bullet, add_2_bullet_position_x, add_2_bullet_position_y]);
+			//all_additional_bullets.push(1,1);
+		}
+	}
+	
 	function move_bullet() {
 		const bullet_step = 3;
 		for (i=0; i < all_bullets.length; i++) {
@@ -716,7 +782,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function bullet_collision() {
 		for (i = 0; i < all_bullets.length; i++) {
-			if (all_bullets[i][2] == (canvas.height - (canvas.height-2))) {
+			if (all_bullets[i][2] <= (canvas.height - (canvas.height-2))) {
 				all_bullets.splice(i, 1);
 				bullets_counts.splice(i, 1);
 				return;
@@ -833,6 +899,11 @@ document.addEventListener('DOMContentLoaded', function() {
 					if(all_bricks[j][3] == 7) {
 						star_icon_quantity.push([all_bricks[j][1], all_bricks[j][2]]);
 						console.log("yes! 7" )
+					}
+					if(all_bricks[j][3] == 8) {
+						turbo_shooting = true;
+						lightning_icon_position = [all_bricks[j][1], all_bricks[j][2]];
+						console.log("yes! 8" )
 					}
 					
 					all_bullets.splice(i, 1);
@@ -1338,7 +1409,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		is_arrow_visible = false; 
 		is_slow_down_visible = false;
 		is_plus_two_visible = false;
-		heart_visible = false
+		heart_visible = false;
+		turbo_shooting = false;
+		turbo_shooting_delay = 450;
 		hearts_quantity.splice(0, hearts_quantity.length);
 		all_bullets.splice(0, all_bullets.length);
 		all_bricks.splice(0, all_bricks.length);
@@ -1349,6 +1422,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		catched_stars.splice(0, catched_stars.length);
 		yellow_bricks = 0;
 		green_bricks = 0;
+		
 		
 		if (level == 10) {
 			can_spider_move = true;
@@ -1367,63 +1441,64 @@ document.addEventListener('DOMContentLoaded', function() {
 				draw_virtual_bricks(70, 15)
 			}
 			if (level == 2) {
-				brick_col = 17;
+				brick_col = 15;
 				brick_row = 3;
-				surprise_bricks_quantity = [6, 1, 3, 5, 4];
-				draw_virtual_bricks(9, 5)
+				surprise_bricks_quantity = [6, 1, 3, 5];
+				draw_virtual_bricks(30, 5)
 			}
 			if (level == 3) {
-				brick_col = 17;
+				brick_col = 15;
 				brick_row = 4;
 				surprise_bricks_quantity = [6, 1, 3, 2, 7];
-				draw_virtual_bricks(9, 5)
+				draw_virtual_bricks(30, 5)
 			}
 			if (level == 4) {
-				brick_col = 17;
+				brick_col = 15;
 				brick_row = 4;
 				yellow_bricks = 10;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 7];
-				draw_virtual_bricks(9, 5)
+				draw_virtual_bricks(30, 5)
 			}
 			if (level == 5) {
-				brick_col = 17;
+				brick_col = 15;
 				brick_row = 6;
 				yellow_bricks = 20;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 1, 2, 7];
-				draw_virtual_bricks(9, 5)
+				draw_virtual_bricks(30, 5)
 			}
 			if (level == 6) {
-				brick_col = 17;
+				brick_col = 15;
 				brick_row = 7;
 				yellow_bricks = 40;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 7];
-				draw_virtual_bricks(9, 5)
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 7, 8];
+				draw_virtual_bricks(30, 5)
 			}
 			if (level == 7) {
-				brick_col = 17;
+				brick_col = 15;
 				brick_row = 8;
 				//green_bricks = 10;
 				yellow_bricks = (brick_col * brick_row);
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7];
-				draw_virtual_bricks(9, 5)
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7, 8];
+				draw_virtual_bricks(30, 5)
 			}
 			if (level == 8) {
-				brick_col = 17;
+				brick_col = 15;
 				brick_row = 8;
 				green_bricks = 20;
 				yellow_bricks = (brick_col * brick_row) - green_bricks;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 6, 7, 7];
-				draw_virtual_bricks(9, 5)
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 6, 7, 7, 8];
+				draw_virtual_bricks(30, 5)
 			}
 			if (level == 9) {
-				brick_col = 17;
+				brick_col = 15;
 				brick_row = 8;
 				green_bricks = (brick_col * brick_row);
 				yellow_bricks = 0;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 6, 7, 7];
-				draw_virtual_bricks(9, 5)
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 6, 7, 7, 8];
+				draw_virtual_bricks(30, 5)
 			}
 			if (level == 10) {
+				turbo_shooting = true;
 				brick_col = 0;
 				brick_row = 0;
 				green_bricks = 0;
@@ -1531,7 +1606,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_virtual_bricks ", all_virtual_bricks)
-		//console.log("interval_delay", interval_delay)
+		console.log("bullets_counts", bullets_counts)
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
@@ -1613,6 +1688,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		space_ship_move();
 		move_bricks();
+		if (turbo_shooting == true) {
+			turbo_shooting_delay -= 1;
+			show_lightning_icon();
+			if (turbo_shooting_delay == 0) {
+				turbo_shooting = false;
+				turbo_shooting_delay = 250;
+			}
+		}
 		if (bullets_counts.length < bullet_limit) {
 			can_shoot = true;
 		}
@@ -1643,6 +1726,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_arrow();
 		draw_slow_down_icon();
 		draw_plus_two_icon();
+		draw_lightning_icon();
 		move_bricks();
 		loop();
 	}
