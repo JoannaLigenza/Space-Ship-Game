@@ -101,6 +101,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	let spider_start_moving = 100;
 	let spider_power_line = 190;
 	let boss_power = 100;
+	let all_obstacles = [];
+	let obstacles_delay = 30;
+	let get_obstacle = "";
+	let obstacle_pos_x = "";
+	let obstacle_pos_y = "";
 	let score = 0;
 	let level = 9;
 	let change_level_delay = 30;
@@ -126,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillStyle = "rgb(255,0,0)";
 		context.fillText("Press enter to play", 100 , 170);
 		draw_boss();
+		draw_obstacle();
 		loop1();
 	}
 	
@@ -433,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (heart_position_y + 8 > ship_position_y && heart_position_x > ship_position_x && heart_position_x < ship_position_x + ship_width) {
 					hearts_quantity.splice(i, 1);
 					life_quantity += 1;
-					life_star_catch(660);
+					life_star_catch_sound(660);
 					return;
 				}
 				if (heart_position_y + 8  > canvas.height - 5 ) {
@@ -575,7 +581,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					star_icon_quantity.splice(i, 1);
 					catched_stars.push(1);
 					score += 200;
-					life_star_catch(660);
+					life_star_catch_sound(660);
 					return;
 				}
 				if (star_icon_quantity[i][1] + 16  > canvas.height - 5 ) {
@@ -1214,6 +1220,38 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
+	// przeszkoda
+	function draw_obstacle() {
+		const first_obstacle_width = 20;
+		context.beginPath();
+		context.moveTo(25, 210); 
+		context.lineTo(5, 210);
+		context.lineWidth = 5;
+		context.strokeStyle = "rgb(250, 250, 250)";
+		context.stroke();
+		
+		obstacle_pos_x = canvas.width -2
+		obstacle_pos_y = 120
+
+		get_obstacle = context.getImageData(5, 207, first_obstacle_width, 6);
+	}
+	
+	function push_obstacles() {
+		all_obstacles.push([get_obstacle, obstacle_pos_x, obstacle_pos_y])
+	}
+	
+	function move_obstacles() {
+		const obstacle_step = 2;
+		for (i=0; i < all_obstacles.length; i++) {
+			context.putImageData(all_obstacles[i][0], all_obstacles[i][1], all_obstacles[i][2]);
+			all_obstacles[i][1] = all_obstacles[i][1] - obstacle_step;
+		}
+	}
+	
+	function ship_bullets_bouncing() {
+		
+	}
+	
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed = e.keyCode;
 		console.log(which_key_pressed)
@@ -1232,7 +1270,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		my_keys.keys[e.keyCode] = false;
 	});
 	
-	function life_star_catch(freq2) {
+	function life_star_catch_sound(freq2) {
 		let oscillator = cont3.createOscillator();
 		let gain = cont3.createGain();
 		oscillator.connect(gain);
@@ -1596,6 +1634,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (level == 10) {
 			draw_boss_power();
 			draw_boss_power_line();
+			obstacles_delay -= 1;
 			if(boss_power <= 0) {
 				//win_game();
 				score = score + life_quantity*500*10;
@@ -1603,8 +1642,14 @@ document.addEventListener('DOMContentLoaded', function() {
 				cancelAnimationFrame(animation);
 				return;
 			}
+			if(obstacles_delay == 0) {
+				//draw_obstacle();
+				push_obstacles();
+				obstacles_delay = 30;
+			}
 			move_boss();
 			stop_boss();
+			move_obstacles();
 			if (can_boss_shoot == true) {
 				draw_boss_bullets();
 				move_boss_bullet();
@@ -1612,6 +1657,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (all_boss_bullets.length > 0) {
 				spider_bullets_collision();
 			}
+			
 			//draw_spider();	
 		}
 		
@@ -1699,6 +1745,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_plus_two_icon();
 		draw_lightning_icon();
 		move_bricks();
+		draw_obstacle();
 		loop();
 	}
 	
