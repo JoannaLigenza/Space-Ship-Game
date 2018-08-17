@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
-	const cont = new AudioContext();	// must be outside of function
+	const cont = new AudioContext();
 	const cont1 = new AudioContext();
 	const cont2 = new AudioContext();
 	const cont3 = new AudioContext();
@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let spider_pos_y = 15;
 	let spider_width = 80;
 	let spider_height = 75;
+	let alien_width = 106;
+	let alien_height = 84;
 	let direction_of_spider_move = "left";
 	let max_spider_bullets = 15;
 	let all_spider_bullets = [];
@@ -118,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
 		context.fillText("Press enter to play", 100 , 170);
-		draw_space_ship2();
+		draw_boss();
 		loop1();
 	}
 	
@@ -527,21 +529,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_star_icon() {
-/*		context.beginPath();
-		context.moveTo(341,305); 
-		context.lineTo(340,307);
-		context.lineTo(337,308);
-		context.lineTo(340,309);
-		context.lineTo(341,311);
-		context.lineTo(342,309);
-		context.lineTo(345,308);
-		context.lineTo(342,307);
-		context.closePath(); 
-		context.lineWidth = 1;
-		context.strokeStyle = "rgb(240, 240, 34)";
-		context.lineWidth = bullet_width;
-		context.stroke();  */
-		
 		context.beginPath();
 		context.moveTo(341,303); 
 		context.lineTo(340,307);
@@ -556,7 +543,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineTo(343,306);
 		context.lineTo(342,307);
 		context.closePath(); 
-		//context.lineTo(341,305);
 		context.lineWidth = 1;
 		context.strokeStyle = "rgb(240, 240, 34)";
 		context.lineWidth = bullet_width;
@@ -683,8 +669,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (ship_position_x <= 6) {
 			ship_position_x = 6;
 		}
-		if (ship_position_x >= (canvas.width - space_ship.width - 6  ) ) {
-			ship_position_x = canvas.width - space_ship.width - 6;
+		if (ship_position_x >= (canvas.width - ship_width) - 6 ) {
+			ship_position_x = (canvas.width - ship_width) - 6;
 		}
 	}
 	
@@ -693,8 +679,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (which_key_pressed == "32" && one_shoot == true && can_shoot == true) { 
 			
 			context.beginPath();
-			context.moveTo(ship_position_x + 20, ship_position_y - bullet_height); 
-			context.lineTo(ship_position_x + 20, ship_position_y);
+			context.moveTo(ship_position_x + (ship_width/2), ship_position_y - bullet_height); 
+			context.lineTo(ship_position_x + (ship_width/2), ship_position_y);
 			context.lineWidth = bullet_width;
 			context.strokeStyle = "rgb(250, 250, 250)";
 			context.stroke();
@@ -713,7 +699,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		let bullet_position_y = "";
 		let get_bullet = "";
 		
-		bullet_position_x = ship_position_x + 19;
+		bullet_position_x = ship_position_x + (ship_width/2)-1;
 		bullet_position_y = ship_position_y - bullet_height;
 		get_bullet = context.getImageData(bullet_position_x, bullet_position_y, bullet_width, bullet_height);
 		
@@ -736,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				return;
 			}
 			if (level == 10) {
-				if (all_bullets[i][1] >= (spider_pos_x + 30) && all_bullets[i][1] <= ((spider_pos_x + spider_width) - 30) && all_bullets[i][2] <= (spider_pos_y + spider_height) ) {
+				if (all_bullets[i][1] >= (spider_pos_x + 26) && all_bullets[i][1] <= ((spider_pos_x + alien_width) - 26) && all_bullets[i][2] <= (spider_pos_y + alien_height) - 15 ) {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
 					score += 50;
@@ -899,7 +885,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_spider_power() {
-		draw_text("", "Spider power: ", "", 5, 10, "bold 12px Arial", "left", "rgb(255,0,0)");
+		draw_text("", "Alien power: ", "", 5, 10, "bold 12px Arial", "left", "rgb(255,0,0)");
 		draw_text("", spider_power , " %", 200 , 10, "bold 12px Arial", "left", "rgb(255,0,0)");
 	}
 	
@@ -958,6 +944,133 @@ document.addEventListener('DOMContentLoaded', function() {
 		get_spider = context.getImageData(140, 15, spider_width, spider_height);
 	}
 	
+	function draw_boss() {
+		
+		// left leg
+		context.beginPath();
+		context.strokeStyle = "rgb(162, 163, 164)";
+		context.moveTo(164, 65); 
+		context.lineTo(145, 55);
+		context.lineTo(130, 70);
+		context.lineTo(145, 90);
+		context.lineWidth = 4;
+		context.stroke();
+		
+		// right leg
+		context.beginPath();
+		context.strokeStyle = "rgb(162, 163, 164)";
+		context.moveTo(200, 65); 
+		context.lineTo(215, 55);
+		context.lineTo(230, 70);
+		context.lineTo(215, 90);
+		context.lineWidth = 4;
+		context.stroke();
+		
+		// circle on legs
+		context.beginPath();
+		context.fillStyle = "rgb(255, 195, 35)";
+		context.moveTo(145, 55); 
+		context.arc(145, 55, 3, radianAngle(0), radianAngle(360));
+		context.moveTo(130, 70); 
+		context.arc(130, 70, 3, radianAngle(0), radianAngle(360));
+		
+		context.moveTo(215, 55); 
+		context.arc(215, 55, 3, radianAngle(0), radianAngle(360));
+		context.moveTo(230, 70); 
+		context.arc(230, 70, 3, radianAngle(0), radianAngle(360));
+		context.fill();
+		
+		// left laser
+		context.beginPath();
+		context.fillStyle = "rgb(255,0,0)";
+		context.moveTo(149, 86);
+		context.lineTo(141, 94);
+		context.lineTo(153, 99);
+		context.closePath();
+		context.fill();
+		
+		// right laser
+		context.beginPath();
+		context.fillStyle = "rgb(255,0,0)";
+		context.moveTo(211, 86);
+		context.lineTo(219, 94);
+		context.lineTo(207, 99);
+		context.closePath();
+		context.fill();
+		
+		// upper part of boss - blue
+		context.beginPath();
+		context.fillStyle = "rgb(95, 159, 255)";
+		context.moveTo(180,15);
+		context.bezierCurveTo(160,25, 160,40, 160,70);
+		context.lineTo(200, 70);
+		context.bezierCurveTo(200,40, 200,25, 180,15);
+		context.fill();
+		
+		// alien
+		context.beginPath();
+		context.fillStyle = "rgb(0, 103, 12)";
+		context.moveTo(175,65);
+		context.bezierCurveTo(150,20, 210,20, 185,65);
+		context.fill();
+		
+		// alien eyes
+		context.beginPath();
+		context.fillStyle = "rgb(0, 0, 0)";
+		context.moveTo(173,40);
+		context.bezierCurveTo(174,36, 179,43, 180,45);
+		context.bezierCurveTo(179,51, 174,45, 173,40);
+		
+		context.moveTo(188,40);
+		context.bezierCurveTo(187,36, 182,43, 181,45);
+		context.bezierCurveTo(182,51, 187,45, 188,40);
+		context.fill();
+		
+		// lower part of boss
+		context.beginPath();
+		//context.fillStyle = "rgb(198, 198, 198)";
+		context.fillStyle = "rgb(40, 98, 184)";
+		context.moveTo(210,70);
+		context.bezierCurveTo(210,55, 150,55, 150,70);
+		context.bezierCurveTo(150,85, 210,85, 210,70);
+		context.fill();
+		
+		// blue little laser under lower part of boss
+		context.beginPath();
+		context.strokeStyle = "rgb(95, 159, 255)";
+		context.moveTo(180, 82);
+		context.lineTo(180, 84);
+		context.lineWidth = 2;
+		context.stroke();
+		
+		// stripes on lower part of boss
+		context.beginPath();
+		context.strokeStyle = "rgb(95, 159, 255)";
+		context.moveTo(160, 62);
+		context.lineTo(168, 80);
+		context.moveTo(175, 59);
+		context.lineTo(185, 81);
+		context.moveTo(192, 60);
+		context.lineTo(200, 78);
+		context.lineWidth = 2;
+		context.stroke();
+		
+		// dots on lower part of boss
+		context.beginPath();
+		context.fillStyle = "rgb(255, 195, 35)";
+		context.moveTo(157, 70); 
+		context.arc(157, 70, 2, radianAngle(0), radianAngle(360));
+		context.moveTo(172, 70); 
+		context.arc(172, 70, 2, radianAngle(0), radianAngle(360));
+		context.moveTo(188, 70); 
+		context.arc(188, 70, 2, radianAngle(0), radianAngle(360));
+		context.moveTo(203, 70); 
+		context.arc(203, 70, 2, radianAngle(0), radianAngle(360));
+		context.fill();
+		
+		get_spider = context.getImageData(127, 15, alien_width, alien_height);
+	}
+	
 	function move_spider() {
 		let spider_step = 3;
 		if (spider_power < 50) {
@@ -980,12 +1093,19 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (spider_pos_x <= (canvas.width - (canvas.width-2) )) {
 				direction_of_spider_move = "right"
 			}
-			if (spider_pos_x >= (canvas.width -2) - spider_width ) {
+			if (spider_pos_x >= (canvas.width -2) - alien_width - 1 ) {
 				direction_of_spider_move = "left"
 			}
 		}
-		
-		
+	}
+	
+	function boss_collision() {
+		if (spider_pos_x <= 6) {
+			spider_pos_x = 6;
+		}
+		if (spider_pos_x >= (canvas.width - alien_width) - 6 ) {
+			spider_pos_x = (canvas.width - alien_width) - 6;
+		}
 	}
 	
 	function draw_spider_bullets() {
@@ -994,14 +1114,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			max_spider_bullets -= 1;
 			
 			context.beginPath();
-			context.moveTo(spider_pos_x + (spider_width / 2), spider_pos_y + (spider_height)); 
-			context.lineTo(spider_pos_x + (spider_width / 2), (spider_pos_y + (spider_height)) + bullet_height);
+			context.moveTo(spider_pos_x + (alien_width / 2), (spider_pos_y + alien_height) - 15); 
+			context.lineTo(spider_pos_x + (alien_width / 2), ((spider_pos_y + alien_height) - 15) + bullet_height);
 			context.lineWidth = bullet_width;
 			context.strokeStyle = "rgb(250, 250, 250)";
 			context.stroke();
 			
-			spider_bullet_pos_x = spider_pos_x + (spider_width / 2);
-			spider_bullet_pos_y = spider_pos_y + (spider_height)
+			spider_bullet_pos_x = spider_pos_x + (alien_width / 2);
+			spider_bullet_pos_y = (spider_pos_y + alien_height) - 15;
 				
 			get_spider_bullet = context.getImageData(spider_bullet_pos_x, spider_bullet_pos_y, bullet_width, bullet_height);
 			all_spider_bullets.push([get_spider_bullet, spider_bullet_pos_x, spider_bullet_pos_y]);
@@ -1437,6 +1557,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				cancelAnimationFrame(animation);
 				return;
 			}
+			move_spider();
+			stop_spider();
 			if (can_spider_shoot == true) {
 				draw_spider_bullets();
 				move_spider_bullet();
@@ -1444,9 +1566,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (all_spider_bullets.length > 0) {
 				spider_bullets_collision();
 			}
-			//draw_spider();
-			move_spider();
-			stop_spider();	
+			//draw_spider();	
 		}
 		
 		if (enemy_quantity.length > 0) {
@@ -1509,7 +1629,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	function init() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
-		draw_spider();
+		//draw_spider();
+		draw_boss();
 		draw_virtual_bricks(70, 15);
 		draw_all_bricks();
 		//draw_space_ship();
