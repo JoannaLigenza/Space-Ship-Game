@@ -98,14 +98,21 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_boss_move = true;
 	let can_boss_shoot = false;
 	let boss_stop_moving = 250; 
-	let spider_start_moving = 100;
-	let spider_power_line = 190;
+	let boss_start_moving = 100;
+	let boss_power_line = 190;
 	let boss_power = 100;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
 	let get_obstacle = "";
+	let get_2_obstacle = "";
+	let get_3_obstacle = "";
 	let obstacle_pos_x = "";
 	let obstacle_pos_y = "";
+	let obstacle_2_pos_x = "";
+	let obstacle_2_pos_y = "";
+	let obstacle_3_pos_x = "";
+	let obstacle_3_pos_y = "";
+	let first_obstacle_width = "";
 	let score = 0;
 	let level = 9;
 	let change_level_delay = 30;
@@ -131,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillStyle = "rgb(255,0,0)";
 		context.fillText("Press enter to play", 100 , 170);
 		draw_boss();
-		draw_obstacle();
 		loop1();
 	}
 	
@@ -794,31 +800,24 @@ document.addEventListener('DOMContentLoaded', function() {
 				return;
 			}
 			if (level == 10) {
-				if (all_bullets[i][1] >= (boss_pos_x + 26) && all_bullets[i][1] <= ((boss_pos_x + alien_width) - 26) && all_bullets[i][2] <= (boss_pos_y + alien_height) - 15 ) {
+				if (all_bullets[i][1] >= (boss_pos_x + 20) && all_bullets[i][1] <= ((boss_pos_x + alien_width) - 20) && all_bullets[i][2] <= (boss_pos_y + alien_height) - 15 ) {
 					all_bullets.splice(i, 1);
 					bullets_counts.splice(i, 1);
 					score += 50;
 					boss_power -= 1;
-					spider_power_line -= 1;
-					
-			/*		const spider_data = get_boss; 
-					const spider_temp_data = spider_data;
-					for (let m=0; m < spider_data.data.length; m += 4) {
-							if (spider_data.data[m] === 28) {
-								spider_data.data[m] = 255;
-							}
-							if (spider_data.data[m+1] === 28) {
-								spider_data.data[m+1] = 0;
-							}
-							if (spider_data.data[m+2] === 28) {
-								spider_data.data[m+2] = 0;
-							}
-						} 
-						
-						get_boss = spider_data; */
-						
-						
+					boss_power_line -= 1;	
 					return;
+				}
+				for(k = 0; k < all_obstacles.length; k++) {
+					if (all_bullets[i][2] <= all_obstacles[k][2] && all_bullets[i][2] + bullet_height >= all_obstacles[k][2] && all_bullets[i][1] >= all_obstacles[k][1] && all_bullets[i][1] <= all_obstacles[k][1] + first_obstacle_width) {
+						if(all_obstacles[k][3] == "orange") {
+							all_obstacles.splice(k, 1);
+							console.log("orange");
+						}
+						all_bullets.splice(i, 1);
+						bullets_counts.splice(i, 1);	
+						return;
+					}
 				}
 			}
 			for (j = 0; j < all_bricks.length; j++) {
@@ -971,7 +970,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.strokeStyle = "rgb(255,0,0)";
 		context.lineWidth = 3;
 		context.moveTo(90, 11); 
-		context.lineTo(spider_power_line, 11);
+		context.lineTo(boss_power_line, 11);
 		context.stroke();
 	}
 	
@@ -1158,18 +1157,20 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.strokeStyle = "rgb(250, 250, 250)";
 			context.stroke();
 			
-			let boss_bullet_pos_x = boss_pos_x + (alien_width / 2);
+			let boss_bullet_width = 2;
+			
+			let boss_bullet_pos_x = boss_pos_x + (alien_width / 2) -1;
 			let boss_bullet_pos_y = (boss_pos_y + alien_height) - 15;
 			
-			let boss_left_bullet_pos_x = boss_pos_x + 16 
+			let boss_left_bullet_pos_x = boss_pos_x + 16 -1
 			let boss_left_bullet_pos_y = boss_pos_y + alien_height
 			
-			let boss_right_bullet_pos_x = (boss_pos_x + alien_width) - 16
+			let boss_right_bullet_pos_x = (boss_pos_x + alien_width) - 16 -1
 			let boss_right_bullet_pos_y = boss_pos_y + alien_height
 				
-			let get_boss_bullet = context.getImageData(boss_bullet_pos_x, boss_bullet_pos_y, bullet_width, bullet_height);
-			let get_left_boss_bullet = context.getImageData(boss_left_bullet_pos_x, boss_left_bullet_pos_y, bullet_width, bullet_height);
-			let get_right_boss_bullet = context.getImageData(boss_right_bullet_pos_x, boss_right_bullet_pos_y, bullet_width, bullet_height);
+			let get_boss_bullet = context.getImageData(boss_bullet_pos_x, boss_bullet_pos_y, boss_bullet_width, bullet_height);
+			let get_left_boss_bullet = context.getImageData(boss_left_bullet_pos_x, boss_left_bullet_pos_y, boss_bullet_width, bullet_height);
+			let get_right_boss_bullet = context.getImageData(boss_right_bullet_pos_x, boss_right_bullet_pos_y, boss_bullet_width, bullet_height);
 			
 			all_boss_bullets.push([get_boss_bullet, boss_bullet_pos_x, boss_bullet_pos_y]);
 			all_boss_bullets.push([get_left_boss_bullet, boss_left_bullet_pos_x, boss_left_bullet_pos_y]);
@@ -1189,9 +1190,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
-	function spider_bullets_collision() {
+	function boss_bullets_collision() {
 		for (i = 0; i < all_boss_bullets.length; i++) {
-			if ((all_boss_bullets[i][2] + bullet_height) > ship_position_y && ( all_boss_bullets[i][1] > ship_position_x && (all_boss_bullets[i][1]) < ship_position_x + ship_width)) {
+			if ((all_boss_bullets[i][2] + bullet_height) >= ship_position_y && ( all_boss_bullets[i][1] >= ship_position_x && (all_boss_bullets[i][1]) <= ship_position_x + ship_width)) {
 				refresh_game();
 				return;
 			}
@@ -1222,9 +1223,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// przeszkoda
 	function draw_obstacle() {
-		const first_obstacle_width = 20;
+		first_obstacle_width = 30;
 		context.beginPath();
-		context.moveTo(25, 210); 
+		context.moveTo(35, 210); 
 		context.lineTo(5, 210);
 		context.lineWidth = 5;
 		context.strokeStyle = "rgb(250, 250, 250)";
@@ -1234,10 +1235,44 @@ document.addEventListener('DOMContentLoaded', function() {
 		obstacle_pos_y = 120
 
 		get_obstacle = context.getImageData(5, 207, first_obstacle_width, 6);
+		
+		second_obstacle_width = 20;
+		context.beginPath();
+		context.moveTo(25, 220); 
+		context.lineTo(5, 220);
+		context.lineWidth = 5;
+		context.strokeStyle = "rgb(255, 195, 35)";
+		context.stroke();
+		
+		obstacle_2_pos_x = canvas.width -4
+		obstacle_2_pos_y = 150
+
+		get_2_obstacle = context.getImageData(5, 217, second_obstacle_width, 6);
+		
+		thrid_obstacle_width = 10;
+		context.beginPath();
+		context.moveTo(15, 230); 
+		context.lineTo(5, 230);
+		context.lineWidth = 5;
+		context.strokeStyle = "rgb(250, 250, 250)";
+		context.stroke();
+		
+		obstacle_3_pos_x = canvas.width 
+		obstacle_3_pos_y = 180
+
+		get_3_obstacle = context.getImageData(5, 227, thrid_obstacle_width, 6);
 	}
 	
 	function push_obstacles() {
-		all_obstacles.push([get_obstacle, obstacle_pos_x, obstacle_pos_y])
+		if (boss_power <= 100) {
+			all_obstacles.push([get_obstacle, obstacle_pos_x, obstacle_pos_y, "white"]);
+		}
+		if (boss_power <= 85) {
+			all_obstacles.push([get_2_obstacle, obstacle_2_pos_x, obstacle_2_pos_y, "orange"]);
+		}
+		if (boss_power <= 70) {
+			all_obstacles.push([get_3_obstacle, obstacle_3_pos_x, obstacle_3_pos_y, "white"]);
+		}
 	}
 	
 	function move_obstacles() {
@@ -1245,7 +1280,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		for (i=0; i < all_obstacles.length; i++) {
 			context.putImageData(all_obstacles[i][0], all_obstacles[i][1], all_obstacles[i][2]);
 			all_obstacles[i][1] = all_obstacles[i][1] - obstacle_step;
+			if (all_obstacles[i][1] + first_obstacle_width < 2) {
+				all_obstacles.splice(i, 1);
+			}
 		}
+		
 	}
 	
 	function ship_bullets_bouncing() {
@@ -1303,7 +1342,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
 		oscillator.start(now);
 		oscillator.stop(now + 1);
-		console.log("gram")
 	}
 	
 	function enemy_shooting_sound(freq2) {
@@ -1545,7 +1583,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function win_game() {
 		if(boss_power <= 0) {
 			boss_power = 0;
-			spider_power_line = 0;
+			boss_power_line = 0;
 			end_screen();
 			return;
 		}
@@ -1615,7 +1653,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_virtual_bricks ", all_virtual_bricks)
-		console.log("all_boss_bullets", all_boss_bullets)
+		//console.log("all_obstacles", all_obstacles)
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
@@ -1646,7 +1684,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				//draw_obstacle();
 				push_obstacles();
 				obstacles_delay = 30;
-			}
+			} 
 			move_boss();
 			stop_boss();
 			move_obstacles();
@@ -1655,7 +1693,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				move_boss_bullet();
 			}
 			if (all_boss_bullets.length > 0) {
-				spider_bullets_collision();
+				boss_bullets_collision();
 			}
 			
 			//draw_spider();	
