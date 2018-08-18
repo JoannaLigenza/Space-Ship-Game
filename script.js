@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let obstacle_3_pos_y = "";
 	let first_obstacle_width = "";
 	let score = 0;
-	let level = 9;
+	let level = 1;
 	let change_level_delay = 30;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -217,6 +217,10 @@ document.addEventListener('DOMContentLoaded', function() {
 				if ( m % 2 == 0) { 
 					brick_pattern1(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
 				}
+				if ( m % 2 != 0) { 
+					brick_pattern3(all_virtual_bricks[m][1], all_virtual_bricks[m][2]);
+				}
+				//brick_pattern3(positionX, positionY);
 				get_brick = context.getImageData(all_virtual_bricks[m][1], all_virtual_bricks[m][2], brick_width+1, brick_height+1);
 				all_bricks.push([get_brick, all_virtual_bricks[m][1], all_virtual_bricks[m][2], 0, color])
 		}
@@ -265,23 +269,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	
 	function brick_color(positionX, positionY) {
-		for (i = positionX + 1 ; i <= (positionX + brick_width) -1 ; i++) {
-			for (j = positionY + 1; j <= (positionY + brick_height) - 1; j++) {
+		//for (i = positionX + 1 ; i <= (positionX + brick_width) -1 ; i++) {
+		//	for (j = positionY + 1; j <= (positionY + brick_height) - 1; j++) {
 				if (color == "orange") { 
 					context.fillStyle = "rgb(232, 169, 0)";
+					//context.fillStyle = "rgb(246, 133, 0)";
+					context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
 				}
 				if (color == "yellow") { 
 					context.fillStyle = "rgb(240, 240, 34)";
+					//context.fillStyle = "rgb(255, 217, 0)";
+					context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
 				}
 				if (color == "green") { 
-					context.fillStyle = "rgb(15, 120, 5)";
+					//context.fillStyle = "rgb(15, 120, 5)";
+					context.fillStyle = "rgb(123, 190, 35)";
+					context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
 				}
-				if (color == "transparent") { 
-					context.fillStyle = "rgba(232, 169, 0, 0)";
-				} 
-				context.fillRect(i,j,1,1);
-			}
-		}
+				//context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
+		//	}
+		//}
 	}
 	
 	function brick_pattern1(positionX, positionY) {
@@ -320,6 +327,76 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function brick_pattern2(positionX, positionY) {
 		draw_text("", "?", "", positionX, positionY,"bold 12px Arial", "center", "rgb(255,0,0)");
+	}
+	
+	function brick_pattern3(positionX, positionY) {
+		context.beginPath();
+		if (color == "orange") { 
+			context.fillStyle = "rgb(253, 190, 120)";
+		}
+		if (color == "yellow") { 
+			context.fillStyle = "rgb(255, 233, 135)";
+		}
+		if (color == "green") { 
+			context.fillStyle = "rgb(187, 219, 141)";
+		}
+		context.moveTo(positionX + 1, positionY + 1); 
+		context.lineTo(positionX + 1 + 3, positionY + 1 + 3);
+		context.lineTo(positionX + (brick_width -1 - 3), positionY + 1 + 3);
+		context.lineTo(positionX + (brick_width -1), positionY + 1);
+		context.closePath();
+		context.fill();
+		
+		context.beginPath();
+		if (color == "orange") { 
+			context.fillStyle = "rgb(249, 161, 62)";
+		}
+		if (color == "yellow") { 
+			context.fillStyle = "rgb(255, 255, 71)";
+		}
+		if (color == "green") { 
+			context.fillStyle = "rgb(154, 204, 88)";
+		}
+		context.moveTo(positionX + 1, positionY ); 
+		context.lineTo(positionX + 1 + 3, positionY  + 3);
+		context.lineTo(positionX + 1 + 3, positionY + (brick_height  - 3));
+		context.lineTo(positionX + 1, positionY + (brick_height ));
+		context.closePath();
+		context.fill();
+		
+		context.beginPath();
+		if (color == "orange") { 
+			context.fillStyle = "rgb(126, 61, 0)";
+		}
+		if (color == "yellow") { 
+			context.fillStyle = "rgb(132, 113, 0)";
+		}
+		if (color == "green") { 
+			context.fillStyle = "rgb(49, 98, 0)";
+		}
+		context.moveTo(positionX + 1, positionY + (brick_height -1)); 
+		context.lineTo(positionX + 1 + 3, positionY + (brick_height -1 - 3));
+		context.lineTo(positionX + (brick_width -1 - 3), positionY + (brick_height -1 - 3));
+		context.lineTo(positionX + (brick_width -1), positionY + (brick_height -1));
+		context.closePath();
+		context.fill();
+		
+		context.beginPath();
+		if (color == "orange") { 
+			context.fillStyle = "rgb(184, 98, 0)";
+		}
+		if (color == "yellow") { 
+			context.fillStyle = "rgb(192, 163, 0)";
+		}
+		if (color == "green") { 
+			context.fillStyle = "rgb(86, 143, 19)";
+		}
+		context.moveTo(positionX + (brick_width -1), positionY + (brick_height -1)); 
+		context.lineTo(positionX + (brick_width -1 - 3), positionY + (brick_height -1 - 3));
+		context.lineTo(positionX + (brick_width -1 - 3), positionY + 1 + 3);
+		context.lineTo(positionX + (brick_width -1), positionY + 1);
+		context.closePath();
+		context.fill();
 	}
 	
 	
@@ -841,6 +918,46 @@ document.addEventListener('DOMContentLoaded', function() {
 							if (yellow_brick_data.data[m+2] === 34) {
 								yellow_brick_data.data[m+2] = 0;
 							}
+							
+							if (yellow_brick_data.data[m] === 255) {
+								yellow_brick_data.data[m] = 253;
+							}
+							if (yellow_brick_data.data[m+1] === 233) {
+								yellow_brick_data.data[m+1] = 190;
+							}
+							if (yellow_brick_data.data[m+2] === 135) {
+								yellow_brick_data.data[m+2] = 120;
+							}
+							
+							if (yellow_brick_data.data[m] === 255) {
+								yellow_brick_data.data[m] = 249;
+							}
+							if (yellow_brick_data.data[m+1] === 255) {
+								yellow_brick_data.data[m+1] = 161;
+							}
+							if (yellow_brick_data.data[m+2] === 71) {
+								yellow_brick_data.data[m+2] = 62;
+							}
+							
+							if (yellow_brick_data.data[m] === 132) {
+								yellow_brick_data.data[m] = 126;
+							}
+							if (yellow_brick_data.data[m+1] === 113) {
+								yellow_brick_data.data[m+1] = 61;
+							}
+							if (yellow_brick_data.data[m+2] === 0) {
+								yellow_brick_data.data[m+2] = 0;
+							}
+							
+							if (yellow_brick_data.data[m] === 192) {
+								yellow_brick_data.data[m] = 184;
+							}
+							if (yellow_brick_data.data[m+1] === 163) {
+								yellow_brick_data.data[m+1] = 98;
+							}
+							if (yellow_brick_data.data[m+2] === 0) {
+								yellow_brick_data.data[m+2] = 0;
+							}
 						} 
 						
 						all_bricks[j][0] = yellow_brick_data;
@@ -854,17 +971,56 @@ document.addEventListener('DOMContentLoaded', function() {
 						all_bullets.splice(i, 1);
 						bullets_counts.splice(i, 1);
 						for (let m=0; m < green_brick_data.data.length; m += 4) {
-							if (green_brick_data.data[m] === 15) {
+							if (green_brick_data.data[m] === 123) {
 								green_brick_data.data[m] = 240;
 							}
-							if (green_brick_data.data[m+1] === 120) {
+							if (green_brick_data.data[m+1] === 190) {
 								green_brick_data.data[m+1] = 240;
 							}
-							if (green_brick_data.data[m+2] === 5) {
+							if (green_brick_data.data[m+2] === 35) {
 								green_brick_data.data[m+2] = 34;
 							}
+							
+							if (green_brick_data.data[m] === 187) {
+								green_brick_data.data[m] = 255;
+							}
+							if (green_brick_data.data[m+1] === 219) {
+								green_brick_data.data[m+1] = 233;
+							}
+							if (green_brick_data.data[m+2] === 141) {
+								green_brick_data.data[m+2] = 135;
+							} 
+							
+							if (green_brick_data.data[m] === 154) {
+								green_brick_data.data[m] = 255;
+							}
+							if (green_brick_data.data[m+1] === 204) {
+								green_brick_data.data[m+1] = 255;
+							}
+							if (green_brick_data.data[m+2] === 88) {
+								green_brick_data.data[m+2] = 71;
+							}
+							
+							if (green_brick_data.data[m] === 49) {
+								green_brick_data.data[m] = 132;
+							}
+							if (green_brick_data.data[m+1] === 98) {
+								green_brick_data.data[m+1] = 113;
+							}
+							if (green_brick_data.data[m+2] === 0) {
+								green_brick_data.data[m+2] = 0;
+							}
+							
+							if (green_brick_data.data[m] === 86) {
+								green_brick_data.data[m] = 192;
+							}
+							if (green_brick_data.data[m+1] === 143) {
+								green_brick_data.data[m+1] = 163;
+							}
+							if (green_brick_data.data[m+2] === 19) {
+								green_brick_data.data[m+2] = 0;
+							}
 						} 
-						
 						return;
 					} 
 					if(all_bricks[j][3] == 1) {
@@ -1490,6 +1646,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (level == 2) {
 				brick_col = 15;
 				brick_row = 3;
+				green_bricks = 8;
+				yellow_bricks = 8;
 				surprise_bricks_quantity = [6, 1, 3, 5];
 				draw_virtual_bricks(30, 5)
 			}
