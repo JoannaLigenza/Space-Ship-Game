@@ -377,11 +377,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (color == "green") { 
 			context.fillStyle = "rgb(187, 219, 141)";
 		}
-		context.moveTo(positionX + (brick_width -1), positionY + 1);
-		context.lineTo(positionX + (brick_width -1 - 3), positionY + 1 + 3);
+		context.moveTo(positionX + (brick_width), positionY + 1);
+		context.lineTo(positionX + (brick_width - 3), positionY + 1 + 3);
 		context.lineTo(positionX + 1 + 3, positionY + 1 + 3);												 
-		context.lineTo(positionX + 1 + 3, positionY + (brick_height - 1 - 3));					   
-		context.lineTo(positionX + 1, positionY + (brick_height - 1));
+		context.lineTo(positionX + 1 + 3, positionY + (brick_height - 3));					   
+		context.lineTo(positionX + 1, positionY + (brick_height));
 		context.lineTo(positionX + 1, positionY + 1);
 		context.closePath();
 		context.fill();
