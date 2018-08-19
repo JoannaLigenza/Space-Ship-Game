@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let turbo_shooting = false;
 	let turbo_shooting_delay = 450;
 	let shooting_enemy = "";
-	const enemy_width = 20;
+	const enemy_width = 14;
 	const enemy_height = 14;
 	const enemy_bullet_width = 2;
 	const enemy_bullet_height = 10;
@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillText("Press enter to play", 100 , 170);
 		//draw_boss();
 		//draw_space_ship2();
+		draw_enemy();
 		draw_space_ship3();
 		loop1();
 	}
@@ -306,26 +307,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	
 	function brick_color(positionX, positionY) {
-		//for (i = positionX + 1 ; i <= (positionX + brick_width) -1 ; i++) {
-		//	for (j = positionY + 1; j <= (positionY + brick_height) - 1; j++) {
 				if (color == "orange") { 
 					context.fillStyle = "rgb(232, 169, 0)";
-					//context.fillStyle = "rgb(246, 133, 0)";
 					context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
 				}
 				if (color == "yellow") { 
 					context.fillStyle = "rgb(240, 240, 34)";
-					//context.fillStyle = "rgb(255, 217, 0)";
 					context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
 				}
 				if (color == "green") { 
-					//context.fillStyle = "rgb(15, 120, 5)";
 					context.fillStyle = "rgb(123, 190, 35)";
 					context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
 				}
-				//context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
-		//	}
-		//}
 	}
 	
 	function brick_pattern1(positionX, positionY) {
@@ -441,7 +434,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_enemy() {
-		context.beginPath();
+	/*	context.beginPath();
 		context.fillStyle = "rgb(250, 250, 250)";
 		//context.moveTo(50,250); 
 		context.arc(340, 380, 4, radianAngle(0), radianAngle(360));
@@ -452,9 +445,19 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.moveTo(340,384); 
 		context.lineTo(340,388);
 		context.lineWidth = bullet_width;
-		context.stroke();
+		context.stroke(); */
+		
+		context.beginPath();
+		context.fillStyle = "rgb(250, 250, 250)";
+		context.fillRect(331, 379, 10, 2);
+		context.fillRect(330, 381, 12, 2);
+		context.fillRect(329, 383, 14, 4);
+		context.fillRect(330, 387, 12, 2);
+		context.fillRect(331, 389, 10, 2);
+		context.fillRect(335, 391, 2, 4);
+		context.fill();
 
-		get_enemy = context.getImageData(329, 374, enemy_width, enemy_height);
+		get_enemy = context.getImageData(329, 379, enemy_width, enemy_height);
 		shooting_enemy = get_enemy;
 	}
 	
@@ -2189,7 +2192,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		// left yellow circle
 		context.beginPath();
-		context.fillStyle = "rgb(229, 247, 26)";
+		context.fillStyle = "rgb(240, 240, 34)";
 		//context.fillStyle = "rgb(250, 250, 250)";
 		context.fillRect(28, 294, 4, 2);
 		context.fillRect(27, 296, 6, 2);
@@ -2202,7 +2205,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		// engine fire
 		context.beginPath();
-		context.strokeStyle = "rgb(255, 195, 35)";
+		context.strokeStyle = "rgb(232, 169, 0)";
 		context.moveTo(52, 362);
 		context.lineTo(52, 367);
 		context.moveTo(55, 362);
