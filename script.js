@@ -363,7 +363,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function brick_pattern2(positionX, positionY) {
-		draw_text("", "?", "", positionX, positionY,"bold 12px Arial", "center", "rgb(255,0,0)");
+		context.beginPath();
+		context.fillStyle = "rgb(255, 0, 0)";
+		context.fillRect(positionX + 8, positionY + 3, 1, 2);
+		context.fillRect(positionX + 9, positionY + 2, 3, 2);
+		context.fillRect(positionX + 11, positionY + 2, 1, 4);
+		context.fillRect(positionX + 10, positionY + 5, 1, 1);
+		context.fillRect(positionX + 9, positionY + 6, 2, 1);
+		context.fillRect(positionX + 8, positionY + 7, 2, 1);
+		context.fillRect(positionX + 8, positionY + 8, 4, 1);
+		context.fillRect(positionX + 9, positionY + 10, 2, 3);
+		context.fill();
 	}
 	
 	function brick_pattern3(positionX, positionY) {
@@ -419,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			const surprise_brick_positionX = all_bricks[random_surprise_brick_copy][1];
 			const surprise_brick_positionY = all_bricks[random_surprise_brick_copy][2];
 			const surprise_brick_color = all_bricks[random_surprise_brick_copy][4];
-			//brick_pattern2(surprise_brick_positionX + (brick_width / 2), surprise_brick_positionY + (brick_height / 2));
+			brick_pattern2(surprise_brick_positionX , surprise_brick_positionY );
 			
 			get_surprise_brick = context.getImageData(surprise_brick_positionX, surprise_brick_positionY, brick_width+1, brick_height+1);			
 			
