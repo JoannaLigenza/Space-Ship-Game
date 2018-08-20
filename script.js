@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6, 8];
+	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -152,6 +152,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		//draw_boss();
 		//draw_space_ship2();
 		draw_enemy();
+		draw_arrow();
+		draw_slow_down_icon();
+		draw_plus_two_icon();
+		draw_star_icon();
 		draw_space_ship3();
 		loop1();
 	}
@@ -478,14 +482,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			for (i=0; i < enemy_quantity.length; i++) {
 				if (enemy_quantity[i][1] == true) { 
 					context.beginPath();
-					context.moveTo(enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height); 
-					context.lineTo(enemy_position_x[i] + 11, (enemy_position_y[i] + enemy_height) + bullet_height);
+					context.moveTo(enemy_position_x[i] + 7, enemy_position_y[i] + enemy_height); 
+					context.lineTo(enemy_position_x[i] + 7, (enemy_position_y[i] + enemy_height) + bullet_height);
 					context.lineWidth = bullet_width;
 					context.strokeStyle = "rgb(250, 250, 250)";
 					context.stroke();
 					
-					get_enemy_bullet = context.getImageData(enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height, bullet_width, bullet_height);
-					all_enemy_bullets.push([get_enemy_bullet, enemy_position_x[i] + 11, enemy_position_y[i] + enemy_height]);
+					get_enemy_bullet = context.getImageData(enemy_position_x[i] + 6, enemy_position_y[i] + enemy_height, bullet_width, bullet_height);
+					all_enemy_bullets.push([get_enemy_bullet, enemy_position_x[i] + 6, enemy_position_y[i] + enemy_height]);
 					enemy_quantity[i][0] = enemy_quantity[i][0] - 1;	
 						
 					enemy_shooting_sound(190);
@@ -554,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 	
 	function draw_arrow() {
-		context.beginPath();
+/*		context.beginPath();
 		context.moveTo(340,363); 
 		context.lineTo(340,370);
 		context.moveTo(337,367);
@@ -563,9 +567,19 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineWidth = bullet_width;
 		context.strokeStyle = "rgb(250, 250, 250)";
 		context.lineWidth = bullet_width;
-		context.stroke();
+		context.stroke(); */
 		
-		get_arrow = context.getImageData(337, 363, 6, 8);
+		context.beginPath();
+		context.fillStyle = "rgb(250, 250, 250)";
+		context.fillRect(340, 363, 2, 9);
+		context.fillRect(339, 368, 4, 3);
+		context.fillRect(338, 367, 1, 3);
+		context.fillRect(337, 366, 1, 3);
+		context.fillRect(343, 367, 1, 3);
+		context.fillRect(344, 366, 1, 3);
+		context.fill();
+		
+		get_arrow = context.getImageData(337, 363, 8, 11);
 	}
 	
 	function show_arrow() {
@@ -614,8 +628,21 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_slow_down_icon() {
-		draw_text("", "S", "", 337, 340,"bold 10px Arial", "left", "rgb(255,255,255)")
-		get_slow_down_icon = context.getImageData(337, 335, 8, 10);
+		//draw_text("", "S", "", 337, 340,"bold 10px Arial", "left", "rgb(255,255,255)")
+		
+		context.beginPath();
+		context.fillStyle = "rgb(250, 250, 250)";
+		context.fillRect(339, 335, 3, 1);
+		context.fillRect(338, 336, 5, 1);
+		context.fillRect(337, 337, 2, 2);
+		context.fillRect(338, 339, 4, 2);
+		context.fillRect(341, 341, 2, 2);
+		context.fillRect(337, 343, 5, 2);
+		context.fillRect(338, 345, 3, 1);
+		context.fill();
+		
+		//get_slow_down_icon = context.getImageData(337, 335, 8, 10);
+		get_slow_down_icon = context.getImageData(337, 335, 6, 11);
 	}
 	
 	function show_slow_down_icon() {
@@ -636,8 +663,23 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function draw_plus_two_icon() {
-		draw_text("", "+2", "", 337, 325,"bold 10px Arial", "left", "rgb(255,255,255)")
-		get_draw_plus_two_icon = context.getImageData(337, 320, 13, 10);
+		//draw_text("", "+2", "", 337, 325,"bold 10px Arial", "left", "rgb(255,255,255)")
+		
+		context.beginPath();
+		context.fillStyle = "rgb(250, 250, 250)";
+		context.fillRect(339, 320, 2, 6);
+		context.fillRect(337, 322, 6, 2);
+		context.fillRect(346, 317, 2, 1);
+		context.fillRect(345, 318, 3, 1);
+		context.fillRect(345, 319, 4, 1);
+		context.fillRect(348, 320, 2, 2);
+		context.fillRect(345, 322, 4, 1);
+		context.fillRect(344, 323, 2, 2);
+		context.fillRect(344, 325, 6, 1);
+		context.fillRect(344, 326, 6, 1);
+		context.fill();
+		
+		get_draw_plus_two_icon = context.getImageData(337, 317, 13, 10);
 	}
 	
 	function show_plus_two_icon() {
@@ -645,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_star_icon() {
-		context.beginPath();
+	/*	context.beginPath();
 		context.moveTo(341,303); 
 		context.lineTo(340,307);
 		context.lineTo(339,306);
@@ -662,15 +704,34 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.lineWidth = 1;
 		context.strokeStyle = "rgb(240, 240, 34)";
 		context.lineWidth = bullet_width;
-		context.stroke();
+		context.stroke(); */
 		
-		get_star_icon = context.getImageData(335, 300, 12, 16);
+		context.beginPath();
+		context.fillStyle = "rgb(255, 233, 135)";
+		context.fillRect(340, 300, 1, 11);
+		context.fillRect(335, 305, 11, 1);
+		context.fillRect(339, 304, 3, 3);
+		context.fillRect(336, 301, 1, 1);
+		context.fillRect(337, 302, 1, 1);
+		context.fillRect(338, 303, 1, 1);
+		context.fillRect(336, 309, 1, 1);
+		context.fillRect(337, 308, 1, 1);
+		context.fillRect(338, 307, 1, 1);
+		context.fillRect(344, 301, 1, 1);
+		context.fillRect(343, 302, 1, 1);
+		context.fillRect(342, 303, 1, 1);
+		context.fillRect(342, 307, 1, 1);
+		context.fillRect(343, 308, 1, 1);
+		context.fillRect(344, 309, 1, 1);
+		context.fill();
+		
+		get_star_icon = context.getImageData(335, 300, 11, 11);
 	}
 	
 	function move_star_icon() {
 		const star_icon_step = 3;
 		for (i=0; i < star_icon_quantity.length; i++) {
-			context.putImageData(get_star_icon, star_icon_quantity[i][0] + 4, star_icon_quantity[i][1]);
+			context.putImageData(get_star_icon, star_icon_quantity[i][0] + 5, star_icon_quantity[i][1]);
 			star_icon_quantity[i][1] = star_icon_quantity[i][1] + star_icon_step
 		}
 	}
@@ -1044,7 +1105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						return;
 					} 
 					if(all_bricks[j][3] == 1) {
-						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1], all_bricks[j][2]]);
+						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1]+3, all_bricks[j][2] +1]);
 						console.log("yes! 1")
 						console.log("enemy_quantity ", enemy_quantity)
 					}
