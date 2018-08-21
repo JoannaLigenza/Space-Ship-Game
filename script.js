@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
+	const canva2s = document.getElementById("canvas2");
+	const context2 = canvas2.getContext("2d");
 	function setpixelated(context){
     context['imageSmoothingEnabled'] = false;       /* standard */
     context['mozImageSmoothingEnabled'] = false;    /* Firefox */
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6];
+	let surprise_bricks_quantity = [8];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -57,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let turbo_shooting = false;
 	let turbo_shooting_delay = 450;
 	let shooting_enemy = "";
-	const enemy_width = 14;
+	const enemy_width = 12;
 	const enemy_height = 14;
 	const enemy_bullet_width = 2;
 	const enemy_bullet_height = 10;
@@ -95,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let star_icon_quantity = [];
 	let get_boss = "";
 	let boss_pos_x = 140;
-	let boss_pos_y = 15;
+	let boss_pos_y = 20;
 	let spider_width = 80;
 	let spider_height = 75;
 	let alien_width = 106;
@@ -108,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_boss_shoot = false;
 	let boss_stop_moving = 250; 
 	let boss_start_moving = 100;
-	let boss_power_line = 190;
+	let boss_power_line = 100;
 	let boss_power = 100;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
@@ -124,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let first_obstacle_width = "";
 	let score = 0;
 	let level = 1;
-	let change_level_delay = 30;
+	let change_level_delay = 100;
 	let can_change_level = true;
 	let interval_delay = 5;
 	let refresh = false;
@@ -132,11 +134,24 @@ document.addEventListener('DOMContentLoaded', function() {
 	let animation = "";
 	let end_game = false;
 	let who_made_it = [["Graphic: ", 110, 400], ["Sounds: ",110, 450], ["Realisation: ", 105, 500], ["Ideas and inspirations: ",20, 550], ["Press F5 to play again", 110, 620]]
-
+	let get_level_text = "";
+	let get_score_text = "";
+	let get_life_text = "";
+	let get_alien_text = "";
+	let get_boss_power_text = "";
+	let get_next_level_text = "";
+	
 	
 	function draw_frame() {
+		context.fillStyle = "rgb(255, 195, 35)";
+		context.fillRect(0,0, canvas.width, canvas.height);
 		context.fillStyle = "rgb(6, 0, 135)";
-		context.fillRect(2,2, canvas.width-4, canvas.height-4 );	
+		context.fillRect(2,2, canvas.width-4, canvas.height-4 );
+		
+		context2.fillStyle = "rgb(255, 195, 35)";
+		context2.fillRect(0,0, canvas.width, canvas.height);
+		context2.fillStyle = "rgb(6, 0, 135)";
+		context2.fillRect(2,2, canvas.width-4, canvas.height-4 );
 	}
 	
 	function start_screen() {
@@ -144,25 +159,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		refresh_color_data();
 		// ->>> end CLT function
 		draw_frame();
-		context.font = "bold 16px Arial";
+		context.font = "Bold 16px Arial";
 		context.textAlign = "left";
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
 		context.fillText("Press enter to play", 100 , 170);
-		//draw_boss();
-		//draw_space_ship2();
-		draw_enemy();
-		draw_arrow();
-		draw_slow_down_icon();
-		draw_plus_two_icon();
-		draw_star_icon();
-		draw_space_ship3();
 		loop1();
 	}
 	
 	function loop1() {
-		//context.clearRect(0, 0, canvas.width, canvas.height);
-		
 		if (which_key_pressed == "13") {
 			cancelAnimationFrame(animation3);
 			init();
@@ -276,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (all_bricks.length == 0 && can_change_level == true) {
 			change_level_delay -= 1;
 			show_next_level_info();
-			if (change_level_delay == 29) {
+			if (change_level_delay == 59) {
 				change_level_sound();
 				return;
 			}
@@ -360,7 +365,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function brick_pattern2(positionX, positionY) {
-		context.beginPath();
 		context.fillStyle = "rgb(255, 0, 0)";
 		context.fillRect(positionX + 8, positionY + 3, 1, 2);
 		context.fillRect(positionX + 9, positionY + 2, 3, 2);
@@ -370,7 +374,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillRect(positionX + 8, positionY + 7, 2, 1);
 		context.fillRect(positionX + 8, positionY + 8, 4, 1);
 		context.fillRect(positionX + 9, positionY + 10, 2, 3);
-		context.fill();
 	}
 	
 	function brick_pattern3(positionX, positionY) {
@@ -438,28 +441,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_enemy() {
-	/*	context.beginPath();
 		context.fillStyle = "rgb(250, 250, 250)";
-		//context.moveTo(50,250); 
-		context.arc(340, 380, 4, radianAngle(0), radianAngle(360));
-		context.fill();
-		
-		context.beginPath();
-		context.strokeStyle = "rgb(250, 250, 250)";;
-		context.moveTo(340,384); 
-		context.lineTo(340,388);
-		context.lineWidth = bullet_width;
-		context.stroke(); */
-		
-		context.beginPath();
-		context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(331, 379, 10, 2);
-		context.fillRect(330, 381, 12, 2);
-		context.fillRect(329, 383, 14, 4);
-		context.fillRect(330, 387, 12, 2);
-		context.fillRect(331, 389, 10, 2);
-		context.fillRect(335, 391, 2, 4);
-		context.fill();
+		context.fillRect(331, 379, 8, 2);
+		context.fillRect(330, 381, 10, 2);
+		context.fillRect(329, 383, 12, 4);
+		context.fillRect(330, 387, 10, 2);
+		context.fillRect(331, 389, 8, 2);
+		context.fillRect(334, 391, 2, 4);
 
 		get_enemy = context.getImageData(329, 379, enemy_width, enemy_height);
 		shooting_enemy = get_enemy;
@@ -482,14 +470,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			for (i=0; i < enemy_quantity.length; i++) {
 				if (enemy_quantity[i][1] == true) { 
 					context.beginPath();
-					context.moveTo(enemy_position_x[i] + 7, enemy_position_y[i] + enemy_height); 
-					context.lineTo(enemy_position_x[i] + 7, (enemy_position_y[i] + enemy_height) + bullet_height);
+					context.moveTo(enemy_position_x[i] + 6, enemy_position_y[i] + enemy_height); 
+					context.lineTo(enemy_position_x[i] + 6, (enemy_position_y[i] + enemy_height) + bullet_height);
 					context.lineWidth = bullet_width;
 					context.strokeStyle = "rgb(250, 250, 250)";
 					context.stroke();
 					
-					get_enemy_bullet = context.getImageData(enemy_position_x[i] + 6, enemy_position_y[i] + enemy_height, bullet_width, bullet_height);
-					all_enemy_bullets.push([get_enemy_bullet, enemy_position_x[i] + 6, enemy_position_y[i] + enemy_height]);
+					get_enemy_bullet = context.getImageData(enemy_position_x[i] + 5, enemy_position_y[i] + enemy_height, bullet_width, bullet_height);
+					all_enemy_bullets.push([get_enemy_bullet, enemy_position_x[i] + 5, enemy_position_y[i] + enemy_height]);
 					enemy_quantity[i][0] = enemy_quantity[i][0] - 1;	
 						
 					enemy_shooting_sound(190);
@@ -558,18 +546,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 	
 	function draw_arrow() {
-/*		context.beginPath();
-		context.moveTo(340,363); 
-		context.lineTo(340,370);
-		context.moveTo(337,367);
-		context.lineTo(340,370);
-		context.lineTo(343,367);
-		context.lineWidth = bullet_width;
-		context.strokeStyle = "rgb(250, 250, 250)";
-		context.lineWidth = bullet_width;
-		context.stroke(); */
-		
-		context.beginPath();
 		context.fillStyle = "rgb(250, 250, 250)";
 		context.fillRect(340, 363, 2, 9);
 		context.fillRect(339, 368, 4, 3);
@@ -577,7 +553,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillRect(337, 366, 1, 3);
 		context.fillRect(343, 367, 1, 3);
 		context.fillRect(344, 366, 1, 3);
-		context.fill();
 		
 		get_arrow = context.getImageData(337, 363, 8, 11);
 	}
@@ -628,8 +603,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_slow_down_icon() {
-		//draw_text("", "S", "", 337, 340,"bold 10px Arial", "left", "rgb(255,255,255)")
-		
 		context.beginPath();
 		context.fillStyle = "rgb(250, 250, 250)";
 		context.fillRect(339, 335, 3, 1);
@@ -641,7 +614,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillRect(338, 345, 3, 1);
 		context.fill();
 		
-		//get_slow_down_icon = context.getImageData(337, 335, 8, 10);
 		get_slow_down_icon = context.getImageData(337, 335, 6, 11);
 	}
 	
@@ -662,15 +634,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 
-	function draw_plus_two_icon() {
-		//draw_text("", "+2", "", 337, 325,"bold 10px Arial", "left", "rgb(255,255,255)")
-		
+	function draw_plus_two_icon() {		
 		context.beginPath();
 		context.fillStyle = "rgb(250, 250, 250)";
 		context.fillRect(339, 320, 2, 6);
 		context.fillRect(337, 322, 6, 2);
 		context.fillRect(346, 317, 2, 1);
-		context.fillRect(345, 318, 3, 1);
+		context.fillRect(345, 318, 4, 1);
 		context.fillRect(345, 319, 4, 1);
 		context.fillRect(348, 320, 2, 2);
 		context.fillRect(345, 322, 4, 1);
@@ -686,26 +656,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.putImageData(get_draw_plus_two_icon, plus_two_icon_position[0] + 3, plus_two_icon_position[1] + 3);
 	}
 	
-	function draw_star_icon() {
-	/*	context.beginPath();
-		context.moveTo(341,303); 
-		context.lineTo(340,307);
-		context.lineTo(339,306);
-		context.lineTo(340,308);
-		context.lineTo(339,310);
-		context.lineTo(340,309);
-		context.lineTo(341,313);
-		context.lineTo(342,309);
-		context.lineTo(343,310);
-		context.lineTo(342,308); 
-		context.lineTo(343,306);
-		context.lineTo(342,307);
-		context.closePath(); 
-		context.lineWidth = 1;
-		context.strokeStyle = "rgb(240, 240, 34)";
-		context.lineWidth = bullet_width;
-		context.stroke(); */
-		
+	function draw_star_icon() {		
 		context.beginPath();
 		context.fillStyle = "rgb(255, 233, 135)";
 		context.fillRect(340, 300, 1, 11);
@@ -757,92 +708,256 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 	
 	function draw_lightning_icon() {
+		
 		context.beginPath();
-		context.moveTo(342,282); 
-		context.lineTo(335,295);
-		context.lineTo(341,291);
-		context.lineTo(338,300);
-		context.lineTo(344,288);
-		context.lineTo(339,291);
-		context.closePath(); 
-		context.lineWidth = 1;
-		context.fillStyle = "rgb(240, 240, 34)";
+		context.fillStyle = "rgb(255, 233, 135)";
+		context.fillRect(341, 282, 2, 1);
+		context.fillRect(340, 283, 2, 1);
+		context.fillRect(339, 284, 2, 1);
+		context.fillRect(338, 285, 2, 1);
+		context.fillRect(337, 286, 8, 1);
+		context.fillRect(336, 287, 8, 1);
+		context.fillRect(341, 288, 2, 1);
+		context.fillRect(340, 289, 2, 1);
+		context.fillRect(339, 290, 2, 1);
+		context.fillRect(338, 291, 2, 1);
+		context.fillRect(337, 292, 2, 1);
 		context.fill();
-		get_lightning_icon = context.getImageData(335, 282, 9, 18);
+		
+		get_lightning_icon = context.getImageData(336, 282, 8, 10);
 	}
 	
 	function show_lightning_icon() {
-		context.putImageData(get_lightning_icon, lightning_icon_position[0] + 5, lightning_icon_position[1]);
-	}
-	
-	
-	function radianAngle(angle) {
-		return radians = (Math.PI/180)*angle;
+		context.putImageData(get_lightning_icon, lightning_icon_position[0] + 6, lightning_icon_position[1] + 3);
 	}
 	
 	function draw_space_ship() {
-	
+		// Wings
+		context.fillStyle = "rgb(0, 168, 89)";
+		context.fillRect(28, 300, 2, 2);
+		context.fillRect(27, 302, 3, 2);
+		context.fillRect(26, 304, 3, 2);
+		context.fillRect(25, 306, 4, 2);
+		context.fillRect(24, 308, 4, 4);
+		context.fillRect(24, 310, 4, 2);
+		context.fillRect(23, 311, 6, 1);
+		context.fillRect(23, 312, 7, 1);
+		context.fillRect(22, 313, 9, 1);
+		context.fillRect(22, 314, 11, 1);
+		context.fillRect(21, 315, 14, 1);
+		context.fillRect(21, 316, 16, 1);
+		context.fillRect(20, 317, 19, 3);
+		context.fillRect(21, 318, 21, 3);
+		context.fillRect(22, 319, 21, 3);
+		context.fillRect(23, 320, 23, 3);
+		
+		context.fillRect(80, 300, 2, 2);
+		context.fillRect(80, 302, 3, 2);
+		context.fillRect(81, 304, 3, 2);
+		context.fillRect(81, 306, 4, 2);
+		context.fillRect(82, 308, 4, 3);
+		context.fillRect(82, 311, 5, 1);
+		context.fillRect(80, 312, 7, 1);
+		context.fillRect(78, 313, 10, 1);
+		context.fillRect(75, 314, 13, 1);
+		context.fillRect(73, 315, 16, 1);
+		context.fillRect(71, 316, 18, 1);
+		context.fillRect(69, 317, 21, 3);
+		context.fillRect(67, 318, 22, 3);
+		context.fillRect(65, 319, 23, 3);
+		context.fillRect(63, 320, 24, 3); 
+		
+		context.fillRect(24, 321, 62, 3);
+		context.fillRect(25, 322, 60, 3);
+		context.fillRect(26, 323, 58, 3);
+		context.fillRect(27, 324, 56, 3);
+		context.fillRect(28, 325, 54, 3);
+		context.fillRect(29, 326, 52, 3);
+		context.fillRect(30, 327, 50, 3);
+		context.fillRect(31, 328, 48, 3);
+		context.fillRect(32, 329, 46, 3);
+		context.fillRect(33, 330, 44, 3);
+		context.fillRect(34, 331, 42, 3);
+		context.fillRect(35, 332, 40, 3);
+		context.fillRect(36, 333, 38, 3);
+		context.fillRect(37, 334, 36, 3);
+		context.fillRect(38, 335, 34, 3);
+		context.fillRect(39, 336, 32, 3);
+		context.fillRect(40, 337, 30, 3);
+		context.fillRect(41, 338, 28, 3);
+		context.fillRect(42, 339, 26, 3);
+		context.fillRect(43, 340, 24, 3);
+		context.fillRect(44, 341, 22, 3);
+		context.fillRect(45, 342, 20, 3);
+		context.fillRect(46, 343, 18, 3);
+		context.fillRect(47, 344, 16, 3);
+		context.fillRect(48, 345, 14, 3);
+		context.fillRect(49, 346, 12, 3);
+		context.fillRect(50, 347, 10, 3);
+		
 		// Body of ship
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(50,300);
-		context.bezierCurveTo(38,310, 38,355, 40,360);
-		//context.lineTo(40,360);
-		context.lineTo(60,360);
-		context.bezierCurveTo(62,355, 62,310, 50,300);
-		//context.closePath();
-		context.fill();
+		context.fillStyle = "rgb(215, 215, 215)";
+		context.fillRect(52, 300, 6, 50);
 		
-		// Circle on body
-		context.beginPath();
-		context.fillStyle = "rgb(250, 250, 250)";
-		context.moveTo(50,340); 
-		context.arc(50, 330, 5, radianAngle(0), radianAngle(360));
-		context.fill();
+		context.fillRect(51, 302, 1, 48);
+		context.fillRect(50, 305, 1, 45);
+		context.fillRect(49, 308, 1, 40);
+		context.fillRect(48, 312, 1, 34);
+		context.fillRect(47, 316, 1, 28);
+		context.fillRect(46, 320, 1, 22);
+		context.fillRect(45, 324, 1, 16);
+		context.fillRect(44, 328, 1, 10);
+		context.fillRect(43, 332, 1, 4);
 		
-		// Left wing
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(38,340); 
-		context.lineTo(30,360);
-		context.lineTo(38,360);
-		context.closePath();
-		context.fill();
+		context.fillRect(58, 302, 1, 48);
+		context.fillRect(59, 305, 1, 45);
+		context.fillRect(60, 308, 1, 40);
+		context.fillRect(61, 312, 1, 34);
+		context.fillRect(62, 316, 1, 28);
+		context.fillRect(63, 320, 1, 22);
+		context.fillRect(64, 324, 1, 16);
+		context.fillRect(65, 328, 1, 10);
+		context.fillRect(66, 332, 1, 4);
 		
-		// Right wing
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(62,340); 
-		context.lineTo(62,360);
-		context.lineTo(70,360);
-		context.closePath();
-		context.fill();
+		// Shape on body - middle
+		context.fillStyle = "rgb(104, 104, 104)";
+		context.fillRect(52, 330, 6, 15);
+		context.fillRect(52, 327, 6, 3);
+		context.fillRect(53, 324, 4, 4);
+		context.fillRect(54, 322, 2, 2);
 		
-		// Left bottom engine
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(45,361); 
-		context.lineTo(41,370);
-		context.lineTo(49,370);
-		context.closePath();
-		context.fill();
+		// Shape on body - left
+		context.fillRect(49, 325, 1, 20);
+		context.fillRect(48, 327, 1, 16);
+		context.fillRect(47, 329, 1, 12);
+		context.fillRect(46, 331, 1, 8);
+		context.fillRect(45, 333, 1, 4);
+		context.fillRect(44, 334, 1, 2);
 		
-		// Right bottom engine
-		context.beginPath();
-		context.fillStyle = "rgba(28, 28, 28)";
-		context.moveTo(55,361); 
-		context.lineTo(51,370);
-		context.lineTo(59,370);
-		context.closePath();
-		context.fill();
+		// Shape on body - right
+		context.fillRect(60, 325, 1, 20);
+		context.fillRect(61, 327, 1, 16);
+		context.fillRect(62, 329, 1, 12);
+		context.fillRect(63, 331, 1, 8);
+		context.fillRect(64, 333, 1, 4);
+		context.fillRect(65, 334, 1, 2);
 		
-		space_ship = context.getImageData(30, 300, ship_width, ship_height);
+		// Engine
+		context.fillRect(51, 350, 8, 3);
+		context.fillRect(52, 353, 6, 2);
+		context.fillRect(53, 355, 4, 2);
+		
+		// Shape on body - glass
+		context.fillStyle = "rgb(59, 116, 244)";
+		context.fillRect(52, 305, 6, 4);
+		context.fillRect(51, 309, 8, 4);
+		context.fillRect(50, 313, 10, 2);
+		context.fillRect(50, 315, 4, 2);
+		context.fillRect(50, 317, 3, 2);
+		context.fillRect(50, 319, 3, 2);
+		
+		context.fillRect(56, 315, 4, 2);
+		context.fillRect(57, 317, 3, 2);
+		context.fillRect(57, 319, 3, 2);
+		
+		// Thins on wings
+		context.fillStyle = "rgb(36, 82, 55)";
+		context.fillRect(30, 313, 1, 1);
+		context.fillRect(30, 314, 3, 1);
+		context.fillRect(30, 315, 5, 1);
+		context.fillRect(30, 316, 7, 1);
+		context.fillRect(31, 317, 6, 1);
+		context.fillRect(31, 318, 6, 1);
+		context.fillRect(32, 319, 5, 1);
+		context.fillRect(33, 320, 4, 1);
+		context.fillRect(35, 321, 2, 1);
+		
+		context.fillRect(39, 317, 1, 1);
+		context.fillRect(39, 318, 3, 1);
+		context.fillRect(39, 319, 4, 1);
+		context.fillRect(39, 320, 6, 1);
+		context.fillRect(39, 321, 6, 1);
+		context.fillRect(39, 322, 6, 1);
+		context.fillRect(40, 323, 5, 1);
+		context.fillRect(41, 324, 4, 1);
+		context.fillRect(42, 325, 3, 1);
+		context.fillRect(43, 326, 1, 1);
+		
+		context.fillRect(68, 317, 4, 2);
+		context.fillRect(67, 318, 4, 1);
+		context.fillRect(65, 319, 7, 1);
+		context.fillRect(65, 320, 7, 1);
+		context.fillRect(65, 321, 7, 1);
+		context.fillRect(65, 322, 6, 1);
+		context.fillRect(65, 323, 5, 1);
+		context.fillRect(65, 324, 4, 1);
+		context.fillRect(65, 325, 3, 1);
+		context.fillRect(66, 326, 1, 1);
+		
+		context.fillRect(78, 313, 1, 1);
+		context.fillRect(75, 314, 5, 1);
+		context.fillRect(74, 315, 6, 1);
+		context.fillRect(74, 316, 6, 1);
+		context.fillRect(74, 317, 5, 1);
+		context.fillRect(74, 318, 4, 1);
+		context.fillRect(74, 319, 3, 1);
+		context.fillRect(74, 320, 2, 1);
+		
+		context.fillRect(24, 319, 2, 2);
+		context.fillRect(29, 324, 2, 2);
+		context.fillRect(34, 329, 2, 2);
+		context.fillRect(39, 334, 2, 2);
+		
+		context.fillRect(84, 319, 2, 2);
+		context.fillRect(79, 324, 2, 2);
+		context.fillRect(74, 329, 2, 2);
+		context.fillRect(69, 334, 2, 2);
+		
+		// Small wings
+		context.fillStyle = "rgb(36, 82, 55)";
+		context.fillRect(49, 349, 1, 2);
+		context.fillRect(48, 348, 1, 6);
+		context.fillRect(47, 347, 1, 10);
+		context.fillRect(46, 346, 1, 13);
+		context.fillRect(45, 345, 1, 12);
+		context.fillRect(44, 344, 1, 10);
+		context.fillRect(43, 343, 1, 8);
+		context.fillRect(42, 342, 1, 6);
+		context.fillRect(41, 341, 1, 4);
+		context.fillRect(40, 340, 1, 2);
+		
+		context.fillRect(60, 349, 1, 2);
+		context.fillRect(61, 348, 1, 6);
+		context.fillRect(62, 347, 1, 10);
+		context.fillRect(63, 346, 1, 13);
+		context.fillRect(64, 345, 1, 12);
+		context.fillRect(65, 344, 1, 10);
+		context.fillRect(66, 343, 1, 8);
+		context.fillRect(67, 342, 1, 6);
+		context.fillRect(68, 341, 1, 4);
+		context.fillRect(69, 340, 1, 2);
+		
+		// left yellow circle
+		context.fillStyle = "rgb(240, 240, 34)";
+		context.fillRect(28, 294, 4, 6);
+		context.fillRect(27, 296, 6, 2);
+		
+		context.fillRect(78, 294, 4, 6);
+		context.fillRect(77, 296, 6, 2);
+		
+		// engine fire
+		context.fillStyle = "rgb(232, 169, 0)";
+		context.fillRect(51, 362, 2, 5);
+		context.fillRect(54, 362, 2, 7);
+		context.fillRect(57, 362, 2, 5);
+		
+		space_ship = context.getImageData(20, 294, ship_width, ship_height);
 	}
 	
-	function get_space_ship() {
-		space_ship = context.getImageData(30, 300, ship_width, ship_height);
-		return space_ship;
-	}
+//	function get_space_ship() {
+//		space_ship = context.getImageData(30, 300, ship_width, ship_height);
+//		return space_ship;
+//	}
 	
 	function space_ship_move() {
 		const step = 3;
@@ -1105,7 +1220,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						return;
 					} 
 					if(all_bricks[j][3] == 1) {
-						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1]+3, all_bricks[j][2] +1]);
+						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1]+5, all_bricks[j][2] +1]);
 						console.log("yes! 1")
 						console.log("enemy_quantity ", enemy_quantity)
 					}
@@ -1161,179 +1276,282 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
-	function draw_text(before, text, after, posX , posY, font, align, rgb) {
-		context.font = font;
-		context.textAlign = align;
-		context.textBaseline = "middle";
-		context.fillStyle = rgb;
-		context.fillText(before + text + after, posX , posY);
+	function draw_text(before, text, after, posX , posY, font, align, rgb, text_height) {
+		context2.font = font;
+		context2.textAlign = align;
+		context2.textBaseline = "middle";
+		context2.fillStyle = rgb;
+		context2.fillText(before + text + after, posX , posY);
+		
+		let get_text = context2.getImageData(posX, posY-7, context.measureText(text).width + context.measureText(after).width, text_height);
+		
+		if (text == "L e v e l : ") {
+			get_level_text = get_text
+		}
+		if (text == "S c o r e : ") {
+			get_score_text = get_text
+		}
+		if (text == "L i f e : ") {
+			get_life_text = get_text
+		}
+		if (text == "A l i e n  p o w e r : ") {
+			get_alien_text = get_text
+		}
+		if (text == boss_power) {
+			get_boss_power_text = get_text
+		}
+		if (text == "N e x t  L e v e l :  ") {
+			get_next_level_text = get_text
+		}
+		
+		
+		for (let m=0; m < get_text.data.length; m += 4) {
+							if (get_text.data[m] !== 255 && get_text.data[m] !== 6) {
+								get_text.data[m] = 255;
+							}
+							if (get_text.data[m+1] !== 0) {
+								get_text.data[m+1] = 0;
+							}
+							if (get_text.data[m+2] !== 0 && get_text.data[m+2] !== 135) {
+								get_text.data[m+2] = 0;
+							}
+		}
 	}
 	
 	function draw_level() {
-		draw_text("", "Level: ", level, 5, canvas.height - 15, "bold 12px Arial", "left", "rgb(255,0,0)");
+		draw_text("", "L e v e l : ", level, 5, canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		
+		context.putImageData(get_level_text, 5, canvas.height - 15);
 	}
 	
 	function count_score() {
-		draw_text("", "Score: ", score, 70 , canvas.height - 15, "bold 12px Arial", "left", "rgb(255,0,0)");
+		draw_text("", "S c o r e : ", score, 90 , canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		
+		context.putImageData(get_score_text, 90, canvas.height - 15);
 	}
 	
 	function draw_life() {
-		draw_text("", "Life: ", "", 150 , canvas.height - 15, "bold 12px Arial", "left", "rgb(255,0,0)");
+		draw_text("", "L i f e : ", "", 210 , canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		
+		context.putImageData(get_life_text, 210, canvas.height - 15);
 	}
 	
 	function draw_hearts() {
 		for (i=1; i < life_quantity + 1; i++) {
 			context.beginPath();
 			context.fillStyle = "rgb(255,0,0)";
-			context.moveTo(172 + (10 * i) ,canvas.height - 11);
-			context.bezierCurveTo(167 + (10 * i),canvas.height - 13, 167 + (10 * i),canvas.height - 21, 172 + (10 * i), canvas.height - 17);
-			context.moveTo(172 + (10 * i) ,canvas.height - 11);
-			context.bezierCurveTo(177 + (10 * i),canvas.height - 13, 177 + (10 * i),canvas.height - 21, 172 + (10 * i), canvas.height - 17);
-			context.fill();
+			context.fillRect(247 + (11 * i), 387, 10, 4);
+			context.fillRect(248 + (11 * i), 385, 3, 2);
+			context.fillRect(253 + (11 * i), 385, 3, 2);
+			context.fillRect(249 + (11 * i), 391, 6, 2);
+			context.fillRect(251 + (11 * i), 393, 2, 2);
 		}
 	}
 
 	function get_heart() {
-		get_life_heart = context.getImageData(177, canvas.height - 18, 10, 8);
+		get_life_heart = context.getImageData(177, 382, 10, 10);
 	}
 	
 	function draw_boss_power() {
-		draw_text("", "Alien power: ", "", 5, 10, "bold 12px Arial", "left", "rgb(255,0,0)");
-		draw_text("", boss_power , " %", 200 , 10, "bold 12px Arial", "left", "rgb(255,0,0)");
+		draw_text("", "A l i e n  p o w e r : ", "", 5, 7, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", boss_power , " %", 230 , 7, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		
+		context.putImageData(get_alien_text, 5, 7);
+		context.putImageData(get_boss_power_text, 230, 7);
 	}
 	
 	function draw_boss_power_line() {
 		context.beginPath();
 		context.strokeStyle = "rgb(255,0,0)";
 		context.lineWidth = 3;
-		context.moveTo(90, 11); 
-		context.lineTo(boss_power_line, 11);
+		context.moveTo(125, 11); 
+		context.lineTo(125 + boss_power_line, 11);
 		context.stroke();
 	}
 	
+	function sqrt(x1,y1,x2,y2) {
+		return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+	}
+	// finds the angle of (x,y) on a plane from the origin
+	function getAngle(x,y) { return Math.atan(y/(x==0?0.01:x))+(x<0?Math.PI:0); }
+
+	function drawLineNoAliasing(sx, sy, tx, ty, line_width, line_height, color) {
+		var dist = sqrt(sx,sy,tx,ty); // length of line
+		var ang = getAngle(tx-sx,ty-sy); // angle of line
+		for(var i=0;i<dist;i++) {
+			// for each point along the line
+			context.fillStyle = color;
+			context.fillRect(Math.round(sx + Math.cos(ang)*i), // round for perfect pixels
+				Math.round(sy + Math.sin(ang)*i), // thus no aliasing
+				line_width,line_height); // fill in one pixel, eg 1x1
+		}
+	}
+
+	
 	function draw_boss() {
 		
-		// left leg
-		context.beginPath();
-		context.strokeStyle = "rgb(162, 163, 164)";
-		context.moveTo(164, 65); 
-		context.lineTo(145, 55);
-		context.lineTo(130, 70);
-		context.lineTo(145, 90);
-		context.lineWidth = 4;
-		context.stroke();
+		// Boss legs
+		drawLineNoAliasing(158, 63, 145, 55, 4, 2, "rgb(162, 163, 164)");
+		drawLineNoAliasing(143, 54, 128, 69, 4, 2, "rgb(162, 163, 164)");
+		drawLineNoAliasing(128, 69, 141, 86, 4, 2, "rgb(162, 163, 164)");
 		
-		// right leg
-		context.beginPath();
-		context.strokeStyle = "rgb(162, 163, 164)";
-		context.moveTo(200, 65); 
-		context.lineTo(215, 55);
-		context.lineTo(230, 70);
-		context.lineTo(215, 90);
-		context.lineWidth = 4;
-		context.stroke();
+		drawLineNoAliasing(200, 63, 213, 54, 4, 2, "rgb(162, 163, 164)");
+		drawLineNoAliasing(213, 54, 228, 69, 4, 2, "rgb(162, 163, 164)");
+		drawLineNoAliasing(228, 69, 216, 86, 4, 2, "rgb(162, 163, 164)");
 		
 		// circle on legs
-		context.beginPath();
 		context.fillStyle = "rgb(255, 195, 35)";
-		context.moveTo(145, 55); 
-		context.arc(145, 55, 3, radianAngle(0), radianAngle(360));
-		context.moveTo(130, 70); 
-		context.arc(130, 70, 3, radianAngle(0), radianAngle(360));
+		context.fillRect(143, 53, 4, 6);
+		context.fillRect(142, 54, 6, 4);
 		
-		context.moveTo(215, 55); 
-		context.arc(215, 55, 3, radianAngle(0), radianAngle(360));
-		context.moveTo(230, 70); 
-		context.arc(230, 70, 3, radianAngle(0), radianAngle(360));
-		context.fill();
+		context.fillRect(129, 67, 4, 6);
+		context.fillRect(128, 68, 6, 4);
 		
-		// left laser
-		context.beginPath();
+		context.fillRect(213, 53, 4, 6);
+		context.fillRect(212, 54, 6, 4);
+		
+		context.fillRect(227, 67, 4, 6);
+		context.fillRect(226, 68, 6, 4);
+		
+		// left and right laser
 		context.fillStyle = "rgb(255,0,0)";
-		context.moveTo(148, 86);
-		context.lineTo(137, 86);
-		context.lineTo(143, 99);
-		context.closePath();
-		context.fill();
+		context.fillRect(136, 86, 13, 1);
+		context.fillRect(137, 87, 11, 2);
+		context.fillRect(138, 89, 9, 2);
+		context.fillRect(139, 91, 7, 2);
+		context.fillRect(140, 93, 5, 2);
+		context.fillRect(141, 95, 3, 2);
+		context.fillRect(142, 97, 1, 2);
 		
-		// right laser
-		context.beginPath();
-		context.fillStyle = "rgb(255,0,0)";
-		context.moveTo(212, 86);
-		context.lineTo(223, 86);
-		context.lineTo(217, 99);
-		context.closePath();
-		context.fill();
+		context.fillRect(211, 86, 13, 1);
+		context.fillRect(212, 87, 11, 2);
+		context.fillRect(213, 89, 9, 2);
+		context.fillRect(214, 91, 7, 2);
+		context.fillRect(215, 93, 5, 2);
+		context.fillRect(216, 95, 3, 2);
+		context.fillRect(217, 97, 1, 2);
 		
 		// upper part of boss - blue
-		context.beginPath();
 		context.fillStyle = "rgb(95, 159, 255)";
-		context.moveTo(180,15);
-		context.bezierCurveTo(160,25, 160,40, 160,70);
-		context.lineTo(200, 70);
-		context.bezierCurveTo(200,40, 200,25, 180,15);
-		context.fill();
+		context.fillRect(160, 46, 1, 25);
+		context.fillRect(161, 40, 1, 30);
+		context.fillRect(162, 35, 1, 30);
+		context.fillRect(163, 32, 1, 30);
+		context.fillRect(164, 30, 1, 30);
+		context.fillRect(165, 28, 1, 32);
+		
+		context.fillRect(166, 26, 28, 35);
+		
+		context.fillRect(194, 28, 1, 36);
+		context.fillRect(195, 30, 1, 34);
+		context.fillRect(196, 32, 1, 32);
+		context.fillRect(197, 35, 1, 30);
+		context.fillRect(198, 40, 1, 30);
+		context.fillRect(199, 46, 1, 30);
+		
+		context.fillRect(167, 25, 26, 1);
+		context.fillRect(168, 23, 24, 2);
+		context.fillRect(169, 22, 22, 1);
+		context.fillRect(170, 21, 20, 1);
+		context.fillRect(171, 20, 18, 1);
+		context.fillRect(172, 19, 16, 1);
+		context.fillRect(174, 18, 12, 1);
+		context.fillRect(176, 17, 8, 1);
+		context.fillRect(178, 16, 4, 1);
+		context.fillRect(179, 15, 2, 1);
+		
 		
 		// alien
-		context.beginPath();
 		context.fillStyle = "rgb(0, 103, 12)";
-		context.moveTo(175,65);
-		context.bezierCurveTo(150,20, 210,20, 185,65);
-		context.fill();
+		context.fillRect(175, 32, 10, 45);
+		
+		context.fillRect(177, 31, 6, 1);
+		context.fillRect(178, 30, 4, 1);
+		
+		context.fillRect(174, 33, 1, 27);
+		context.fillRect(173, 34, 1, 25);
+		context.fillRect(172, 35, 1, 23);
+		context.fillRect(171, 36, 1, 21);
+		context.fillRect(170, 37, 1, 18);
+		context.fillRect(169, 39, 1, 14);
+		context.fillRect(168, 41, 1, 10);
+		
+
+		context.fillRect(185, 33, 1, 27);
+		context.fillRect(186, 34, 1, 25);
+		context.fillRect(187, 35, 1, 23);
+		context.fillRect(188, 36, 1, 21);
+		context.fillRect(189, 37, 1, 18);
+		context.fillRect(190, 39, 1, 14);
+		context.fillRect(191, 41, 1, 10);
 		
 		// alien eyes
-		context.beginPath();
 		context.fillStyle = "rgb(0, 0, 0)";
-		context.moveTo(173,40);
-		context.bezierCurveTo(174,36, 179,43, 180,45);
-		context.bezierCurveTo(179,51, 174,45, 173,40);
+		context.fillRect(173, 39, 1, 3);
+		context.fillRect(174, 39, 1, 5);
+		context.fillRect(175, 40, 1, 6);
+		context.fillRect(176, 41, 1, 6);
+		context.fillRect(177, 42, 1, 5);
+		context.fillRect(178, 43, 1, 4);
+		context.fillRect(179, 44, 1, 2);
 		
-		context.moveTo(188,40);
-		context.bezierCurveTo(187,36, 182,43, 181,45);
-		context.bezierCurveTo(182,51, 187,45, 188,40);
-		context.fill();
+		context.fillRect(181, 44, 1, 2);
+		context.fillRect(182, 43, 1, 4);
+		context.fillRect(183, 42, 1, 5);
+		context.fillRect(184, 41, 1, 6);
+		context.fillRect(185, 40, 1, 6);
+		context.fillRect(186, 39, 1, 5);
+		context.fillRect(187, 38, 1, 3);
 		
 		// lower part of boss
-		context.beginPath();
-		//context.fillStyle = "rgb(198, 198, 198)";
 		context.fillStyle = "rgb(40, 98, 184)";
-		context.moveTo(210,70);
-		context.bezierCurveTo(210,55, 150,55, 150,70);
-		context.bezierCurveTo(150,85, 210,85, 210,70);
-		context.fill();
+		context.fillRect(160, 61, 40, 18);
+		
+		context.fillRect(163, 60, 34, 1);
+		context.fillRect(166, 59, 28, 1);
+		
+		context.fillRect(163, 79, 34, 1);
+		context.fillRect(166, 80, 28, 1);
+		
+		context.fillRect(159, 62, 2, 16);
+		context.fillRect(157, 62, 2, 16);
+		context.fillRect(155, 63, 2, 14);
+		context.fillRect(153, 64, 2, 12);
+		context.fillRect(151, 65, 2, 10);
+		context.fillRect(149, 66, 2, 8);
+		context.fillRect(147, 68, 2, 4);
+		
+		context.fillRect(200, 62, 2, 16);
+		context.fillRect(202, 62, 2, 16);
+		context.fillRect(204, 63, 2, 14);
+		context.fillRect(206, 64, 2, 12);
+		context.fillRect(208, 65, 2, 10);
+		context.fillRect(210, 66, 2, 8);
+		context.fillRect(212, 68, 2, 4);
 		
 		// blue little laser under lower part of boss
-		context.beginPath();
-		context.strokeStyle = "rgb(95, 159, 255)";
-		context.moveTo(180, 82);
-		context.lineTo(180, 84);
-		context.lineWidth = 2;
-		context.stroke();
+		context.fillStyle = "rgb(95, 159, 255)";
+		context.fillRect(179, 82, 2, 2);
 		
 		// stripes on lower part of boss
-		context.beginPath();
-		context.strokeStyle = "rgb(95, 159, 255)";
-		context.moveTo(160, 62);
-		context.lineTo(168, 80);
-		context.moveTo(175, 59);
-		context.lineTo(185, 81);
-		context.moveTo(192, 60);
-		context.lineTo(200, 78);
-		context.lineWidth = 2;
-		context.stroke();
+		drawLineNoAliasing(160, 62, 167, 78, 2, 2, "rgb(95, 159, 255)");
+		drawLineNoAliasing(175, 59, 184, 79, 2, 2, "rgb(95, 159, 255)");
+		drawLineNoAliasing(192, 60, 200, 77, 2, 2, "rgb(95, 159, 255)");
 		
 		// dots on lower part of boss
-		context.beginPath();
 		context.fillStyle = "rgb(255, 195, 35)";
-		context.moveTo(157, 70); 
-		context.arc(157, 70, 2, radianAngle(0), radianAngle(360));
-		context.moveTo(172, 70); 
-		context.arc(172, 70, 2, radianAngle(0), radianAngle(360));
-		context.moveTo(188, 70); 
-		context.arc(188, 70, 2, radianAngle(0), radianAngle(360));
-		context.moveTo(203, 70); 
-		context.arc(203, 70, 2, radianAngle(0), radianAngle(360));
-		context.fill();
+		context.fillRect(155, 69, 4, 2);
+		context.fillRect(156, 68, 2, 4);
+		
+		context.fillRect(170, 69, 4, 2);
+		context.fillRect(171, 68, 2, 4);
+		
+		context.fillRect(186, 69, 4, 2);
+		context.fillRect(187, 68, 2, 4);
+		
+		context.fillRect(201, 69, 4, 2);
+		context.fillRect(202, 68, 2, 4);
+
 		
 		get_boss = context.getImageData(127, 15, alien_width, alien_height);
 	}
@@ -1460,9 +1678,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// przeszkoda
 	function draw_obstacle() {
-		first_obstacle_width = 30;
+		first_obstacle_width = 25;
 		context.beginPath();
-		context.moveTo(35, 210); 
+		context.moveTo(30, 210); 
 		context.lineTo(5, 210);
 		context.lineWidth = 5;
 		context.strokeStyle = "rgb(250, 250, 250)";
@@ -1473,15 +1691,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		get_obstacle = context.getImageData(5, 207, first_obstacle_width, 6);
 		
-		second_obstacle_width = 20;
+		second_obstacle_width = 15;
 		context.beginPath();
-		context.moveTo(25, 220); 
+		context.moveTo(20, 220); 
 		context.lineTo(5, 220);
 		context.lineWidth = 5;
 		context.strokeStyle = "rgb(255, 195, 35)";
 		context.stroke();
 		
-		obstacle_2_pos_x = canvas.width -4
+		obstacle_2_pos_x = canvas.width -10
 		obstacle_2_pos_y = 150
 
 		get_2_obstacle = context.getImageData(5, 217, second_obstacle_width, 6);
@@ -1494,7 +1712,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.strokeStyle = "rgb(250, 250, 250)";
 		context.stroke();
 		
-		obstacle_3_pos_x = canvas.width 
+		obstacle_3_pos_x = canvas.width -20
 		obstacle_3_pos_y = 180
 
 		get_3_obstacle = context.getImageData(5, 227, thrid_obstacle_width, 6);
@@ -1658,16 +1876,15 @@ document.addEventListener('DOMContentLoaded', function() {
 			what_to_refresh();
 			//change_level_sound();
 			refersh_delay();
-			change_level_delay = 30;
+			change_level_delay = 60;
 			console.log("level ", level);	
 	}
 	
 	function show_next_level_info() {
-			context.font = "bold 16px Arial";
-			context.textAlign = "left";
-			context.textBaseline = "middle";
-			context.fillStyle = "rgb(255,0,0)";
-			context.fillText("Next Level: " + (level+1), 120 , 170);
+			
+		draw_text("", "N e x t  L e v e l :  ", level+1, 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		
+		context.putImageData(get_next_level_text, 100, 170);
 	}
 	
 	function refresh_game() {
@@ -1690,6 +1907,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		can_change_level = false;
 		is_brick_moving = false;
 		is_arrow_visible = false; 
+		slow_down = false;
 		is_slow_down_visible = false;
 		is_plus_two_visible = false;
 		heart_visible = false;
@@ -1806,17 +2024,34 @@ document.addEventListener('DOMContentLoaded', function() {
 		all_bricks.splice(0, all_bricks.length);
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
 		
-		context.font = "bold 16px Arial";
-		context.textAlign = "left";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Game Over ", 150 , 170);
+		context2.font = "bold 16px Arial";
+		context2.textAlign = "left";
+		context2.textBaseline = "middle";
+		context2.fillStyle = "rgb(255,0,0)";
+		context2.fillText("G a m e  O v e r ", 110 , 170);
 		
-		context.font = "bold 12px Arial";
-		context.textAlign = "left";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Your score: " + score, 150 , 200);
+		context2.font = "bold 12px Arial";
+		context2.textAlign = "left";
+		context2.textBaseline = "middle";
+		context2.fillStyle = "rgb(255,0,0)";
+		context2.fillText("Y o u r  s c o r e: " + score, 110 , 210);
+		
+		context2.fillText("Y o u  l o s t ! ", 130 , 130);
+		
+		let get_text = context2.getImageData(110, 100-7, 200, 200);
+		
+		for (let m=0; m < get_text.data.length; m += 4) {
+							if (get_text.data[m] !== 255 && get_text.data[m] !== 6) {
+								get_text.data[m] = 255;
+							}
+							if (get_text.data[m+1] !== 0) {
+								get_text.data[m+1] = 0;
+							}
+							if (get_text.data[m+2] !== 0 && get_text.data[m+2] !== 135) {
+								get_text.data[m+2] = 0;
+							}
+		}
+		context.putImageData(get_text, 110, 100-7);
 	}
 	
 	function win_game() {
@@ -1897,10 +2132,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
 		//draw_space();
-		//draw_level();
-		//count_score();
-		//draw_life();
-		//draw_hearts();		
+		draw_level();
+		count_score();
+		draw_life();
+		draw_hearts();		
 		if (end_game == true) {
 			console.log("end_game");
 			game_over();
@@ -1934,8 +2169,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (all_boss_bullets.length > 0) {
 				boss_bullets_collision();
 			}
-			
-			//draw_spider();	
 		}
 		
 		if (enemy_quantity.length > 0) {
@@ -2003,19 +2236,16 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	start_screen();
 	
+	
 	function init() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
-		//draw_spider();
 		draw_boss();
 		draw_virtual_bricks(70, 15);
 		draw_all_bricks();
-		//draw_space_ship();
-		//draw_space_ship2();
-		draw_space_ship3();
+		draw_space_ship();
 		draw_enemy();
 		draw_star_icon();
-		//get_space_ship();
 		draw_hearts();
 		get_heart();
 		draw_arrow();
@@ -2027,448 +2257,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		loop();
 	}
 	
-	function draw_space_ship3() {
-		// Wings
-		context.beginPath();
-		context.fillStyle = "rgb(0, 168, 89)";
-		//context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(28, 300, 2, 2);
-		context.fillRect(27, 302, 3, 2);
-		context.fillRect(26, 304, 3, 2);
-		context.fillRect(25, 306, 4, 2);
-		context.fillRect(24, 308, 4, 4);
-		context.fillRect(24, 310, 4, 2);
-		context.fillRect(23, 311, 6, 1);
-		context.fillRect(23, 312, 7, 1);
-		context.fillRect(22, 313, 9, 1);
-		context.fillRect(22, 314, 11, 1);
-		context.fillRect(21, 315, 14, 1);
-		context.fillRect(21, 316, 16, 1);
-		context.fillRect(20, 317, 19, 3);
-		context.fillRect(21, 318, 21, 3);
-		context.fillRect(22, 319, 21, 3);
-		context.fillRect(23, 320, 23, 3);
-		
-		context.fillRect(80, 300, 2, 2);
-		context.fillRect(80, 302, 3, 2);
-		context.fillRect(81, 304, 3, 2);
-		context.fillRect(81, 306, 4, 2);
-		context.fillRect(82, 308, 4, 3);
-		context.fillRect(82, 311, 5, 1);
-		context.fillRect(80, 312, 7, 1);
-		context.fillRect(78, 313, 10, 1);
-		context.fillRect(75, 314, 13, 1);
-		context.fillRect(73, 315, 16, 1);
-		context.fillRect(71, 316, 18, 1);
-		context.fillRect(69, 317, 21, 3);
-		context.fillRect(67, 318, 22, 3);
-		context.fillRect(65, 319, 23, 3);
-		context.fillRect(63, 320, 24, 3); 
-		
-		context.fillRect(24, 321, 62, 3);
-		context.fillRect(25, 322, 60, 3);
-		context.fillRect(26, 323, 58, 3);
-		context.fillRect(27, 324, 56, 3);
-		context.fillRect(28, 325, 54, 3);
-		context.fillRect(29, 326, 52, 3);
-		context.fillRect(30, 327, 50, 3);
-		context.fillRect(31, 328, 48, 3);
-		context.fillRect(32, 329, 46, 3);
-		context.fillRect(33, 330, 44, 3);
-		context.fillRect(34, 331, 42, 3);
-		context.fillRect(35, 332, 40, 3);
-		context.fillRect(36, 333, 38, 3);
-		context.fillRect(37, 334, 36, 3);
-		context.fillRect(38, 335, 34, 3);
-		context.fillRect(39, 336, 32, 3);
-		context.fillRect(40, 337, 30, 3);
-		context.fillRect(41, 338, 28, 3);
-		context.fillRect(42, 339, 26, 3);
-		context.fillRect(43, 340, 24, 3);
-		context.fillRect(44, 341, 22, 3);
-		context.fillRect(45, 342, 20, 3);
-		context.fillRect(46, 343, 18, 3);
-		context.fillRect(47, 344, 16, 3);
-		context.fillRect(48, 345, 14, 3);
-		context.fillRect(49, 346, 12, 3);
-		context.fillRect(50, 347, 10, 3);
-		context.fill(); 
-		
-		// Body of ship
-		context.beginPath();
-		context.fillStyle = "rgb(215, 215, 215)";
-		//context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(52, 300, 6, 50);
-		
-		context.fillRect(51, 302, 1, 48);
-		context.fillRect(50, 305, 1, 45);
-		context.fillRect(49, 308, 1, 40);
-		context.fillRect(48, 312, 1, 34);
-		context.fillRect(47, 316, 1, 28);
-		context.fillRect(46, 320, 1, 22);
-		context.fillRect(45, 324, 1, 16);
-		context.fillRect(44, 328, 1, 10);
-		context.fillRect(43, 332, 1, 4);
-		
-		context.fillRect(58, 302, 1, 48);
-		context.fillRect(59, 305, 1, 45);
-		context.fillRect(60, 308, 1, 40);
-		context.fillRect(61, 312, 1, 34);
-		context.fillRect(62, 316, 1, 28);
-		context.fillRect(63, 320, 1, 22);
-		context.fillRect(64, 324, 1, 16);
-		context.fillRect(65, 328, 1, 10);
-		context.fillRect(66, 332, 1, 4);
-		context.fill(); 
-		
-		// Shape on body - middle
-		context.beginPath();
-		context.fillStyle = "rgb(104, 104, 104)";
-		//context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(52, 330, 6, 15);
-		context.fillRect(52, 327, 6, 3);
-		context.fillRect(53, 324, 4, 4);
-		context.fillRect(54, 322, 2, 2);
-		
-		// Shape on body - left
-		context.fillRect(49, 325, 1, 20);
-		context.fillRect(48, 327, 1, 16);
-		context.fillRect(47, 329, 1, 12);
-		context.fillRect(46, 331, 1, 8);
-		context.fillRect(45, 333, 1, 4);
-		context.fillRect(44, 334, 1, 2);
-		
-		// Shape on body - right
-		context.fillRect(60, 325, 1, 20);
-		context.fillRect(61, 327, 1, 16);
-		context.fillRect(62, 329, 1, 12);
-		context.fillRect(63, 331, 1, 8);
-		context.fillRect(64, 333, 1, 4);
-		context.fillRect(65, 334, 1, 2);
-		
-		// Engine
-		context.fillRect(51, 350, 8, 3);
-		context.fillRect(52, 353, 6, 2);
-		context.fillRect(53, 355, 4, 2);
-		context.fill(); 
-		
-		// Shape on body - glass
-		//context.beginPath();
-		context.fillStyle = "rgb(59, 116, 244)";
-		//context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(52, 305, 6, 4);
-		context.fillRect(51, 309, 8, 4);
-		context.fillRect(50, 313, 10, 2);
-		context.fillRect(50, 315, 4, 2);
-		context.fillRect(50, 317, 3, 2);
-		context.fillRect(50, 319, 3, 2);
-		
-		context.fillRect(56, 315, 4, 2);
-		context.fillRect(57, 317, 3, 2);
-		context.fillRect(57, 319, 3, 2);
-		context.fill(); 
-		
-		// Thins on wings
-		context.beginPath();
-		context.fillStyle = "rgb(36, 82, 55)";
-		//context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(30, 313, 1, 1);
-		context.fillRect(30, 314, 3, 1);
-		context.fillRect(30, 315, 5, 1);
-		context.fillRect(30, 316, 7, 1);
-		context.fillRect(31, 317, 6, 1);
-		context.fillRect(31, 318, 6, 1);
-		context.fillRect(32, 319, 5, 1);
-		context.fillRect(33, 320, 4, 1);
-		context.fillRect(35, 321, 2, 1);
-		
-		context.fillRect(39, 317, 1, 1);
-		context.fillRect(39, 318, 3, 1);
-		context.fillRect(39, 319, 4, 1);
-		context.fillRect(39, 320, 6, 1);
-		context.fillRect(39, 321, 6, 1);
-		context.fillRect(39, 322, 6, 1);
-		context.fillRect(40, 323, 5, 1);
-		context.fillRect(41, 324, 4, 1);
-		context.fillRect(42, 325, 3, 1);
-		context.fillRect(43, 326, 1, 1);
-		
-		context.fillRect(68, 317, 4, 2);
-		context.fillRect(67, 318, 4, 1);
-		context.fillRect(65, 319, 7, 1);
-		context.fillRect(65, 320, 7, 1);
-		context.fillRect(65, 321, 7, 1);
-		context.fillRect(65, 322, 6, 1);
-		context.fillRect(65, 323, 5, 1);
-		context.fillRect(65, 324, 4, 1);
-		context.fillRect(65, 325, 3, 1);
-		context.fillRect(66, 326, 1, 1);
-		
-		context.fillRect(78, 313, 1, 1);
-		context.fillRect(75, 314, 5, 1);
-		context.fillRect(74, 315, 6, 1);
-		context.fillRect(74, 316, 6, 1);
-		context.fillRect(74, 317, 5, 1);
-		context.fillRect(74, 318, 4, 1);
-		context.fillRect(74, 319, 3, 1);
-		context.fillRect(74, 320, 2, 1);
-		
-		context.fillRect(24, 319, 2, 2);
-		context.fillRect(29, 324, 2, 2);
-		context.fillRect(34, 329, 2, 2);
-		context.fillRect(39, 334, 2, 2);
-		
-		context.fillRect(84, 319, 2, 2);
-		context.fillRect(79, 324, 2, 2);
-		context.fillRect(74, 329, 2, 2);
-		context.fillRect(69, 334, 2, 2);
-		context.fill();
-		
-		// Small wings
-		context.beginPath();
-		context.fillStyle = "rgb(36, 82, 55)";
-		//context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(49, 349, 1, 2);
-		context.fillRect(48, 348, 1, 6);
-		context.fillRect(47, 347, 1, 10);
-		context.fillRect(46, 346, 1, 13);
-		context.fillRect(45, 345, 1, 12);
-		context.fillRect(44, 344, 1, 10);
-		context.fillRect(43, 343, 1, 8);
-		context.fillRect(42, 342, 1, 6);
-		context.fillRect(41, 341, 1, 4);
-		context.fillRect(40, 340, 1, 2);
-		
-		context.fillRect(60, 349, 1, 2);
-		context.fillRect(61, 348, 1, 6);
-		context.fillRect(62, 347, 1, 10);
-		context.fillRect(63, 346, 1, 13);
-		context.fillRect(64, 345, 1, 12);
-		context.fillRect(65, 344, 1, 10);
-		context.fillRect(66, 343, 1, 8);
-		context.fillRect(67, 342, 1, 6);
-		context.fillRect(68, 341, 1, 4);
-		context.fillRect(69, 340, 1, 2);
-		context.fill();
-		
-		// left yellow circle
-		context.beginPath();
-		context.fillStyle = "rgb(240, 240, 34)";
-		//context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(28, 294, 4, 2);
-		context.fillRect(27, 296, 6, 2);
-		context.fillRect(28, 298, 4, 2);
-		
-		context.fillRect(78, 294, 4, 2);
-		context.fillRect(77, 296, 6, 2);
-		context.fillRect(78, 298, 4, 2);
-		context.fill();
-		
-		// engine fire
-		context.beginPath();
-		context.strokeStyle = "rgb(232, 169, 0)";
-		context.moveTo(52, 362);
-		context.lineTo(52, 367);
-		context.moveTo(55, 362);
-		context.lineTo(55, 370);
-		context.moveTo(58, 362);
-		context.lineTo(58, 367);
-		context.lineWidth = 2;
-		context.stroke();
-		
-		space_ship = context.getImageData(20, 294, ship_width, ship_height);
-	}
 	
-	function draw_space_ship2() {
-		
-		// left small wing
-		context.beginPath();
-		context.fillStyle = "rgb(36, 82, 55)";
-		context.moveTo(50, 350);
-		context.lineTo(40, 341);
-		context.lineTo(47, 360);
-		context.closePath();
-		context.fill();
-
-		// right small wing
-		context.beginPath();
-		context.fillStyle = "rgb(36, 82, 55)";
-		context.moveTo(60, 350);
-		context.lineTo(70, 341);
-		context.lineTo(63, 360);
-		context.closePath();
-		context.fill();
-		
-		// Left wing
-		context.beginPath();
-		context.fillStyle = "rgb(0, 168, 89)";
-		context.moveTo(45, 320);
-		context.lineTo(28, 312);
-		context.lineTo(30, 300);
-		context.lineTo(28, 300);
-		context.lineTo(20, 320);
-		context.lineTo(50, 350);
-		context.closePath();
-		context.fill();
-		
-		// Thins on left wing
-		context.beginPath();
-		context.fillStyle = "rgb(36, 82, 55)";
-		context.moveTo(45, 320);
-		context.lineTo(40, 317);
-		context.lineTo(38, 322);
-		context.lineTo(44, 327);
-		context.closePath();
-		
-		context.moveTo(37, 316);
-		context.lineTo(32, 313);
-		context.lineTo(30, 317);
-		context.lineTo(36, 322);
-		context.closePath();
-		context.fill();
-		
-		context.moveTo(40, 335); 
-		context.arc(40, 333, 1, radianAngle(0), radianAngle(360));
-		context.moveTo(35, 330);
-		context.arc(35, 330, 1, radianAngle(0), radianAngle(360));
-		context.moveTo(30, 325);
-		context.arc(30, 325, 1, radianAngle(0), radianAngle(360));
-		context.moveTo(25, 320);
-		context.arc(25, 320, 1, radianAngle(0), radianAngle(360));
-		context.fill();
-		
-		// Right wing
-		context.beginPath();
-		context.fillStyle = "rgb(0, 168, 89)";
-		context.moveTo(65, 320);
-		context.lineTo(82, 312);
-		context.lineTo(80, 300);
-		context.lineTo(82, 300);
-		context.lineTo(90, 320);
-		context.lineTo(60, 350);
-		context.closePath();
-		context.fill();
-		
-		// Thins on right wing
-		context.beginPath();
-		context.fillStyle = "rgb(36, 82, 55)";
-		context.moveTo(65, 320);
-		context.lineTo(70, 317);
-		context.lineTo(72, 322);
-		context.lineTo(66, 327);
-		context.closePath();
-		
-		context.moveTo(73, 316);
-		context.lineTo(78, 313);
-		context.lineTo(80, 317);
-		context.lineTo(74, 322);
-		context.closePath();
-		context.fill();
-		
-		context.moveTo(70, 335); 
-		context.arc(70, 333, 1, radianAngle(0), radianAngle(360));
-		context.moveTo(75, 330);
-		context.arc(75, 330, 1, radianAngle(0), radianAngle(360));
-		context.moveTo(80, 325);
-		context.arc(80, 325, 1, radianAngle(0), radianAngle(360));
-		context.moveTo(85, 320);
-		context.arc(85, 320, 1, radianAngle(0), radianAngle(360));
-		context.fill();
-		
-		// Body of ship
-		context.beginPath();
-		context.fillStyle = "rgb(215, 215, 215)";
-		context.moveTo(52, 300);
-		context.lineTo(43, 335);
-		context.lineTo(50, 350);
-		context.lineTo(60, 350);
-		context.lineTo(67, 335);
-		context.lineTo(58, 300);
-		context.lineTo(52, 300);
-		context.fill();
-		
-		// Shape on body - middle
-		context.beginPath();
-		context.fillStyle = "rgb(104, 104, 104)";
-		context.moveTo(52, 345);
-		context.lineTo(58, 345);
-		context.lineTo(58, 330);
-		context.bezierCurveTo(57,320, 53,320, 52, 330);
-		context.lineTo(52, 345);
-		context.fill();
-		
-		// Shape on body - left
-		context.beginPath();
-		context.fillStyle = "rgb(104, 104, 104)";
-		context.moveTo(50, 325);
-		context.lineTo(44, 335);
-		context.lineTo(50, 345);
-		context.lineTo(50, 325);
-		context.fill();
-		
-		// Shape on body - right
-		context.beginPath();
-		context.fillStyle = "rgb(104, 104, 104)";
-		context.moveTo(60, 325);
-		context.lineTo(66, 335);
-		context.lineTo(60, 345);
-		context.lineTo(60, 325);
-		context.fill();
-		
-		// Shape on body - glass
-		context.beginPath();
-		context.fillStyle = "rgb(59, 116, 244)";
-		context.moveTo(52, 305);
-		context.lineTo(50, 320);
-		context.lineTo(52, 320);
-		context.lineTo(54, 315);
-		context.lineTo(56, 315);
-		context.lineTo(58, 320);
-		context.lineTo(60, 320);
-		context.lineTo(58, 305);
-		context.lineTo(52, 305);
-		context.fill();
-		
-		// left yellow circle
-		context.beginPath();
-		context.fillStyle = "rgb(229, 247, 26)";
-		context.moveTo(30, 297); 
-		context.arc(30, 297, 3, radianAngle(0), radianAngle(360));
-		context.fill();
-		
-		// right yellow circle
-		context.beginPath();
-		context.fillStyle = "rgb(229, 247, 26)";
-		context.moveTo(80, 297); 
-		context.arc(80, 297, 3, radianAngle(0), radianAngle(360));
-		context.fill();
-		
-		// engine
-		context.beginPath();
-		context.fillStyle = "rgb(104, 104, 104)";
-		context.moveTo(50, 350);
-		context.lineTo(60, 350);
-		context.bezierCurveTo(57,360, 53,360, 50, 350);
-		context.fill();
-		
-		// engine fire
-		context.beginPath();
-		context.strokeStyle = "rgb(255, 195, 35)";
-		context.moveTo(52, 362);
-		context.lineTo(52, 367);
-		context.moveTo(55, 362);
-		context.lineTo(55, 370);
-		context.moveTo(58, 362);
-		context.lineTo(58, 367);
-		context.lineWidth = 2;
-		context.stroke();
-		
-		space_ship = context.getImageData(20, 294, ship_width, ship_height);
-	}
 
 	//console.log("all_bricks ", all_bricks)
 	var t1 = performance.now();
 	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
-	
-    
+	    
 })
