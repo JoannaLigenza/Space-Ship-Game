@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [8];
+	let surprise_bricks_quantity = [8, 2];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let obstacle_3_pos_y = "";
 	let first_obstacle_width = "";
 	let score = 0;
-	let level = 9;
+	let level = 1;
 	let change_level_delay = 100;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -479,7 +479,8 @@ document.addEventListener('DOMContentLoaded', function() {
 					all_enemy_bullets.push([get_enemy_bullet, enemy_position_x[i] + 5, enemy_position_y[i] + enemy_height]);
 					enemy_quantity[i][0] = enemy_quantity[i][0] - 1;	
 						
-					enemy_shooting_sound(190);
+					//enemy_shooting_sound(190);
+					new_sound(cont1, "sine", 190, 100, 0.001, 1, 1)
 				}
 				if (enemy_quantity[i][0] == 0) {
 					enemy_quantity[i][1] = false;
@@ -488,7 +489,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					enemy_quantity.splice(0, enemy_quantity.splice.length); 
 					return;
 				}
-				//enemy_shooting_sound(190);
 			}
 			enemy_bullet_delay_arr.splice(0, enemy_bullet_delay_arr.length);
 		}
@@ -1004,7 +1004,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			one_shoot = false;
 			
-			ship_shooting_sound(60);
+			//ship_shooting_sound(60);
+			new_sound(cont2, "sine", 60, 100, 0.001, 1, 1);
 
 			get_bullet();
 			
@@ -1038,9 +1039,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.stroke();
 			
 			bullets_counts.push(1);
-			//one_shoot = false;
-			
-			//ship_shooting_sound(60);
 
 			add_1_bullet_position_x = ship_position_x + 10 -1;
 			add_1_bullet_position_y = ship_position_y - bullet_height;
@@ -1641,7 +1639,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			boss_bullet_delay_arr.splice(0, boss_bullet_delay_arr.length);
 			
-			enemy_shooting_sound(190);
+			//enemy_shooting_sound(190);
+			new_sound(cont1, "sine", 190, 100, 0.001, 1, 1);
 		}
 	}
 	
@@ -1772,6 +1771,24 @@ document.addEventListener('DOMContentLoaded', function() {
 		my_keys.keys[e.keyCode] = false;
 	});
 	
+	function new_sound(contx, type, freq, volume, time, mute, stopTime) {
+		let oscillator = contx.createOscillator();
+		let gain = contx.createGain();
+		oscillator.connect(gain);
+		gain.connect(contx.destination);
+			
+		oscillator.type = type;
+		oscillator.frequency.value = freq;
+			
+		let now = contx.currentTime;
+		gain.gain.setValueAtTime(volume, now);
+		gain.gain.exponentialRampToValueAtTime(time, now + mute);
+		oscillator.start(now);
+		oscillator.stop(now + stopTime);
+	}
+	
+	//new_sound(cont3, "sine", 660, 100, 0.001, 1, 1)
+	
 	function life_star_catch_sound(freq2) {
 		let oscillator = cont3.createOscillator();
 		let gain = cont3.createGain();
@@ -1787,45 +1804,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		oscillator.start(now);
 		oscillator.stop(now + 1);
+		
 		oscillator.frequency.setValueAtTime(freq2+100, cont3.currentTime + 0.15);
 	}
 	
-	function ship_shooting_sound(freq2) {
-		//const cont2 = new AudioContext();
-		let oscillator = cont2.createOscillator();
-		let gain = cont2.createGain();
-		oscillator.connect(gain);
-		gain.connect(cont2.destination);
-			
-		oscillator.type = "sine";
-		oscillator.frequency.value = freq2;
-			
-		let now = cont2.currentTime;
-		gain.gain.setValueAtTime(100, now);
-		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
-		oscillator.start(now);
-		oscillator.stop(now + 1);
-	}
-	
-	function enemy_shooting_sound(freq2) {
-		//const cont = new AudioContext();
-		let oscillator = cont1.createOscillator();
-		let gain = cont1.createGain();
-		oscillator.connect(gain);
-		gain.connect(cont1.destination);
-			
-		oscillator.type = "sine";
-		oscillator.frequency.value = freq2;
-			
-		let now = cont1.currentTime;
-		gain.gain.setValueAtTime(100, now);
-		gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
-		oscillator.start(now);
-		oscillator.stop(now + 1);
-		console.log("gram")
-	}
-	
-	function change_level_sound() {
+	function change_level_sound(text) {
 		//let now = cont.currentTime,
 		let osc = cont.createOscillator(),
 		gain = cont.createGain();
@@ -1835,10 +1818,19 @@ document.addEventListener('DOMContentLoaded', function() {
 			position = 0,
 			scale = {
 				f: 698.46,
-				c: 523.25,       
-			},
+				c: 523.25, 
+				l: 130.81,
+				m: 123.47,
+				o: 90.00
+			}
 			
-			song = "cccf-cf--";
+			if (text == "change-level") {
+				song = "cccf-cf--";
+			}
+			if (text == "lost-life") {
+				song = "lmo--";
+			}
+			//song = "cccf-cf--";
 
 		myV = setInterval(play, 1000 / 5);
 	}
@@ -1882,7 +1874,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			refresh = true;
 			level += 1; 
 			what_to_refresh();
-			//change_level_sound();
 			refresh_delay();
 			change_level_delay = 100;
 			console.log("level ", level);	
@@ -1958,13 +1949,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		console.log("refresh ", refresh)
 		change_level_delay -= 1;
 		if (change_level_delay === 98 && change_level_refresh == true) {
-			change_level_sound();
+			change_level_sound("change-level");
 		}	
 		if (change_level_delay < 100 && change_level_delay > 0 && change_level_refresh == true) {
 			show_next_level_info();
 			return;
 		}
-		
+		if (change_level_delay === 98 && lost_life_refresh == true) {
+			change_level_sound("lost-life");
+			console.log("lost life song");
+		}
 		if (change_level_delay < 100 && change_level_delay > 0 && lost_life_refresh == true) {
 			show_lost_life_info();
 			return;
