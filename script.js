@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let obstacle_3_pos_y = "";
 	let first_obstacle_width = "";
 	let score = 0;
-	let level = 1;
+	let level = 9;
 	let change_level_delay = 100;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -141,6 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_boss_power_text = "";
 	let get_next_level_text = "";
 	let get_lost_life_text = "";
+	let get_you_won_text = "";
+	let get_your_score_text = "";
 	let change_level_refresh = false;
 	let lost_life_refresh = false;
 	
@@ -1303,6 +1305,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (text == "Y o u  l o s t  l i f e  : ( ") {
 			get_lost_life_text = get_text;
 		}
+		if (text == "Y o u  w o n ! ") {
+			get_you_won_text = get_text;
+		}
+		if (text == "Y o u r  s c o r e :  ") {
+			get_your_score_text = get_text;
+		}
 		
 		
 		for (let m=0; m < get_text.data.length; m += 4) {
@@ -1875,7 +1883,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			level += 1; 
 			what_to_refresh();
 			//change_level_sound();
-			refersh_delay();
+			refresh_delay();
 			change_level_delay = 100;
 			console.log("level ", level);	
 	}
@@ -1905,8 +1913,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			console.log(score)
 			score -= ( (((brick_col*brick_row) - all_bricks.length)*10) + (catched_stars.length*200));
 			what_to_refresh();
-			refersh_delay();
-			can_shoot = true;
+			refresh_delay();
+			//can_shoot = true;
 			//console.log("crash");
 		}
 	}
@@ -1944,8 +1952,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	}
 	
-	function refersh_delay() {
+	function refresh_delay() {
 		can_shoot = false;
+		console.log("refresh ", refresh)
 		change_level_delay -= 1;
 		if (change_level_delay === 98 && change_level_refresh == true) {
 			change_level_sound();
@@ -2032,6 +2041,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				yellow_bricks = 0;
 				surprise_bricks_quantity = [];
 				move_boss();
+				refresh = false;
 				return;
 			}
 			draw_all_bricks();
@@ -2090,18 +2100,25 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function end_screen() {
-		context.font = "bold 16px Arial";
-		context.textAlign = "left";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("You won! ", 150 , 70);
-		context.fillText("Your score: " + score, 120 , 100);
+	/*	context2.font = "bold 16px Arial";
+		context2.textAlign = "left";
+		context2.textBaseline = "middle";
+		context2.fillStyle = "rgb(255,0,0)";
+		context2.fillText("You won! ", 150 , 70);
+		context2.fillText("Your score: " + score, 120 , 100); */
+		
+		draw_text("", "Y o u  w o n ! ", "", 130, 70, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text("", "Y o u r  s c o r e :  ", score, 110, 100, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		
+		context.putImageData(get_you_won_text, 130, 70);
+		context.putImageData(get_your_score_text, 110, 100);
 	}
+
 	function draw_author() {
-		context.font = "bold 12px Arial";
-		context.textAlign = "left";
-		context.textBaseline = "middle";
-		context.fillStyle = "rgb(255,0,0)";
+		context2.font = "bold 12px Arial";
+		context2.textAlign = "left";
+		context2.textBaseline = "middle";
+		context2.fillStyle = "rgb(255,0,0)";
 		
 		let JL = "Joanna Ligenza";
 		let CLT = ", Pawel Ligenza";
@@ -2110,13 +2127,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			//if (who_made_it[who_made_it.length - 1][2] < 0 ) {
 			
 			if ( i !== 3 && i !== 4) {
-				context.fillText(who_made_it[i][0] + JL, who_made_it[i][1] , who_made_it[i][2]);
+				context2.fillText(who_made_it[i][0] + JL, who_made_it[i][1] , who_made_it[i][2]);
 			}
 			if (i === 3) {
-				context.fillText(who_made_it[i][0] + JL + CLT, who_made_it[i][1] , who_made_it[i][2]);
+				context2.fillText(who_made_it[i][0] + JL + CLT, who_made_it[i][1] , who_made_it[i][2]);
 			}
 			if (i === 4) {
-				context.fillText(who_made_it[i][0], who_made_it[i][1] , who_made_it[i][2]);
+				context2.fillText(who_made_it[i][0], who_made_it[i][1] , who_made_it[i][2]);
 			}
 			who_made_it[i][2] = who_made_it[i][2] - 1 ;
 			
@@ -2169,7 +2186,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 		
-		if (level == 10) {
+		if (level == 10 && change_level_delay == 0) {
 			draw_boss_power();
 			draw_boss_power_line();
 			obstacles_delay -= 1;
@@ -2227,7 +2244,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 		if (refresh == true) {
-			refersh_delay();
+			refresh_delay();
 		}
 		if (all_bullets.length > 0) {
 			move_bullet();
