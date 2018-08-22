@@ -1349,7 +1349,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function get_heart() {
-		get_life_heart = context.getImageData(177, 382, 10, 10);
+		get_life_heart = context.getImageData(257, 385, 11, 10);
 	}
 	
 	function draw_boss_power() {
@@ -1904,9 +1904,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			life_quantity -= 1;
 			console.log(score)
 			score -= ( (((brick_col*brick_row) - all_bricks.length)*10) + (catched_stars.length*200));
-			can_shoot = false;
 			what_to_refresh();
 			refersh_delay();
+			can_shoot = true;
 			//console.log("crash");
 		}
 	}
@@ -1945,8 +1945,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function refersh_delay() {
+		can_shoot = false;
 		change_level_delay -= 1;
-			
 		if (change_level_delay === 98 && change_level_refresh == true) {
 			change_level_sound();
 		}	
@@ -2153,7 +2153,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_virtual_bricks ", all_virtual_bricks)
-		//console.log("all_obstacles", all_obstacles)
+		//console.log("can_shoot ", can_shoot)
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
