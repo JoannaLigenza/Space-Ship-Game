@@ -1361,8 +1361,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_boss_power() {
-		draw_text("", "A l i e n  p o w e r : ", "", 5, 7, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", boss_power , " %", 230 , 7, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", "A l i e n  p o w e r : ", "", 5, 10, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", boss_power , " %", 230 , 10, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
 		
 		context.putImageData(get_alien_text, 5, 7);
 		context.putImageData(get_boss_power_text, 230, 7);
@@ -1372,8 +1372,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.beginPath();
 		context.strokeStyle = "rgb(255,0,0)";
 		context.lineWidth = 3;
-		context.moveTo(125, 11); 
-		context.lineTo(125 + boss_power_line, 11);
+		context.moveTo(125, 15); 
+		context.lineTo(125 + boss_power_line, 15);
 		context.stroke();
 	}
 	
@@ -1948,6 +1948,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			max_boss_bullets = 15;
 			boss_stop_moving = 250;
 			all_boss_bullets.splice(0, all_boss_bullets.length);
+			change_level_delay = 100;
 		}
 
 	}
@@ -2042,6 +2043,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				surprise_bricks_quantity = [];
 				move_boss();
 				refresh = false;
+				change_level_refresh = false;
 				return;
 			}
 			draw_all_bricks();
