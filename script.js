@@ -140,6 +140,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_alien_text = "";
 	let get_boss_power_text = "";
 	let get_next_level_text = "";
+	let get_lost_life_text = "";
+	let change_level_refresh = false;
+	let lost_life_refresh = false;
 	
 	
 	function draw_frame() {
@@ -279,16 +282,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		brick_moving_delay_arr.push(1);
 		
 		if (all_bricks.length == 0 && can_change_level == true) {
-			change_level_delay -= 1;
-			show_next_level_info();
-			if (change_level_delay == 59) {
-				change_level_sound();
-				return;
-			}
-			if (change_level_delay == 0) {
-				change_level();
-				return;
-			}
+			change_level_refresh = true;
+			change_level();
+			//change_level_refresh = false;
+			return;
 		}
 		for (i=0; i < all_bricks.length; i++) {
 			if (is_brick_moving == false) {
@@ -1303,6 +1300,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (text == "N e x t  L e v e l :  ") {
 			get_next_level_text = get_text
 		}
+		if (text == "Y o u  l o s t  l i f e  : ( ") {
+			get_lost_life_text = get_text;
+		}
 		
 		
 		for (let m=0; m < get_text.data.length; m += 4) {
@@ -1876,15 +1876,22 @@ document.addEventListener('DOMContentLoaded', function() {
 			what_to_refresh();
 			//change_level_sound();
 			refersh_delay();
-			change_level_delay = 60;
+			change_level_delay = 100;
 			console.log("level ", level);	
 	}
 	
 	function show_next_level_info() {
 			
-		draw_text("", "N e x t  L e v e l :  ", level+1, 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text("", "N e x t  L e v e l :  ", level, 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
 		
 		context.putImageData(get_next_level_text, 100, 170);
+	}
+	
+	function show_lost_life_info() {
+			
+		draw_text("", "Y o u  l o s t  l i f e  : ( ", "", 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		
+		context.putImageData(get_lost_life_text, 100, 170);
 	}
 	
 	function refresh_game() {
@@ -1893,6 +1900,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			end_game = true;
 		}
 		if (life_quantity > 0) {
+			lost_life_refresh = true;
 			life_quantity -= 1;
 			console.log(score)
 			score -= ( (((brick_col*brick_row) - all_bricks.length)*10) + (catched_stars.length*200));
@@ -1937,16 +1945,31 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function refersh_delay() {
-		refresh_delay_time -= 1 
-		if (refresh_delay_time == 0) {
+		change_level_delay -= 1;
+			
+		if (change_level_delay === 98 && change_level_refresh == true) {
+			change_level_sound();
+		}	
+		if (change_level_delay < 100 && change_level_delay > 0 && change_level_refresh == true) {
+			show_next_level_info();
+			return;
+		}
+		
+		if (change_level_delay < 100 && change_level_delay > 0 && lost_life_refresh == true) {
+			show_lost_life_info();
+			return;
+		}
+		
+		//refresh_delay_time -= 1 
+		if (change_level_delay == 0) {
 			if (level == 1) {
 				draw_virtual_bricks(70, 15)
 			}
 			if (level == 2) {
 				brick_col = 15;
 				brick_row = 3;
-				green_bricks = 8;
-				yellow_bricks = 8;
+				//green_bricks = 8;
+				//yellow_bricks = 8;
 				surprise_bricks_quantity = [6, 1, 3, 5];
 				draw_virtual_bricks(30, 5)
 			}
@@ -2012,10 +2035,13 @@ document.addEventListener('DOMContentLoaded', function() {
 				return;
 			}
 			draw_all_bricks();
-			refresh_delay_time = 10;
+			//refresh_delay_time = 10;
+			change_level_delay = 100;
 			refresh = false;
 			can_change_level = true;
 			can_shoot = true;
+			change_level_refresh = false;
+			lost_life_refresh = false;
 		}
 	}
 	
