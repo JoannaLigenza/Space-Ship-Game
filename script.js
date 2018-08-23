@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6];
+	let surprise_bricks_quantity = [6, 4];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_shoot = true;
 	let enemy_quantity = [];
 	const bullets_counts = [];
-	let bullet_limit = 20;
+	let bullet_limit = 6;
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let get_bullets = "";
@@ -1291,7 +1291,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context2.fillStyle = rgb;
 		context2.fillText(before + text + after, posX , posY);
 		
-		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + context2.measureText(after).width, text_height);
+		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + (context2.measureText(after).width+5), text_height);
 		
 		if (text == "L e v e l : ") {
 			get_level_text = get_text
@@ -1960,7 +1960,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		green_bricks = 0;
 		space_ship = space_ship_blue;
 		
-		if(background_delay > 0) {
+		//if(background_delay > 0) {
+		if(white_background == true) {
 			background_delay = 100;
 			white_background = false;
 			const ship_data = space_ship; 
@@ -1977,7 +1978,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					} 
 						
 			space_ship = ship_data 
-		}
+		} 
 		
 		if (level == 10) {
 			turbo_shooting = true;
