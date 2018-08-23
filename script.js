@@ -2023,7 +2023,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 3;
 				//green_bricks = 8;
 				//yellow_bricks = 8;
-				surprise_bricks_quantity = [6, 1, 3, 5];
+				surprise_bricks_quantity = [6, 1, 3];
 				draw_virtual_bricks(30, 5)
 			}
 			if (level == 3) {
