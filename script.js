@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 11
-	let brick_row = 1;
+	let brick_row = 2;
 	let all_virtual_bricks = [];
 	const all_bricks = [];
 	let ship_position_x = 160;
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [8, 2, 4];
+	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let refresh_delay_time = 10;
 	let animation = "";
 	let end_game = false;
-	let who_made_it = [["Graphic: ", 110, 400], ["Sounds: ",110, 450], ["Realisation: ", 105, 500], ["Ideas and inspirations: ",20, 550], ["Press F5 to play again", 110, 620]]
+	let end_screen_text = [];
 	let get_level_text = "";
 	let get_score_text = "";
 	let get_life_text = "";
@@ -145,6 +145,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_lost_life_text = "";
 	let get_you_won_text = "";
 	let get_your_score_text = "";
+	let get_graphic_text = "";
+	let get_sounds_text = "";
+	let get_realisation_text = "";
+	let get_ide_text = "";
+	let get_pressf5_text = "";
+	let get_jlpl_text = "";
 	let change_level_refresh = false;
 	let lost_life_refresh = false;
 	
@@ -199,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function refresh_color_data()
 	{
-		x = 1;  // 5 Seconds
+		x = 15;  // 5 Seconds
 		var perf0 = performance.now();
 		let all_colors = count_colors_opt(360,400)+1;
 		var perf1 = performance.now();
@@ -1285,7 +1291,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context2.fillStyle = rgb;
 		context2.fillText(before + text + after, posX , posY);
 		
-		let get_text = context2.getImageData(posX, posY-7, context.measureText(text).width + context.measureText(after).width, text_height);
+		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + context2.measureText(after).width, text_height);
 		
 		if (text == "L e v e l : ") {
 			get_level_text = get_text
@@ -1314,7 +1320,24 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (text == "Y o u r  s c o r e :  ") {
 			get_your_score_text = get_text;
 		}
-		
+		if (text == "G r a p h i c :   J o a n n a   L i g e n z a ") {
+			get_graphic_text = get_text;
+		}
+		if (text == "S o u n d s :   J o a n n a   L i g e n z a ") {
+			get_sounds_text = get_text;
+		}
+		if (text == "R e a l i s a t i o n :   J o a n n a   L i g e n z a ") {
+			get_realisation_text = get_text;
+		}
+		if (text == "I d e a s  a n d  i n s p i r a t i o n s : ") {
+			get_ideas_text = get_text;
+		}
+		if (text == "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a") {
+			get_jlpl_text = get_text;
+		}
+		if (text == "P r e s s  F 5  t o  p l a y  a g a i n") {
+			get_pressf5_text = get_text;
+		}		
 		
 		for (let m=0; m < get_text.data.length; m += 4) {
 							if (get_text.data[m] !== 255 && get_text.data[m] !== 6) {
@@ -2122,45 +2145,62 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
-	function end_screen() {
-	/*	context2.font = "bold 16px Arial";
-		context2.textAlign = "left";
-		context2.textBaseline = "middle";
-		context2.fillStyle = "rgb(255,0,0)";
-		context2.fillText("You won! ", 150 , 70);
-		context2.fillText("Your score: " + score, 120 , 100); */
-		
+	function end_screen() {		
 		draw_text("", "Y o u  w o n ! ", "", 130, 70, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
-		draw_text("", "Y o u r  s c o r e :  ", score, 110, 100, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text("", "Y o u r  s c o r e :  ", score, 90, 100, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
 		
 		context.putImageData(get_you_won_text, 130, 70);
 		context.putImageData(get_your_score_text, 110, 100);
 	}
 
-	function draw_author() {
-		context2.font = "bold 12px Arial";
-		context2.textAlign = "left";
-		context2.textBaseline = "middle";
+	function draw_author(text, posX , posY, font, align, rgb, text_height) {
+		draw_text("", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 150, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 180, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 210, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 270, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", "P r e s s  F 5  t o  p l a y  a g a i n", "", 50, 350, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		
+/*		context2.font = "bold 12px Arial";
+		context2.textAlign = "top";
+		context2.textBaseline = "top";
 		context2.fillStyle = "rgb(255,0,0)";
 		
-		let JL = "Joanna Ligenza";
-		let CLT = ", Pawel Ligenza";
+		let who_made_it = [["Graphic: Joanna Ligenza", 110, 150], ["Sounds: Joanna Ligenza",110, 200], ["Realisation: Joanna Ligenza", 105, 250], 
+		["Ideas and inspirations: Joanna Ligenza, Pawel Ligenza",20, 300], ["Press F5 to play again", 110, 350]];
 
 		for (i=0; i < who_made_it.length; i++) {
-			//if (who_made_it[who_made_it.length - 1][2] < 0 ) {
-			
-			if ( i !== 3 && i !== 4) {
-				context2.fillText(who_made_it[i][0] + JL, who_made_it[i][1] , who_made_it[i][2]);
+			context2.fillText(who_made_it[i][0], who_made_it[i][1] , who_made_it[i][2]);
+			let get_end_text = context2.getImageData(who_made_it[i][1], who_made_it[i][2], context2.measureText(who_made_it[i][0]).width, 14)
+			for (let m=0; m < get_end_text.data.length; m += 4) {
+				if (get_end_text[m] !== 255 && get_end_text.data[m] !== 6) {
+					get_end_text[m] = 255;
+				}
+				if (get_end_text[m+1] !== 0) {
+					get_end_text[m+1] = 0;
+				}
+				if (get_end_text[m+2] !== 0 && get_end_text.data[m+2] !== 135) {
+					get_end_text[m+2] = 0;
+				}
 			}
-			if (i === 3) {
-				context2.fillText(who_made_it[i][0] + JL + CLT, who_made_it[i][1] , who_made_it[i][2]);
-			}
-			if (i === 4) {
-				context2.fillText(who_made_it[i][0], who_made_it[i][1] , who_made_it[i][2]);
-			}
-			who_made_it[i][2] = who_made_it[i][2] - 1 ;
-			
+			end_screen_text.push(get_end_text);
 		}
+		console.log("end_screen_text ", end_screen_text) */
+	}
+	
+	let where_to_draw = 400;
+	
+	function move_author() {
+		
+		
+		context.putImageData(get_graphic_text, 70, where_to_draw);
+		context.putImageData(get_sounds_text, 75, where_to_draw+40);
+		context.putImageData(get_realisation_text, 55, where_to_draw+80);
+		context.putImageData(get_ideas_text, 75, where_to_draw+120);
+		context.putImageData(get_jlpl_text, 45, where_to_draw+155);
+		context.putImageData(get_pressf5_text, 70, where_to_draw+220);
+		where_to_draw = where_to_draw - 1;
+		
 	}
 	
 	function author() {
@@ -2169,12 +2209,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_frame();
 		win_game();
 		draw_author();
+		move_author();
 		
-		if (who_made_it[0][2] < 140 ) {
-				cancelAnimationFrame(animation2);
-				//reload_game();
-				return;
-			}
+		//if (who_made_it[0][2] < 140 ) {
+		if (where_to_draw < 150 ) {
+			cancelAnimationFrame(animation2);
+			//reload_game();
+			return;
+		}
 		
 		setTimeout(function() {
 			animation2 = requestAnimationFrame(author); 
@@ -2216,6 +2258,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if(boss_power <= 0) {
 				//win_game();
 				score = score + life_quantity*500*10;
+				draw_author();
 				author();
 				cancelAnimationFrame(animation);
 				return;
