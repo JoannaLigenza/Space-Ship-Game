@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const cont1 = new AudioContext();
 	const cont2 = new AudioContext();
 	const cont3 = new AudioContext();
+	const cont4 = new AudioContext();
 	let position = "";
 	let song = "";
 	let scale = "";
@@ -35,11 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let enemy_position_x = [];
 	let enemy_position_y = [];
 	let space_ship = "";
+	let space_ship_blue = "";
 	let which_key_pressed = "";
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [8, 2];
+	let surprise_bricks_quantity = [8, 2, 4];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -77,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let heart_position_y = 0;
 	let white_background = false;
 	let background_delay = 100;
-	let background_delay_arr = [];
+	//let background_delay_arr = [];
 	let get_arrow = "";
 	let arrow_position = [];
 	let is_arrow_visible = false;
@@ -561,12 +563,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function background() {
-		background_delay_arr.push(1);
-		if(background_delay_arr.length < background_delay) {
+		background_delay -= 1;
+		if(background_delay > 0) {
 			context.fillStyle = "rgb(250, 250, 250)";
 			context.fillRect(2,2, canvas.width-4, canvas.height-4 );
 			
 			const ship_data = space_ship; 
+			space_ship_blue = ship_data;
 				for (let m=0; m < ship_data.data.length; m += 4) {
 						if (ship_data.data[m] === 6) {
 							ship_data.data[m] = 251;
@@ -581,8 +584,8 @@ document.addEventListener('DOMContentLoaded', function() {
 						
 			space_ship = ship_data 
 		}
-		if(background_delay_arr.length > background_delay) {
-			background_delay_arr.splice(0, background_delay_arr.length);
+		if(background_delay == 0) {
+			background_delay = 100;
 			white_background = false;
 			const ship_data = space_ship; 
 				for (let m=0; m < ship_data.data.length; m += 4) {
@@ -951,6 +954,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillRect(57, 362, 2, 5);
 		
 		space_ship = context.getImageData(20, 294, ship_width, ship_height);
+		//space_ship_blue = space_ship;
 	}
 	
 //	function get_space_ship() {
@@ -1092,6 +1096,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 			for (j = 0; j < all_bricks.length; j++) {
 				if ((all_bullets[i][1] >= all_bricks[j][1] && all_bullets[i][1] <= all_bricks[j][1] + brick_width && all_bullets[i][2] >= all_bricks[j][2] && all_bullets[i][2] <= all_bricks[j][2] + brick_height)) {
+					new_sound(cont4, "sine", 200, 10, 0.11, 0.1, 0.1);
 					if(all_bricks[j][4] == "yellow") {
 						const yellow_brick_data = all_bricks[j][0];
 						
@@ -1787,7 +1792,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		oscillator.stop(now + stopTime);
 	}
 	
-	//new_sound(cont3, "sine", 660, 100, 0.001, 1, 1)
+	//new_sound(cont4, "sawtooth", 200, 100, 0.11, 0.1, 0.1)
 	
 	function life_star_catch_sound(freq2) {
 		let oscillator = cont3.createOscillator();
@@ -1871,9 +1876,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function change_level() {
-			refresh = true;
 			level += 1; 
 			what_to_refresh();
+			refresh = true;
 			refresh_delay();
 			change_level_delay = 100;
 			console.log("level ", level);	
@@ -1930,7 +1935,26 @@ document.addEventListener('DOMContentLoaded', function() {
 		catched_stars.splice(0, catched_stars.length);
 		yellow_bricks = 0;
 		green_bricks = 0;
+		space_ship = space_ship_blue;
 		
+		if(background_delay > 0) {
+			background_delay = 100;
+			white_background = false;
+			const ship_data = space_ship; 
+				for (let m=0; m < ship_data.data.length; m += 4) {
+						if (ship_data.data[m] === 251) {
+							ship_data.data[m] = 6;
+						}
+						if (ship_data.data[m+1] === 251) {
+							ship_data.data[m+1] = 0;
+						}
+						if (ship_data.data[m+2] === 251) {
+							ship_data.data[m+2] = 135;
+						}
+					} 
+						
+			space_ship = ship_data 
+		}
 		
 		if (level == 10) {
 			turbo_shooting = true;
@@ -1951,16 +1975,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (change_level_delay === 98 && change_level_refresh == true) {
 			change_level_sound("change-level");
 		}	
-		if (change_level_delay < 100 && change_level_delay > 0 && change_level_refresh == true) {
+		if (change_level_delay < 99 && change_level_delay > 0 && change_level_refresh == true) {
 			show_next_level_info();
+			console.log("show_next_level_info")
 			return;
 		}
 		if (change_level_delay === 98 && lost_life_refresh == true) {
 			change_level_sound("lost-life");
 			console.log("lost life song");
 		}
-		if (change_level_delay < 100 && change_level_delay > 0 && lost_life_refresh == true) {
+		if (change_level_delay < 99 && change_level_delay > 0 && lost_life_refresh == true) {
 			show_lost_life_info();
+			console.log("show_lost_life_info")
 			return;
 		}
 		
@@ -2043,6 +2069,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			draw_all_bricks();
 			//refresh_delay_time = 10;
 			change_level_delay = 100;
+			//background_delay = 100;
 			refresh = false;
 			can_change_level = true;
 			can_shoot = true;
