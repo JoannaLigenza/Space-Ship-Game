@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_shoot = true;
 	let enemy_quantity = [];
 	const bullets_counts = [];
-	let bullet_limit = 17;
+	let bullet_limit = 17; //4
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let get_bullets = "";
@@ -116,18 +116,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	let boss_power = 100;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
-	let get_obstacle = "";
-	let get_2_obstacle = "";
-	let get_3_obstacle = "";
-	let obstacle_pos_x = "";
-	let obstacle_pos_y = "";
-	let obstacle_2_pos_x = "";
-	let obstacle_2_pos_y = "";
-	let obstacle_3_pos_x = "";
-	let obstacle_3_pos_y = "";
+	let three_obstacles_lines = [];
+	//let get_obstacle = "";
+	//let get_2_obstacle = "";
+	//let get_3_obstacle = "";
+	//let obstacle_pos_x = "";
+	//let obstacle_pos_y = "";
+	//let obstacle_2_pos_x = "";
+	//let obstacle_2_pos_y = "";
+	//let obstacle_3_pos_x = "";
+	//let obstacle_3_pos_y = "";
 	let first_obstacle_width = "";
 	let score = 0;
-	let level = 7;
+	let level = 9;
 	let change_level_delay = 100;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -1101,13 +1102,15 @@ document.addEventListener('DOMContentLoaded', function() {
 					return;
 				}
 				for(k = 0; k < all_obstacles.length; k++) {
-					if (all_bullets[i][2] <= all_obstacles[k][2] && all_bullets[i][2] + bullet_height >= all_obstacles[k][2] && all_bullets[i][1] >= all_obstacles[k][1] && all_bullets[i][1] <= all_obstacles[k][1] + first_obstacle_width) {
+					if (all_bullets[i][2] <= all_obstacles[k][2] && all_bullets[i][2] + bullet_height >= all_obstacles[k][2] && all_bullets[i][1] >= all_obstacles[k][1] && all_bullets[i][1] <= all_obstacles[k][1] + three_obstacles_lines[0][1]) {
 						if(all_obstacles[k][3] == "orange") {
+							//score += 20;
 							all_obstacles.splice(k, 1);
 							console.log("orange");
 						}
 						all_bullets.splice(i, 1);
 						bullets_counts.splice(i, 1);	
+						console.log("trafiony")
 						return;
 					}
 				}
@@ -1714,56 +1717,39 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// przeszkoda
 	function draw_obstacle() {
-		first_obstacle_width = 25;
-		context.beginPath();
-		context.moveTo(30, 210); 
-		context.lineTo(5, 210);
-		context.lineWidth = 5;
-		context.strokeStyle = "rgb(250, 250, 250)";
-		context.stroke();
 		
-		obstacle_pos_x = canvas.width -2
-		obstacle_pos_y = 120
-
-		get_obstacle = context.getImageData(5, 207, first_obstacle_width, 6);
+		let obstacle = [];
+		// [x1, y1, x2, y2, rgb, obstacle_pos_x, obstacle_pos_y]
+		let first_line = [5, 210, 30, 210, "rgb(250, 250, 250)", canvas.width -2, 120];
+		let second_line = [5, 220, 20, 220, "rgb(255, 195, 35)", canvas.width -10, 150];
+		let thrid_line = [5, 230, 15, 230, "rgb(250, 250, 250)", canvas.width -20, 180];
+		obstacle.push(first_line, second_line, thrid_line);
 		
-		second_obstacle_width = 15;
-		context.beginPath();
-		context.moveTo(20, 220); 
-		context.lineTo(5, 220);
-		context.lineWidth = 5;
-		context.strokeStyle = "rgb(255, 195, 35)";
-		context.stroke();
-		
-		obstacle_2_pos_x = canvas.width -10
-		obstacle_2_pos_y = 150
-
-		get_2_obstacle = context.getImageData(5, 217, second_obstacle_width, 6);
-		
-		thrid_obstacle_width = 10;
-		context.beginPath();
-		context.moveTo(15, 230); 
-		context.lineTo(5, 230);
-		context.lineWidth = 5;
-		context.strokeStyle = "rgb(250, 250, 250)";
-		context.stroke();
-		
-		obstacle_3_pos_x = canvas.width -20
-		obstacle_3_pos_y = 180
-
-		get_3_obstacle = context.getImageData(5, 227, thrid_obstacle_width, 6);
+		for (i=0; i < obstacle.length; i++) {
+			context.beginPath();
+			context.moveTo(obstacle[i][0], obstacle[i][1]); 
+			context.lineTo(obstacle[i][2], obstacle[i][3]);
+			context.lineWidth = 5;
+			context.strokeStyle = obstacle[i][4];
+			context.stroke();
+			
+			let get_obstacle = context.getImageData(obstacle[i][0], obstacle[i][1]-2, Math.abs(obstacle[i][2]-obstacle[i][0]), 5);
+			console.log("dlugosc: ", Math.abs(obstacle[i][2]-obstacle[i][0]))
+			three_obstacles_lines.push([get_obstacle, Math.abs(obstacle[i][2]-obstacle[i][0]), 5]);
+		}
 	}
 	
 	function push_obstacles() {
 		if (boss_power <= 100) {
-			all_obstacles.push([get_obstacle, obstacle_pos_x, obstacle_pos_y, "white"]);
+			all_obstacles.push([three_obstacles_lines[0][0], canvas.width -2, 120, "white"]);
+			
 		}
 		if (boss_power <= 85) {
-			all_obstacles.push([get_2_obstacle, obstacle_2_pos_x, obstacle_2_pos_y, "orange"]);
+			all_obstacles.push([three_obstacles_lines[1][0], canvas.width -10, 150, "orange"]);
 		}
 		if (boss_power <= 70) {
-			all_obstacles.push([get_3_obstacle, obstacle_3_pos_x, obstacle_3_pos_y, "white"]);
-		}
+			all_obstacles.push([three_obstacles_lines[2][0], canvas.width -20, 180, "white"]);
+		} 
 	}
 	
 	function move_obstacles() {
@@ -1771,15 +1757,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		for (i=0; i < all_obstacles.length; i++) {
 			context.putImageData(all_obstacles[i][0], all_obstacles[i][1], all_obstacles[i][2]);
 			all_obstacles[i][1] = all_obstacles[i][1] - obstacle_step;
-			if (all_obstacles[i][1] + first_obstacle_width < 2) {
+			//console.log("three_obstacles_lines[0][2]", three_obstacles_lines[0][2])
+			if (all_obstacles[i][1] + three_obstacles_lines[0][1] < 2) {
 				all_obstacles.splice(i, 1);
+				//console.log("tesssssst")
 			}
 		}
-		
-	}
-	
-	function ship_bullets_bouncing() {
-		
+		console.log("all_obstacles ", all_obstacles.length)
 	}
 	
 	document.addEventListener("keydown", function(e) {
@@ -2101,7 +2085,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_col = 15;
 				brick_row = 8;
 				//green_bricks = 20;
-				yellow_bricks = (brick_col * brick_row) - green_bricks;
+				yellow_bricks = (brick_col * brick_row);
 				surprise_bricks_quantity = [8, 2, 3, 7, 1, 7, 1, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7];
 				//surprise_bricks_quantity = [1,7,1,7,1,7,1,7]
 				draw_virtual_bricks(30, 5);
@@ -2109,9 +2093,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (level == 8 && secret_level == false) {
 				brick_col = 15;
 				brick_row = 8;
-				green_bricks = 20;
+				green_bricks = 50;
 				yellow_bricks = (brick_col * brick_row) - green_bricks;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 6, 7, 7, 8];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 7, 7, 8];
 				draw_virtual_bricks(30, 5);
 			}
 			if (level == 9) {
@@ -2119,7 +2103,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				green_bricks = (brick_col * brick_row);
 				yellow_bricks = 0;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 6, 7, 7, 8];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7, 7, 8];
 				draw_virtual_bricks(30, 5);
 			}
 			if (level == 10) {
