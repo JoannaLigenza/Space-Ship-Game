@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 11
-	let brick_row = 2;
+	let brick_row = 1;
 	let all_virtual_bricks = [];
 	const all_bricks = [];
 	let ship_position_x = 160;
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6, 4];
+	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_shoot = true;
 	let enemy_quantity = [];
 	const bullets_counts = [];
-	let bullet_limit = 6;
+	let bullet_limit = 17;
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let get_bullets = "";
@@ -83,6 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_arrow = "";
 	let arrow_position = [];
 	let is_arrow_visible = false;
+	let slow_down = false;
+	let slow_down_time = 150;
 	let get_slow_down_icon = "";
 	let slow_down_icon_position = [];
 	let is_slow_down_visible = false;
@@ -92,8 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_plus_two_visible = false;
 	let get_lightning_icon = "";
 	let lightning_icon_position = [];
-	let slow_down = false;
-	let slow_down_time = 150;
 	let get_star_icon = "";
 	let catched_stars = [];
 	let star_icon_quantity = [];
@@ -449,9 +449,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function draw_enemy() {
 		context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(331, 379, 8, 2);
-		context.fillRect(330, 381, 10, 2);
-		context.fillRect(329, 383, 12, 4);
+		context.fillRect(331, 381, 8, 2);
+		context.fillRect(330, 383, 10, 2);
+		context.fillRect(329, 385, 12, 2);
 		context.fillRect(330, 387, 10, 2);
 		context.fillRect(331, 389, 8, 2);
 		context.fillRect(334, 391, 2, 4);
@@ -608,6 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						
 			space_ship = ship_data 
 		} 
+		console.log("white background");
 	}
 	
 	function draw_slow_down_icon() {
@@ -631,7 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function slow_down_game() {
 		if (slow_down == true && slow_down_time > 0) {
-			interval_delay = 30;
+			interval_delay = 60;
 			slow_down_time -= 1;	
 		}
 		if (slow_down == true && slow_down_time == 0) {
@@ -1929,7 +1930,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (life_quantity > 0) {
 			lost_life_refresh = true;
 			life_quantity -= 1;
-			console.log(score)
+			//console.log(score)
 			score -= ( (((brick_col*brick_row) - all_bricks.length)*10) + (catched_stars.length*200));
 			what_to_refresh();
 			refresh_delay();
@@ -1942,12 +1943,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		can_change_level = false;
 		is_brick_moving = false;
 		is_arrow_visible = false; 
-		slow_down = false;
-		is_slow_down_visible = false;
 		is_plus_two_visible = false;
 		heart_visible = false;
-		turbo_shooting = false;
-		turbo_shooting_delay = 450;
+		if (slow_down == true) {
+			slow_down = false;
+			is_slow_down_visible = false;
+			slow_down_time = 150;
+			interval_delay = 5;
+		}
+		if (turbo_shooting == true) {
+			turbo_shooting = false;
+			turbo_shooting_delay = 450;
+		}
 		hearts_quantity.splice(0, hearts_quantity.length);
 		all_bullets.splice(0, all_bullets.length);
 		all_bricks.splice(0, all_bricks.length);
@@ -1958,10 +1965,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		catched_stars.splice(0, catched_stars.length);
 		yellow_bricks = 0;
 		green_bricks = 0;
-		space_ship = space_ship_blue;
 		
 		//if(background_delay > 0) {
 		if(white_background == true) {
+			space_ship = space_ship_blue;
 			background_delay = 100;
 			white_background = false;
 			const ship_data = space_ship; 
@@ -1978,6 +1985,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					} 
 						
 			space_ship = ship_data 
+			//console.log("odswiezylo sie")
 		} 
 		
 		if (level == 10) {
@@ -1994,7 +2002,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function refresh_delay() {
 		can_shoot = false;
-		console.log("refresh ", refresh)
+		//console.log("refresh ", refresh)
 		change_level_delay -= 1;
 		if (change_level_delay === 98 && change_level_refresh == true) {
 			change_level_sound("change-level");
