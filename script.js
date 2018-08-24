@@ -1125,17 +1125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						bullets_counts.splice(i, 1);
 						
 						for (let m=0; m < yellow_brick_data.data.length; m += 4) {
-							if (yellow_brick_data.data[m] === 240) {
-								yellow_brick_data.data[m] = 232;
-							}
-							if (yellow_brick_data.data[m+1] === 240) {
-								yellow_brick_data.data[m+1] = 169;
-							}
-							if (yellow_brick_data.data[m+2] === 34) {
-								yellow_brick_data.data[m+2] = 0;
-							}
-							
-							if (yellow_brick_data.data[m] === 255) {
+							if (yellow_brick_data.data[m] === 225) {
 								yellow_brick_data.data[m] = 253;
 							}
 							if (yellow_brick_data.data[m+1] === 233) {
@@ -1145,23 +1135,13 @@ document.addEventListener('DOMContentLoaded', function() {
 								yellow_brick_data.data[m+2] = 120;
 							}
 							
-							if (yellow_brick_data.data[m] === 255) {
-								yellow_brick_data.data[m] = 249;
+							if (yellow_brick_data.data[m] === 240) {
+								yellow_brick_data.data[m] = 232;
 							}
-							if (yellow_brick_data.data[m+1] === 255) {
-								yellow_brick_data.data[m+1] = 161;
+							if (yellow_brick_data.data[m+1] === 240) {
+								yellow_brick_data.data[m+1] = 169;
 							}
-							if (yellow_brick_data.data[m+2] === 71) {
-								yellow_brick_data.data[m+2] = 62;
-							}
-							
-							if (yellow_brick_data.data[m] === 132) {
-								yellow_brick_data.data[m] = 126;
-							}
-							if (yellow_brick_data.data[m+1] === 113) {
-								yellow_brick_data.data[m+1] = 61;
-							}
-							if (yellow_brick_data.data[m+2] === 0) {
+							if (yellow_brick_data.data[m+2] === 34) {
 								yellow_brick_data.data[m+2] = 0;
 							}
 							
@@ -1173,6 +1153,16 @@ document.addEventListener('DOMContentLoaded', function() {
 							}
 							if (yellow_brick_data.data[m+2] === 0) {
 								yellow_brick_data.data[m+2] = 0;
+							}
+							
+							if (yellow_brick_data.data[m] === 220) {
+								yellow_brick_data.data[m] = 222;
+							}
+							if (yellow_brick_data.data[m+1] === 208) {
+								yellow_brick_data.data[m+1] = 150;
+							}
+							if (yellow_brick_data.data[m+2] === 60) {
+								yellow_brick_data.data[m+2] = 46;
 							}
 						} 
 						
@@ -1196,7 +1186,7 @@ document.addEventListener('DOMContentLoaded', function() {
 							if (green_brick_data.data[m+2] === 35) {
 								green_brick_data.data[m+2] = 34;
 							}
-							
+
 							if (green_brick_data.data[m] === 187) {
 								green_brick_data.data[m] = 255;
 							}
@@ -1206,27 +1196,7 @@ document.addEventListener('DOMContentLoaded', function() {
 							if (green_brick_data.data[m+2] === 141) {
 								green_brick_data.data[m+2] = 135;
 							} 
-							
-							if (green_brick_data.data[m] === 154) {
-								green_brick_data.data[m] = 255;
-							}
-							if (green_brick_data.data[m+1] === 204) {
-								green_brick_data.data[m+1] = 255;
-							}
-							if (green_brick_data.data[m+2] === 88) {
-								green_brick_data.data[m+2] = 71;
-							}
-							
-							if (green_brick_data.data[m] === 49) {
-								green_brick_data.data[m] = 132;
-							}
-							if (green_brick_data.data[m+1] === 98) {
-								green_brick_data.data[m+1] = 113;
-							}
-							if (green_brick_data.data[m+2] === 0) {
-								green_brick_data.data[m+2] = 0;
-							}
-							
+
 							if (green_brick_data.data[m] === 86) {
 								green_brick_data.data[m] = 192;
 							}
@@ -1235,6 +1205,16 @@ document.addEventListener('DOMContentLoaded', function() {
 							}
 							if (green_brick_data.data[m+2] === 19) {
 								green_brick_data.data[m+2] = 0;
+							}
+							
+							if (green_brick_data.data[m] === 133) {
+								green_brick_data.data[m] = 228;
+							}
+							if (green_brick_data.data[m+1] === 184) {
+								green_brick_data.data[m+1] = 208;
+							}
+							if (green_brick_data.data[m+2] === 70) {
+								green_brick_data.data[m+2] = 60;
 							}
 						} 
 						return;
@@ -2224,32 +2204,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_text("", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
 		draw_text("", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 270, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
 		draw_text("", "P r e s s  F 5  t o  p l a y  a g a i n", "", 50, 350, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		
-/*		context2.font = "bold 12px Arial";
-		context2.textAlign = "top";
-		context2.textBaseline = "top";
-		context2.fillStyle = "rgb(255,0,0)";
-		
-		let who_made_it = [["Graphic: Joanna Ligenza", 110, 150], ["Sounds: Joanna Ligenza",110, 200], ["Realisation: Joanna Ligenza", 105, 250], 
-		["Ideas and inspirations: Joanna Ligenza, Pawel Ligenza",20, 300], ["Press F5 to play again", 110, 350]];
-
-		for (i=0; i < who_made_it.length; i++) {
-			context2.fillText(who_made_it[i][0], who_made_it[i][1] , who_made_it[i][2]);
-			let get_end_text = context2.getImageData(who_made_it[i][1], who_made_it[i][2], context2.measureText(who_made_it[i][0]).width, 14)
-			for (let m=0; m < get_end_text.data.length; m += 4) {
-				if (get_end_text[m] !== 255 && get_end_text.data[m] !== 6) {
-					get_end_text[m] = 255;
-				}
-				if (get_end_text[m+1] !== 0) {
-					get_end_text[m+1] = 0;
-				}
-				if (get_end_text[m+2] !== 0 && get_end_text.data[m+2] !== 135) {
-					get_end_text[m+2] = 0;
-				}
-			}
-			end_screen_text.push(get_end_text);
-		}
-		console.log("end_screen_text ", end_screen_text) */
 	}
 	
 	let where_to_draw = 400;
