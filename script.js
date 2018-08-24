@@ -4,15 +4,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	const context = canvas.getContext("2d");
 	const canva2s = document.getElementById("canvas2");
 	const context2 = canvas2.getContext("2d");
-	function setpixelated(context){
-    context['imageSmoothingEnabled'] = false;       /* standard */
-    context['mozImageSmoothingEnabled'] = false;    /* Firefox */
-    context['oImageSmoothingEnabled'] = false;      /* Opera */
-    context['webkitImageSmoothingEnabled'] = false; /* Safari */
-    context['msImageSmoothingEnabled'] = false;     /* IE */
-	}
+/*	function setpixelated(context){
+    context['imageSmoothingEnabled'] = false;       
+    context['mozImageSmoothingEnabled'] = false;    
+    context['oImageSmoothingEnabled'] = false;     
+    context['webkitImageSmoothingEnabled'] = false; 
+    context['msImageSmoothingEnabled'] = false;     
+	} 
 	context.imageSmoothingEnabled= false;
-	setpixelated(canvas.getContext('2d'));
+	setpixelated(canvas.getContext('2d')); */
 	const cont = new AudioContext();
 	const cont1 = new AudioContext();
 	const cont2 = new AudioContext();
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6];
+	let surprise_bricks_quantity = [6, 1];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -241,6 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		for (l=0; l < brick_row; l++) {
 			for (k=0; k < brick_col; k++) {
 				all_virtual_bricks.push(["get_brick", positionX + (brick_width * k), positionY + (brick_height * l), 0, color])
+				console.log("color ", color)
 			}
 		}
 		const all_virtual_bricks_copy = [];
@@ -488,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					enemy_quantity[i][0] = enemy_quantity[i][0] - 1;	
 						
 					//enemy_shooting_sound(190);
-					new_sound(cont1, "sine", 190, 100, 0.001, 1, 1)
+					new_sound(cont1, "sine", 190, 5, 0.001, 1, 1)
 				}
 				if (enemy_quantity[i][0] == 0) {
 					enemy_quantity[i][1] = false;
@@ -632,7 +633,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function slow_down_game() {
 		if (slow_down == true && slow_down_time > 0) {
-			interval_delay = 60;
+			interval_delay = 30;
 			slow_down_time -= 1;	
 		}
 		if (slow_down == true && slow_down_time == 0) {
@@ -700,8 +701,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		console.log("collision")
 		if (star_icon_quantity.length > 0) {	
 			for (i = 0; i < star_icon_quantity.length; i++) {
-			//	if (heart_position_y + 8 > ship_position_y && heart_position_x > ship_position_x && heart_position_x < ship_position_x + ship_width) {
-				if (star_icon_quantity[i][1] + 16 > ship_position_y && star_icon_quantity[i][0] > ship_position_x && star_icon_quantity[i][0] + 12 < ship_position_x + ship_width) {
+				if (star_icon_quantity[i][1] + 11 > ship_position_y && star_icon_quantity[i][0] + 5 > ship_position_x && star_icon_quantity[i][0] + 11 < ship_position_x + ship_width) {
 					star_icon_quantity.splice(i, 1);
 					catched_stars.push(1);
 					score += 200;
@@ -1292,7 +1292,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context2.fillStyle = rgb;
 		context2.fillText(before + text + after, posX , posY);
 		
-		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + (context2.measureText(after).width+5), text_height);
+		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + (context2.measureText(after).width+10), text_height);
 		
 		if (text == "L e v e l : ") {
 			get_level_text = get_text
@@ -1960,9 +1960,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		all_bricks.splice(0, all_bricks.length);
 		all_virtual_bricks.splice(0 , all_virtual_bricks.length);
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
-		bullets_counts.splice(0, bullets_counts.length);
 		enemy_quantity.splice(0, enemy_quantity.length);
+		bullets_counts.splice(0, bullets_counts.length);
 		catched_stars.splice(0, catched_stars.length);
+		star_icon_quantity.splice(0, star_icon_quantity.length);
+		color = "orange";
 		yellow_bricks = 0;
 		green_bricks = 0;
 		
@@ -2023,7 +2025,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		
 		//refresh_delay_time -= 1 
-		if (change_level_delay == 0) {
+		if (change_level_delay == 0) {			
+			
 			if (level == 1) {
 				draw_virtual_bricks(70, 15)
 			}
@@ -2031,13 +2034,14 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_col = 15;
 				brick_row = 3;
 				//green_bricks = 8;
-				//yellow_bricks = 8;
-				surprise_bricks_quantity = [6, 1, 3];
+				yellow_bricks = 8;
+				surprise_bricks_quantity = [6, 1, 1, 1, 1, 1, 1];
 				draw_virtual_bricks(30, 5)
 			}
 			if (level == 3) {
 				brick_col = 15;
 				brick_row = 4;
+				yellow_bricks = 0;
 				surprise_bricks_quantity = [6, 1, 3, 2, 7];
 				draw_virtual_bricks(30, 5)
 			}
@@ -2045,6 +2049,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_col = 15;
 				brick_row = 4;
 				yellow_bricks = 10;
+				green_bricks = 0;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 7];
 				draw_virtual_bricks(30, 5)
 			}
@@ -2052,6 +2057,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_col = 15;
 				brick_row = 6;
 				yellow_bricks = 20;
+				green_bricks = 0;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 1, 2, 7];
 				draw_virtual_bricks(30, 5)
 			}
@@ -2059,6 +2065,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_col = 15;
 				brick_row = 7;
 				yellow_bricks = 40;
+				green_bricks = 0;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 7, 8];
 				draw_virtual_bricks(30, 5)
 			}
@@ -2098,6 +2105,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				change_level_refresh = false;
 				return;
 			}
+			console.log("yellow_bricks", yellow_bricks)
+			console.log("green_bricks", green_bricks)
+			//console.log("all_virtual_bricks", all_virtual_bricks);
 			draw_all_bricks();
 			//refresh_delay_time = 10;
 			change_level_delay = 100;
@@ -2107,6 +2117,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			can_shoot = true;
 			change_level_refresh = false;
 			lost_life_refresh = false;
+			
 		}
 	}
 	
@@ -2244,7 +2255,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_virtual_bricks ", all_virtual_bricks)
-		//console.log("can_shoot ", can_shoot)
+		console.log("enemy_quantity ", enemy_quantity.length)
+		console.log("all_enemy_bullets ", all_enemy_bullets.length)
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
