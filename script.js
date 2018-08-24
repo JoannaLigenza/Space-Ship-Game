@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_jlpl_text = "";
 	let change_level_refresh = false;
 	let lost_life_refresh = false;
+	let secret_level = true;
 	
 	
 	function draw_frame() {
@@ -547,6 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 				if (heart_position_y + 8  > canvas.height - 5 ) {
 					hearts_quantity.splice(i, 1);
+					secret_level = false;
 					return;
 				}
 			}
@@ -698,7 +700,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function star_icon_collision() {
-		console.log("collision")
 		if (star_icon_quantity.length > 0) {	
 			for (i = 0; i < star_icon_quantity.length; i++) {
 				if (star_icon_quantity[i][1] + 11 > ship_position_y && star_icon_quantity[i][0] + 5 > ship_position_x && star_icon_quantity[i][0] + 11 < ship_position_x + ship_width) {
@@ -710,6 +711,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 				if (star_icon_quantity[i][1] + 16  > canvas.height - 5 ) {
 					star_icon_quantity.splice(i, 1);
+					secret_level = false;
 					return;
 				}
 			}
@@ -1930,6 +1932,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (life_quantity > 0) {
 			lost_life_refresh = true;
 			life_quantity -= 1;
+			secret_level = false;
 			//console.log(score)
 			score -= ( (((brick_col*brick_row) - all_bricks.length)*10) + (catched_stars.length*200));
 			what_to_refresh();
