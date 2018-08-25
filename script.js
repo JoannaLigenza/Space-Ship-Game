@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let boss_stop_moving = 250; 
 	let boss_start_moving = 100;
 	let boss_power_line = 100;
-	let boss_power = 100;
+	let boss_power = 1;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
 	let three_obstacles_lines = [];
@@ -141,8 +141,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_sounds_text = "";
 	let get_realisation_text = "";
 	let get_ide_text = "";
+	let get_bugs_text = "";
+	let get_testing_text = "";
 	let get_pressf5_text = "";
 	let get_jlpl_text = "";
+	let where_to_draw = 400;
 	let change_level_refresh = false;
 	let lost_life_refresh = false;
 	let secret_level = true;
@@ -1313,9 +1316,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (text == "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a") {
 			get_jlpl_text = get_text;
 		}
+		if (text == "B u g s  f i x i n g :  J o a n n a   L i g e n z a") {
+			get_bugs_text = get_text;
+		}
+		if (text == "T e s t i n g :  M a t i  L i g e n z a , P a w e l  L i g e n z a") {
+			get_testing_text = get_text;
+		}
 		if (text == "P r e s s  F 5  t o  p l a y  a g a i n") {
 			get_pressf5_text = get_text;
 		}		
+		
 		
 		for (let m=0; m < get_text.data.length; m += 4) {
 							if (get_text.data[m] !== 255 && get_text.data[m] !== 6) {
@@ -2162,10 +2172,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function end_screen() {		
 		draw_text("", "Y o u  w o n ! ", "", 130, 70, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
-		draw_text("", "Y o u r  s c o r e :  ", score, 90, 100, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text("", "Y o u r  s c o r e :  ", score, 80, 100, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
 		
 		context.putImageData(get_you_won_text, 130, 70);
-		context.putImageData(get_your_score_text, 110, 100);
+		context.putImageData(get_your_score_text, 80, 100);
 	}
 
 	function draw_author(text, posX , posY, font, align, rgb, text_height) {
@@ -2174,10 +2184,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_text("", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 210, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
 		draw_text("", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
 		draw_text("", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 270, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", "P r e s s  F 5  t o  p l a y  a g a i n", "", 50, 350, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 290, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", "T e s t i n g :  M a t i  L i g e n z a , P a w e l  L i g e n z a", "", 10, 310, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text("", "P r e s s  F 5  t o  p l a y  a g a i n", "", 80, 340, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
 	}
-	
-	let where_to_draw = 400;
 	
 	function move_author() {
 		context.putImageData(get_graphic_text, 70, where_to_draw);
@@ -2185,20 +2195,31 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.putImageData(get_realisation_text, 55, where_to_draw+80);
 		context.putImageData(get_ideas_text, 75, where_to_draw+120);
 		context.putImageData(get_jlpl_text, 45, where_to_draw+155);
-		context.putImageData(get_pressf5_text, 70, where_to_draw+220);
+		context.putImageData(get_bugs_text, 75, where_to_draw+195);
+		context.putImageData(get_testing_text,10, where_to_draw+235);
+		context.putImageData(get_pressf5_text, 80, where_to_draw+320);
 		where_to_draw = where_to_draw - 1;
 	}
 	
+	function blue_background() {
+		context.fillStyle = "rgb(255, 195, 35)";
+		context.fillRect(0,0, canvas.width, 2);
+		context.fillStyle = "rgb(6, 0, 135)";
+		context.fillRect(2,2, canvas.width - 4, 135);
+	}
+	
 	function author() {
+		console.log("tesssssst")
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		interval_delay = 30;
 		draw_frame();
-		win_game();
 		draw_author();
 		move_author();
+		blue_background();
+		win_game();
 		
 		//if (who_made_it[0][2] < 140 ) {
-		if (where_to_draw < 150 ) {
+		if (where_to_draw+320 < 150 ) {
 			cancelAnimationFrame(animation2);
 			//reload_game();
 			return;
