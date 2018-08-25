@@ -4,15 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	const context = canvas.getContext("2d");
 	const canva2s = document.getElementById("canvas2");
 	const context2 = canvas2.getContext("2d");
-/*	function setpixelated(context){
-    context['imageSmoothingEnabled'] = false;       
-    context['mozImageSmoothingEnabled'] = false;    
-    context['oImageSmoothingEnabled'] = false;     
-    context['webkitImageSmoothingEnabled'] = false; 
-    context['msImageSmoothingEnabled'] = false;     
-	} 
-	context.imageSmoothingEnabled= false;
-	setpixelated(canvas.getContext('2d')); */
 	const cont = new AudioContext();
 	const cont1 = new AudioContext();
 	const cont2 = new AudioContext();
@@ -127,24 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	let animation = "";
 	let end_game = false;
 	let end_screen_text = [];
-	let get_level_text = "";
-	let get_score_text = "";
-	let get_life_text = "";
-	let get_alien_text = "";
-	let get_boss_power_text = "";
-	let get_next_level_text = "";
-	let get_bonus_level_text = "";
-	let get_lost_life_text = "";
-	let get_you_won_text = "";
-	let get_your_score_text = "";
-	let get_graphic_text = "";
-	let get_sounds_text = "";
-	let get_realisation_text = "";
-	let get_ide_text = "";
-	let get_bugs_text = "";
-	let get_testing_text = "";
-	let get_pressf5_text = "";
-	let get_jlpl_text = "";
 	let where_to_draw = 400;
 	let change_level_refresh = false;
 	let lost_life_refresh = false;
@@ -212,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function refresh_color_data() {
 		x = 5;  // 5 Seconds
 		var perf0 = performance.now();
-		let all_colors = count_colors_opt(360,400)+1;
+		let all_colors = count_colors_opt(360,400);
 		var perf1 = performance.now();
 		console.log("Colors on screen:" + all_colors + " take: " + parseInt(perf1 - perf0) + " ms" );
 		setTimeout(refresh_color_data, x*1000);
@@ -1262,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 	
-	function draw_text(before, text, after, posX , posY, font, align, rgb, text_height) {
+	function draw_text(numb, before, text, after, posX , posY, font, align, rgb, text_height) {
 		context2.font = font;
 		context2.textAlign = align;
 		context2.textBaseline = "middle";
@@ -1271,97 +1244,42 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + (context2.measureText(after).width+10), text_height);
 		
-		if (text == "L e v e l : ") {
-			get_level_text = get_text
-		}
-		if (text == "S c o r e : ") {
-			get_score_text = get_text
-		}
-		if (text == "L i f e : ") {
-			get_life_text = get_text
-		}
-		if (text == "A l i e n  p o w e r : ") {
-			get_alien_text = get_text
-		}
-		if (text == boss_power) {
-			get_boss_power_text = get_text
-		}
-		if (text == "N e x t  L e v e l :  ") {
-			get_next_level_text = get_text
-		}
-		if (text == "B o n u s   L e v e l  !  ") {
-			get_bonus_level_text = get_text
-		}
-		if (text == "Y o u  l o s t  l i f e  : ( ") {
-			get_lost_life_text = get_text;
-		}
-		if (text == "Y o u  w o n ! ") {
-			get_you_won_text = get_text;
-		}
-		if (text == "Y o u r  s c o r e :  ") {
-			get_your_score_text = get_text;
-		}
-		if (text == "G r a p h i c :   J o a n n a   L i g e n z a ") {
-			get_graphic_text = get_text;
-		}
-		if (text == "S o u n d s :   J o a n n a   L i g e n z a ") {
-			get_sounds_text = get_text;
-		}
-		if (text == "R e a l i s a t i o n :   J o a n n a   L i g e n z a ") {
-			get_realisation_text = get_text;
-		}
-		if (text == "I d e a s  a n d  i n s p i r a t i o n s : ") {
-			get_ideas_text = get_text;
-		}
-		if (text == "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a") {
-			get_jlpl_text = get_text;
-		}
-		if (text == "B u g s  f i x i n g :  J o a n n a   L i g e n z a") {
-			get_bugs_text = get_text;
-		}
-		if (text == "T e s t i n g :  M a t i  L i g e n z a , P a w e l  L i g e n z a") {
-			get_testing_text = get_text;
-		}
-		if (text == "P r e s s  F 5  t o  p l a y  a g a i n") {
-			get_pressf5_text = get_text;
-		}		
-		
-		
 		for (let m=0; m < get_text.data.length; m += 4) {
-							if (get_text.data[m] !== 255 && get_text.data[m] !== 6) {
-								get_text.data[m] = 255;
-							}
-							if (get_text.data[m+1] !== 0) {
-								get_text.data[m+1] = 0;
-							}
-							if (get_text.data[m+2] !== 0 && get_text.data[m+2] !== 135) {
-								get_text.data[m+2] = 0;
-							}
+			if (get_text.data[m] !== 255 && get_text.data[m] !== 6 ) {
+				get_text.data[m] = 255;
+			}
+			if (get_text.data[m+1] !== 0) {
+				get_text.data[m+1] = 0;
+			}
+			if (get_text.data[m+2] !== 0 && get_text.data[m+2] !== 135) {
+				get_text.data[m+2] = 0;
+			}
 		}
+		end_screen_text[numb] = get_text;
 	}
 	
 	function draw_level() {
 		if (level == 8 && secret_level == true) {
-			draw_text("", "L e v e l : ", "+", 5, canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-			context.putImageData(get_level_text, 5, canvas.height - 15);
+			draw_text(3, "", "L e v e l : ", "+", 5, canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+			context.putImageData(end_screen_text[3], 5, canvas.height - 15);
 		}
 		if (!(level == 8 && secret_level == true)) {
-			draw_text("", "L e v e l : ", level, 5, canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-			context.putImageData(get_level_text, 5, canvas.height - 15);
+			draw_text(0, "", "L e v e l : ", level, 5, canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+			context.putImageData(end_screen_text[0], 5, canvas.height - 15);
 		}
 
 	}
 	
 	function count_score() {
-		draw_text("", "S c o r e : ", score, 90 , canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(1, "", "S c o r e : ", score, 90 , canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
 		
-		context.putImageData(get_score_text, 90, canvas.height - 15);
+		context.putImageData(end_screen_text[1], 90, canvas.height - 15);
 	}
 	
 	function draw_life() {
-		draw_text("", "L i f e : ", "", 210 , canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(2, "", "L i f e : ", "", 210 , canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
 		
-		context.putImageData(get_life_text, 210, canvas.height - 15);
+		context.putImageData(end_screen_text[2], 210, canvas.height - 15);
 	}
 	
 	function draw_hearts() {
@@ -1381,11 +1299,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_boss_power() {
-		draw_text("", "A l i e n  p o w e r : ", "", 5, 10, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", boss_power , " %", 230 , 10, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(4, "", "A l i e n  p o w e r : ", "", 5, 10, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(5, "", boss_power , " %", 230 , 10, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
 		
-		context.putImageData(get_alien_text, 5, 7);
-		context.putImageData(get_boss_power_text, 230, 7);
+		context.putImageData(end_screen_text[4], 5, 7);
+		context.putImageData(end_screen_text[5], 230, 7);
 	}
 	
 	function draw_boss_power_line() {
@@ -1724,7 +1642,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			context.stroke();
 			
 			let get_obstacle = context.getImageData(obstacle[i][0], obstacle[i][1]-2, Math.abs(obstacle[i][2]-obstacle[i][0]), 5);
-			console.log("dlugosc: ", Math.abs(obstacle[i][2]-obstacle[i][0]))
+			//console.log("dlugosc: ", Math.abs(obstacle[i][2]-obstacle[i][0]))
 			three_obstacles_lines.push([get_obstacle, Math.abs(obstacle[i][2]-obstacle[i][0]), 5]);
 		}
 	}
@@ -1732,7 +1650,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	function push_obstacles() {
 		if (boss_power <= 100) {
 			all_obstacles.push([three_obstacles_lines[0][0], canvas.width -2, 120, "white"]);
-			
 		}
 		if (boss_power <= 85) {
 			all_obstacles.push([three_obstacles_lines[1][0], canvas.width -10, 150, "orange"]);
@@ -1884,22 +1801,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function show_next_level_info() {
 			
-		draw_text("", "N e x t  L e v e l :  ", level, 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text(6, "", "N e x t  L e v e l :  ", level, 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
 		
-		context.putImageData(get_next_level_text, 100, 170);
+		context.putImageData(end_screen_text[6], 100, 170);
 	}
 	
 	function show_lost_life_info() {
 			
-		draw_text("", "Y o u  l o s t  l i f e  : ( ", "", 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text(7, "", "Y o u  l o s t  l i f e  : ( ", "", 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
 		
-		context.putImageData(get_lost_life_text, 100, 170);
+		context.putImageData(end_screen_text[7], 100, 170);
 	}
 	
 	function show_bonus_level_info() {
-		draw_text("", "B o n u s   L e v e l  !  ", "", 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text(8, "", "B o n u s   L e v e l  !  ", "", 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
 		
-		context.putImageData(get_bonus_level_text, 100, 170);
+		context.putImageData(end_screen_text[8], 100, 170);
 	}
 	
 	function refresh_game() {
@@ -2171,39 +2088,40 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function end_screen() {		
-		draw_text("", "Y o u  w o n ! ", "", 130, 70, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
-		draw_text("", "Y o u r  s c o r e :  ", score, 80, 100, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text(9, "", "Y o u  w o n ! ", "", 130, 70, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text(10, "", "Y o u r  s c o r e :  ", score, 80, 100, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
 		
-		context.putImageData(get_you_won_text, 130, 70);
-		context.putImageData(get_your_score_text, 80, 100);
+		context.putImageData(end_screen_text[9], 130, 70);
+		context.putImageData(end_screen_text[10], 80, 100);
 	}
 
 	function draw_author(text, posX , posY, font, align, rgb, text_height) {
-		draw_text("", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 150, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 180, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 210, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 270, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 290, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", "T e s t i n g :  M a t i  L i g e n z a , P a w e l  L i g e n z a", "", 10, 310, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text("", "P r e s s  F 5  t o  p l a y  a g a i n", "", 80, 340, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(11, "", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 150, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(12, "", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 180, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(13, "", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 210, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(14, "", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(15, "", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 270, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(16, "", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 290, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(17, "", "T e s t i n g :  M a t i  L i g e n z a , P a w e l  L i g e n z a", "", 10, 310, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(18, "", "P r e s s  F 5  t o  p l a y  a g a i n", "", 80, 340, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
 	}
 	
 	function move_author() {
-		context.putImageData(get_graphic_text, 70, where_to_draw);
-		context.putImageData(get_sounds_text, 75, where_to_draw+40);
-		context.putImageData(get_realisation_text, 55, where_to_draw+80);
-		context.putImageData(get_ideas_text, 75, where_to_draw+120);
-		context.putImageData(get_jlpl_text, 45, where_to_draw+155);
-		context.putImageData(get_bugs_text, 75, where_to_draw+195);
-		context.putImageData(get_testing_text,10, where_to_draw+235);
-		context.putImageData(get_pressf5_text, 80, where_to_draw+320);
+		context.putImageData(end_screen_text[11], 70, where_to_draw);
+		context.putImageData(end_screen_text[12], 75, where_to_draw+40);
+		context.putImageData(end_screen_text[13], 55, where_to_draw+80);
+		context.putImageData(end_screen_text[14], 75, where_to_draw+120);
+		context.putImageData(end_screen_text[15], 45, where_to_draw+155);
+		context.putImageData(end_screen_text[16], 75, where_to_draw+195);
+		context.putImageData(end_screen_text[17],10, where_to_draw+235);
+		context.putImageData(end_screen_text[18], 80, where_to_draw+320);
 		where_to_draw = where_to_draw - 1;
 	}
 	
 	function blue_background() {
 		context.fillStyle = "rgb(255, 195, 35)";
 		context.fillRect(0,0, canvas.width, 2);
+		context.fillRect(0,canvas.height-2, canvas.width, 2);
 		context.fillStyle = "rgb(6, 0, 135)";
 		context.fillRect(2,2, canvas.width - 4, 135);
 	}
@@ -2243,7 +2161,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_virtual_bricks ", all_virtual_bricks)
 		//console.log("enemy_quantity ", enemy_quantity.length)
-		//console.log("star_icon_quantity ", star_icon_quantity.length)
+		//console.log("end_screen_text ", end_screen_text)
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
