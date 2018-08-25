@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let obstacles_delay = 30;
 	let three_obstacles_lines = [];
 	let score = 0;
-	let level = 7;
+	let level = 9;
 	let change_level_delay = 100;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -147,6 +147,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let lost_life_refresh = false;
 	let secret_level = true;
 	let one_time_sound = 0;
+	let boss_star_delay = 700;
+	let how_many_stars_in_boss = 6;
 	
 	
 	function draw_frame() {
@@ -1735,7 +1737,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				//console.log("tesssssst")
 			}
 		}
-		console.log("all_obstacles ", all_obstacles.length)
+		//console.log("all_obstacles ", all_obstacles.length)
 	}
 	
 	document.addEventListener("keydown", function(e) {
@@ -1984,7 +1986,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 3;
 				//green_bricks = 8;
 				yellow_bricks = 8;
-				surprise_bricks_quantity = [6, 1, 1, 1, 1, 1, 1];
+				surprise_bricks_quantity = [6, 1, 7];
 				draw_virtual_bricks(30, 5);
 			}
 			if (level == 3) {
@@ -2015,7 +2017,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 7;
 				yellow_bricks = 40;
 				green_bricks = 0;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 7, 8];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 7, 7, 8];
 				draw_virtual_bricks(30, 5);
 			}
 			if (level == 7) {
@@ -2023,7 +2025,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				green_bricks = 0;
 				yellow_bricks = (brick_col * brick_row);
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7, 8];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7, 7, 8];
 				draw_virtual_bricks(30, 5);
 			}
 			if (level == 8 && secret_level == true) {
@@ -2041,7 +2043,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				green_bricks = 50;
 				yellow_bricks = (brick_col * brick_row) - green_bricks;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 7, 7, 8];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 7, 7, 7, 7, 8];
 				draw_virtual_bricks(30, 5);
 				one_time_sound = 0;
 			}
@@ -2050,7 +2052,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				green_bricks = (brick_col * brick_row);
 				yellow_bricks = 0;
-				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7, 7, 8];
+				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7, 7, 7, 7, 7, 7, 8];
 				draw_virtual_bricks(30, 5);
 			}
 			if (level == 10) {
@@ -2214,7 +2216,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_virtual_bricks ", all_virtual_bricks)
 		//console.log("enemy_quantity ", enemy_quantity.length)
-		//console.log("all_enemy_bullets ", all_enemy_bullets.length)
+		//console.log("star_icon_quantity ", star_icon_quantity.length)
 		
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
@@ -2234,6 +2236,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			draw_boss_power();
 			draw_boss_power_line();
 			obstacles_delay -= 1;
+			boss_star_delay -=1;
 			if(boss_power <= 0) {
 				//win_game();
 				score = score + life_quantity*500*10;
@@ -2247,6 +2250,12 @@ document.addEventListener('DOMContentLoaded', function() {
 				push_obstacles();
 				obstacles_delay = 30;
 			} 
+			if (boss_star_delay == 0 && how_many_stars_in_boss > 0) {
+				how_many_stars_in_boss -= 1;
+				let random_star = Math.floor(Math.random() * (canvas.width-15));
+				star_icon_quantity.push([random_star, 1]);
+				boss_star_delay = 700;
+			}
 			move_boss();
 			stop_boss();
 			move_obstacles();
