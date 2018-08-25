@@ -1970,39 +1970,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function refresh_delay() {
-		console.log("secret_level ", secret_level)
+		//console.log("secret_level ", secret_level)
 		can_shoot = false;
-		change_level_delay -= 1;
-		if (change_level_delay === 98 && change_level_refresh == true) {
-			change_level_sound("change-level");
-		}	
-		if (change_level_delay < 99 && change_level_delay > 0 && change_level_refresh == true) {
-			if (level == 8 && secret_level == true) {
-				show_bonus_level_info();
-				return;
-			}
-			show_next_level_info();
-			return;
-		}
-		if (change_level_delay === 98 && lost_life_refresh == true) {
-			console.log("secret_level ", secret_level)
-			if (one_time_sound !== 1) {
-				change_level_sound("lost-life");
-			}
-			if (one_time_sound == 1) {
-				change_level_sound("change-level");
-			}
-		}
-		if (change_level_delay < 99 && change_level_delay > 0 && lost_life_refresh == true) {
-			if (one_time_sound !== 1) {
-				show_lost_life_info();
-			}
-			if (one_time_sound == 1) {
-				show_next_level_info();
-			}
-			return;
-		}
-		console.log("one_time_sound", one_time_sound)
+		show_info();
 		//refresh_delay_time -= 1 
 		if (change_level_delay == 0) {			
 			
@@ -2102,7 +2072,39 @@ document.addEventListener('DOMContentLoaded', function() {
 			can_shoot = true;
 			change_level_refresh = false;
 			lost_life_refresh = false;
-			
+		}
+	}
+	
+	function show_info() {
+		change_level_delay -= 1;
+		if (change_level_delay === 98 && change_level_refresh == true) {
+			change_level_sound("change-level");
+		}	
+		if (change_level_delay < 99 && change_level_delay > 0 && change_level_refresh == true) {
+			if (level == 8 && secret_level == true) {
+				show_bonus_level_info();
+				return;
+			}
+			show_next_level_info();
+			return;
+		}
+		if (change_level_delay === 98 && lost_life_refresh == true) {
+			console.log("secret_level ", secret_level)
+			if (one_time_sound !== 1) {
+				change_level_sound("lost-life");
+			}
+			if (one_time_sound == 1) {
+				change_level_sound("change-level");
+			}
+		}
+		if (change_level_delay < 99 && change_level_delay > 0 && lost_life_refresh == true) {
+			if (one_time_sound !== 1) {
+				show_lost_life_info();
+			}
+			if (one_time_sound == 1) {
+				show_next_level_info();
+			}
+			return;
 		}
 	}
 	
