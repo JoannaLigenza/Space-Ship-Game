@@ -117,18 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let all_obstacles = [];
 	let obstacles_delay = 30;
 	let three_obstacles_lines = [];
-	//let get_obstacle = "";
-	//let get_2_obstacle = "";
-	//let get_3_obstacle = "";
-	//let obstacle_pos_x = "";
-	//let obstacle_pos_y = "";
-	//let obstacle_2_pos_x = "";
-	//let obstacle_2_pos_y = "";
-	//let obstacle_3_pos_x = "";
-	//let obstacle_3_pos_y = "";
-	let first_obstacle_width = "";
 	let score = 0;
-	let level = 9;
+	let level = 7;
 	let change_level_delay = 100;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -156,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let change_level_refresh = false;
 	let lost_life_refresh = false;
 	let secret_level = true;
+	let one_time_sound = 0;
 	
 	
 	function draw_frame() {
@@ -216,18 +207,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		setTimeout(refresh_color_data, x*1000);
 	}
 	//CLT -> end counting colors on screen
-	
-/*	function draw_space() {
-		for (i=0; i < 100; i++) {
-			const random_x = Math.floor(Math.random() * canvas.width);
-			const random_y = Math.floor(Math.random() * canvas.height);
-			context.beginPath();
-			context.fillStyle = "rgb(250, 250, 250)";
-			//context.moveTo(50,340); 
-			context.arc(random_x, random_y, 1, radianAngle(0), radianAngle(360));
-			context.fill();
-		}
-	} */
 	
 	function draw_one_brick(positionX, positionY) {
 		for (i = positionX; i <= positionX + brick_width; i++) {
@@ -1106,11 +1085,9 @@ document.addEventListener('DOMContentLoaded', function() {
 						if(all_obstacles[k][3] == "orange") {
 							//score += 20;
 							all_obstacles.splice(k, 1);
-							console.log("orange");
 						}
 						all_bullets.splice(i, 1);
 						bullets_counts.splice(i, 1);	
-						console.log("trafiony")
 						return;
 					}
 				}
@@ -1122,8 +1099,6 @@ document.addEventListener('DOMContentLoaded', function() {
 						const yellow_brick_data = all_bricks[j][0];
 						
 						all_bricks[j][4] = "orange";
-						console.log("yellow")
-						console.log("color ", all_bricks[j][4])
 						all_bullets.splice(i, 1);
 						bullets_counts.splice(i, 1);
 						
@@ -1175,8 +1150,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					if(all_bricks[j][4] == "green") {
 						const green_brick_data = all_bricks[j][0];
 						all_bricks[j][4] = "yellow";
-						console.log("green")
-						console.log("color ", all_bricks[j][4])
 						all_bullets.splice(i, 1);
 						bullets_counts.splice(i, 1);
 						for (let m=0; m < green_brick_data.data.length; m += 4) {
@@ -1225,7 +1198,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					if(all_bricks[j][3] == 1) {
 						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1]+5, all_bricks[j][2] +1]);
 						console.log("yes! 1")
-						console.log("enemy_quantity ", enemy_quantity)
 					}
 					if(all_bricks[j][3] == 2) {
 						hearts_quantity.push(1);
@@ -1998,6 +1970,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function refresh_delay() {
+		console.log("secret_level ", secret_level)
 		can_shoot = false;
 		change_level_delay -= 1;
 		if (change_level_delay === 98 && change_level_refresh == true) {
@@ -2012,22 +1985,24 @@ document.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 		if (change_level_delay === 98 && lost_life_refresh == true) {
-			if (level == 8 && secret_level == false) {
-				change_level_sound("change-level");
-			}
-			if (!(level == 8 && secret_level == false)) {
+			console.log("secret_level ", secret_level)
+			if (one_time_sound !== 1) {
 				change_level_sound("lost-life");
+			}
+			if (one_time_sound == 1) {
+				change_level_sound("change-level");
 			}
 		}
 		if (change_level_delay < 99 && change_level_delay > 0 && lost_life_refresh == true) {
-			if (level == 8 && secret_level == false) {
-				show_next_level_info();
-				return;
+			if (one_time_sound !== 1) {
+				show_lost_life_info();
 			}
-			show_lost_life_info();
+			if (one_time_sound == 1) {
+				show_next_level_info();
+			}
 			return;
 		}
-		
+		console.log("one_time_sound", one_time_sound)
 		//refresh_delay_time -= 1 
 		if (change_level_delay == 0) {			
 			
@@ -2076,7 +2051,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (level == 7) {
 				brick_col = 15;
 				brick_row = 8;
-				//green_bricks = 10;
+				green_bricks = 0;
 				yellow_bricks = (brick_col * brick_row);
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7, 8];
 				draw_virtual_bricks(30, 5);
@@ -2084,11 +2059,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (level == 8 && secret_level == true) {
 				brick_col = 15;
 				brick_row = 8;
-				//green_bricks = 20;
+				green_bricks = 0;
 				yellow_bricks = (brick_col * brick_row);
 				surprise_bricks_quantity = [8, 2, 3, 7, 1, 7, 1, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7];
 				//surprise_bricks_quantity = [1,7,1,7,1,7,1,7]
 				draw_virtual_bricks(30, 5);
+				one_time_sound = 1;
 			}
 			if (level == 8 && secret_level == false) {
 				brick_col = 15;
@@ -2097,6 +2073,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				yellow_bricks = (brick_col * brick_row) - green_bricks;
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 7, 7, 8];
 				draw_virtual_bricks(30, 5);
+				one_time_sound = 0;
 			}
 			if (level == 9) {
 				brick_col = 15;
@@ -2193,8 +2170,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	let where_to_draw = 400;
 	
 	function move_author() {
-		
-		
 		context.putImageData(get_graphic_text, 70, where_to_draw);
 		context.putImageData(get_sounds_text, 75, where_to_draw+40);
 		context.putImageData(get_realisation_text, 55, where_to_draw+80);
@@ -2202,7 +2177,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.putImageData(get_jlpl_text, 45, where_to_draw+155);
 		context.putImageData(get_pressf5_text, 70, where_to_draw+220);
 		where_to_draw = where_to_draw - 1;
-		
 	}
 	
 	function author() {
