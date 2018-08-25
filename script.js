@@ -190,18 +190,24 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	//CLT -> counting colors on screen
 	function count_colors_opt(size_x,size_y){
-		var pixel_data = context.getImageData(0,0, size_x, size_y).data; 
-		var pixel_arr = []
+		var pixel_data = context.getImageData(0,0, size_x, size_y).data;
+		var pixel_arr = [];
+		var last_pixels = [];
 		for (let i=0; i<= pixel_data.length-4;i=i+4){
-			pixel_arr.push((pixel_data[i]+","+pixel_data[i+1]+","+pixel_data[i+2]+","+pixel_data[i+3]))
+			pixels = pixel_data[i]+","+pixel_data[i+1]+","+pixel_data[i+2]+","+pixel_data[i+3];
+			if (pixels!==last_pixels) {
+				pixel_arr.push(pixels);
+				last_pixels = pixels
+			}
 		}
-		const colors_unique_count = [...new Set(pixel_arr)]; 
+		const colors_unique_count = [...new Set(pixel_arr)];
+		//console.log(colors_unique_count)
 		return colors_unique_count.length;
 	}
 
-	function refresh_color_data()
-	{
-		x = 15;  // 5 Seconds
+
+	function refresh_color_data() {
+		x = 5;  // 5 Seconds
 		var perf0 = performance.now();
 		let all_colors = count_colors_opt(360,400)+1;
 		var perf1 = performance.now();
