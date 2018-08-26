@@ -311,11 +311,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	function brick_pattern1(positionX, positionY) {
 		horizontal_line1 = Math.floor(brick_height / 3);
 		horizontal_line2 = Math.floor(brick_height / 3) * 2;
-		vertical_line1 = Math.floor(brick_width / 10);
-		vertical_line2 = Math.floor(brick_width / 10) * 5;
-		vertical_line3 = Math.floor(brick_width / 10) * 9;
-		vertical_line4 = Math.floor(brick_width / 10) * 3;
-		vertical_line5 = Math.floor(brick_width / 10) * 7;
+		let vertical_line1 = Math.floor(brick_width / 10);
+		let vertical_line2 = Math.floor(brick_width / 10) * 5;
+		let vertical_line3 = Math.floor(brick_width / 10) * 9;
+		let vertical_line4 = Math.floor(brick_width / 10) * 3;
+		let vertical_line5 = Math.floor(brick_width / 10) * 7;
 		for (i = positionX; i <= positionX + brick_width; i++) {
 			for (j = positionY; j <= positionY + brick_height; j++) {
 				// Horizontal lines
@@ -447,12 +447,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			for (i=0; i < enemy_quantity.length; i++) {
 				if (enemy_quantity[i][1] == true) { 
-					context.beginPath();
-					context.moveTo(enemy_position_x[i] + 6, enemy_position_y[i] + enemy_height); 
-					context.lineTo(enemy_position_x[i] + 6, (enemy_position_y[i] + enemy_height) + bullet_height);
-					context.lineWidth = bullet_width;
-					context.strokeStyle = "rgb(250, 250, 250)";
-					context.stroke();
+					context.fillStyle = "rgb(250, 250, 250)";
+					context.fillRect(enemy_position_x[i] + 5, enemy_position_y[i] + enemy_height, bullet_width, bullet_height)
 					
 					get_enemy_bullet = context.getImageData(enemy_position_x[i] + 5, enemy_position_y[i] + enemy_height, bullet_width, bullet_height);
 					all_enemy_bullets.push([get_enemy_bullet, enemy_position_x[i] + 5, enemy_position_y[i] + enemy_height]);
