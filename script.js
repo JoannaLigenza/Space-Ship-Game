@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6, 1];
+	let surprise_bricks_quantity = [6, 3];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -75,11 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_arrow_visible = false;
 	let slow_down = false;
 	let slow_down_time = 150;
-	let get_slow_down_icon = "";
 	let slow_down_icon_position = [];
 	let is_slow_down_visible = false;
 	let plus_two_visible_delay = 50;
-	let get_draw_plus_two_icon = "";
 	let plus_two_icon_position = [];
 	let is_plus_two_visible = false;
 	let get_lightning_icon = "";
@@ -103,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let boss_stop_moving = 250; 
 	let boss_start_moving = 100;
 	let boss_power_line = 100;
-	let boss_power = 100;
+	let boss_power = 1;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
 	let three_obstacles_lines = [];
@@ -150,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillText("Press enter to play", 100 , 170);
 		draw_space_ship();
 		space_ship_move();
+		draw_arrow()
 		loop1();
 	}
 	
@@ -525,13 +524,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	function draw_arrow() {
 		context.fillStyle = "rgb(250, 250, 250)";
 		context.fillRect(340, 363, 2, 9);
-		context.fillRect(339, 368, 4, 3);
-		context.fillRect(338, 367, 1, 3);
-		context.fillRect(337, 366, 1, 3);
-		context.fillRect(343, 367, 1, 3);
-		context.fillRect(344, 366, 1, 3);
+		draw_triangle(337,366,340,371,340,369,1);
+		draw_triangle(344,366,341,371,341,369,1);
 		
-		get_arrow = context.getImageData(337, 363, 8, 11);
+		get_arrow = context.getImageData(337, 363, 8, 10);
 	}
 	
 	function show_arrow() {
@@ -581,22 +577,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_slow_down_icon() {
-		context.beginPath();
-		context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(339, 335, 3, 1);
-		context.fillRect(338, 336, 5, 1);
-		context.fillRect(337, 337, 2, 2);
-		context.fillRect(338, 339, 4, 2);
-		context.fillRect(341, 341, 2, 2);
-		context.fillRect(337, 343, 5, 2);
-		context.fillRect(338, 345, 3, 1);
-		context.fill();
-		
-		get_slow_down_icon = context.getImageData(337, 335, 6, 11);
+		draw_text(20, "", "S", "", 337, 335, "12px Arial", 12, 250, 250, 250);
 	}
 	
 	function show_slow_down_icon() {
-		context.putImageData(get_slow_down_icon, slow_down_icon_position[0] + 7, slow_down_icon_position[1] + 3);
+		context.putImageData(end_screen_text[20], slow_down_icon_position[0] + 7, slow_down_icon_position[1] + 2);
 	}
 	
 	function slow_down_game() {
@@ -613,46 +598,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function draw_plus_two_icon() {		
-		context.beginPath();
-		context.fillStyle = "rgb(250, 250, 250)";
-		context.fillRect(339, 320, 2, 6);
-		context.fillRect(337, 322, 6, 2);
-		context.fillRect(346, 317, 2, 1);
-		context.fillRect(345, 318, 4, 1);
-		context.fillRect(345, 319, 4, 1);
-		context.fillRect(348, 320, 2, 2);
-		context.fillRect(345, 322, 4, 1);
-		context.fillRect(344, 323, 2, 2);
-		context.fillRect(344, 325, 6, 1);
-		context.fillRect(344, 326, 6, 1);
-		context.fill();
-		
-		get_draw_plus_two_icon = context.getImageData(337, 317, 13, 10);
+		draw_text(19, "", "+2", "", 337, 317, "bold 12px Arial", 12, 250, 250, 250);
 	}
 	
 	function show_plus_two_icon() {
-		context.putImageData(get_draw_plus_two_icon, plus_two_icon_position[0] + 3, plus_two_icon_position[1] + 3);
+		context.putImageData(end_screen_text[19], plus_two_icon_position[0] + 3, plus_two_icon_position[1] + 2);
 	}
 	
 	function draw_star_icon() {		
-		context.beginPath();
 		context.fillStyle = "rgb(255, 233, 135)";
 		context.fillRect(340, 300, 1, 11);
 		context.fillRect(335, 305, 11, 1);
-		context.fillRect(339, 304, 3, 3);
-		context.fillRect(336, 301, 1, 1);
-		context.fillRect(337, 302, 1, 1);
-		context.fillRect(338, 303, 1, 1);
-		context.fillRect(336, 309, 1, 1);
-		context.fillRect(337, 308, 1, 1);
-		context.fillRect(338, 307, 1, 1);
-		context.fillRect(344, 301, 1, 1);
-		context.fillRect(343, 302, 1, 1);
-		context.fillRect(342, 303, 1, 1);
-		context.fillRect(342, 307, 1, 1);
-		context.fillRect(343, 308, 1, 1);
-		context.fillRect(344, 309, 1, 1);
-		context.fill();
+		draw_line(336, 301, 344, 309);
+		draw_line(344, 301, 336, 309);
 		
 		get_star_icon = context.getImageData(335, 300, 11, 11);
 	}
@@ -688,31 +646,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 	
 	function draw_lightning_icon() {
-		
-		context.beginPath();
 		context.fillStyle = "rgb(255, 233, 135)";
-		context.fillRect(341, 282, 2, 1);
-		context.fillRect(340, 283, 2, 1);
-		context.fillRect(339, 284, 2, 1);
-		context.fillRect(338, 285, 2, 1);
-		context.fillRect(337, 286, 8, 1);
-		context.fillRect(336, 287, 8, 1);
-		context.fillRect(341, 288, 2, 1);
-		context.fillRect(340, 289, 2, 1);
-		context.fillRect(339, 290, 2, 1);
-		context.fillRect(338, 291, 2, 1);
-		context.fillRect(337, 292, 2, 1);
-		context.fill();
+		draw_line(341, 282, 336, 286);
+		draw_line(341, 282, 337, 286);
+		context.fillRect(336, 287, 6, 2);
+		context.fillRect(335, 288, 1, 1);
+		draw_line(342, 287, 336, 293);
+		draw_line(342, 287, 337, 293); 
 		
-		get_lightning_icon = context.getImageData(336, 282, 8, 10);
+		get_lightning_icon = context.getImageData(335, 282, 8, 12);
 	}
 	
 	function show_lightning_icon() {
 		context.putImageData(get_lightning_icon, lightning_icon_position[0] + 6, lightning_icon_position[1] + 3);
-	}
-	
-	function draw(x1, y1, width, height) {
-		context.fillRect(x1, y1, width, height);
 	}
 	
 	function draw_space_ship() {
@@ -1006,45 +952,45 @@ document.addEventListener('DOMContentLoaded', function() {
 					} 
 					if(all_bricks[j][3] == 1) {
 						enemy_quantity.push([enemy_max_bullet, true, all_bricks[j][1]+5, all_bricks[j][2] +1]);
-						console.log("yes! 1")
+						//console.log("yes! 1")
 					}
 					if(all_bricks[j][3] == 2) {
 						hearts_quantity.push(1);
 						heart_position_x = all_bricks[j][1] + 6;
 						heart_position_y = all_bricks[j][2] + 5;
 						heart_visible = true;
-						console.log("yes! 2")
+						//console.log("yes! 2")
 					}
 					if(all_bricks[j][3] == 3) {
 						is_brick_moving = true;
 						is_arrow_visible = true;
 						arrow_position = [all_bricks[j][1], all_bricks[j][2]];
-						console.log("yes! 3")
+						//console.log("yes! 3")
 					}
 					if(all_bricks[j][3] == 4) {
 						white_background = true;
-						console.log("yes! 4")
+						//console.log("yes! 4")
 					}
 					if(all_bricks[j][3] == 5) {
 						slow_down = true;
 						is_slow_down_visible = true;
 						slow_down_icon_position = [all_bricks[j][1], all_bricks[j][2]];
-						console.log("yes! 5" )
+						//console.log("yes! 5" )
 					}
 					if(all_bricks[j][3] == 6) {
 						bullet_limit += 2;
 						is_plus_two_visible = true;
 						plus_two_icon_position = [all_bricks[j][1], all_bricks[j][2]];
-						console.log("yes! 6" )
+						//console.log("yes! 6" )
 					}
 					if(all_bricks[j][3] == 7) {
 						star_icon_quantity.push([all_bricks[j][1], all_bricks[j][2]]);
-						console.log("yes! 7" )
+						//console.log("yes! 7" )
 					}
 					if(all_bricks[j][3] == 8) {
 						turbo_shooting = true;
 						lightning_icon_position = [all_bricks[j][1], all_bricks[j][2]];
-						console.log("yes! 8" )
+						//console.log("yes! 8" )
 					}
 					
 					all_bullets.splice(i, 1);
@@ -1053,31 +999,30 @@ document.addEventListener('DOMContentLoaded', function() {
 					all_virtual_bricks.splice(j, 1);
 					score += 10;
 					//console.log(all_bullets);
-					
 					return;
 				} 
 			}
 		}
 	}
 	
-	function draw_text(numb, before, text, after, posX , posY, font, align, rgb, text_height) {
+	function draw_text(numb, before, text, after, posX , posY, font, text_height, r, g, b) {
 		context2.font = font;
-		context2.textAlign = align;
+		context2.textAlign = "left";
 		context2.textBaseline = "middle";
-		context2.fillStyle = rgb;
+		context2.fillStyle = "rgb("+r+","+g+","+b+")";
 		context2.fillText(before + text + after, posX , posY);
 		
 		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + (context2.measureText(after).width+10), text_height);
 		
 		for (let m=0; m < get_text.data.length; m += 4) {
 			if (get_text.data[m] !== 255 && get_text.data[m] !== 6 ) {
-				get_text.data[m] = 255;
+				get_text.data[m] = r;
 			}
 			if (get_text.data[m+1] !== 0) {
-				get_text.data[m+1] = 0;
+				get_text.data[m+1] = g;
 			}
 			if (get_text.data[m+2] !== 0 && get_text.data[m+2] !== 135) {
-				get_text.data[m+2] = 0;
+				get_text.data[m+2] = b;
 			}
 		}
 		end_screen_text[numb] = get_text;
@@ -1085,24 +1030,24 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function draw_level() {
 		if (level == 8 && secret_level == true) {
-			draw_text(3, "", "L e v e l : ", "+", 5, canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+			draw_text(3, "", "L e v e l : ", "+", 5, canvas.height - 15, "bold small-caps 12px Arial", 12, 255, 0, 0);
 			context.putImageData(end_screen_text[3], 5, canvas.height - 15);
 		}
 		if (!(level == 8 && secret_level == true)) {
-			draw_text(0, "", "L e v e l : ", level, 5, canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+			draw_text(0, "", "L e v e l : ", level, 5, canvas.height - 15, "bold small-caps 12px Arial", 12, 255, 0, 0);
 			context.putImageData(end_screen_text[0], 5, canvas.height - 15);
 		}
 
 	}
 	
 	function count_score() {
-		draw_text(1, "", "S c o r e : ", score, 90 , canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(1, "", "S c o r e : ", score, 90 , canvas.height - 15, "bold small-caps 12px Arial", 12, 255, 0, 0);
 		
 		context.putImageData(end_screen_text[1], 90, canvas.height - 15);
 	}
 	
 	function draw_life() {
-		draw_text(2, "", "L i f e : ", "", 210 , canvas.height - 15, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(2, "", "L i f e : ", "", 210 , canvas.height - 15, "bold small-caps 12px Arial", 12, 255, 0, 0);
 		
 		context.putImageData(end_screen_text[2], 210, canvas.height - 15);
 	}
@@ -1124,14 +1069,18 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_boss_power() {
-		draw_text(4, "", "A l i e n  p o w e r : ", "", 5, 10, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text(5, "", boss_power , " %", 230 , 10, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(4, "", "A l i e n  p o w e r : ", "", 5, 10, "bold small-caps 12px Arial", 12, 255, 0, 0);
+		draw_text(5, "", boss_power , " %", 230 , 10, "bold small-caps 12px Arial", 12, 255, 0, 0);
 		
 		context.putImageData(end_screen_text[4], 5, 7);
 		context.putImageData(end_screen_text[5], 230, 7);
 	}
 	
 	function draw_boss_power_line() {
+		//context.strokeStyle = "rgb(255,0,0)";
+		//context.fillRect(125, 15, boss_power_line, 3)
+		
+		
 		context.beginPath();
 		context.strokeStyle = "rgb(255,0,0)";
 		context.lineWidth = 3;
@@ -1626,20 +1575,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function show_next_level_info() {
 			
-		draw_text(6, "", "N e x t  L e v e l :  ", level, 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text(6, "", "N e x t  L e v e l :  ", level, 100, 170, "bold 16px Arial", 16, 255, 0, 0);
 		
 		context.putImageData(end_screen_text[6], 100, 170);
 	}
 	
 	function show_lost_life_info() {
 			
-		draw_text(7, "", "Y o u  l o s t  l i f e  : ( ", "", 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text(7, "", "Y o u  l o s t  l i f e  : ( ", "", 100, 170, "bold 16px Arial", 16, 255, 0, 0);
 		
 		context.putImageData(end_screen_text[7], 100, 170);
 	}
 	
 	function show_bonus_level_info() {
-		draw_text(8, "", "B o n u s   L e v e l  !  ", "", 100, 170, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text(8, "", "B o n u s   L e v e l  !  ", "", 100, 170, "bold 16px Arial", 16, 255, 0, 0);
 		
 		context.putImageData(end_screen_text[8], 100, 170);
 	}
@@ -1913,22 +1862,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function end_screen() {		
-		draw_text(9, "", "Y o u  w o n ! ", "", 130, 70, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
-		draw_text(10, "", "Y o u r  s c o r e :  ", score, 80, 100, "bold 16px Arial", "left", "rgb(255,0,0)", 16);
+		draw_text(9, "", "Y o u  w o n ! ", "", 130, 70, "bold 16px Arial", 16, 255, 0, 0);
+		draw_text(10, "", "Y o u r  s c o r e :  ", score, 80, 100, "bold 16px Arial", 16, 255, 0, 0);
 		
 		context.putImageData(end_screen_text[9], 130, 70);
 		context.putImageData(end_screen_text[10], 80, 100);
 	}
 
 	function draw_author(text, posX , posY, font, align, rgb, text_height) {
-		draw_text(11, "", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 150, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text(12, "", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 180, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text(13, "", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 210, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text(14, "", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text(15, "", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 270, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text(16, "", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 290, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text(17, "", "T e s t i n g :  M a t i  L i g e n z a , P a w e l  L i g e n z a", "", 10, 310, "bold 12px Arial", "left", "rgb(255,0,0)", 12);
-		draw_text(18, "", "P r e s s  F 5  t o  p l a y  a g a i n", "", 80, 340, "bold small-caps 12px Arial", "left", "rgb(255,0,0)", 12);
+		draw_text(11, "", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 150, "12px Arial", 14, 255, 0, 0);
+		draw_text(12, "", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 180, "12px Arial", 14, 255, 0, 0);
+		draw_text(13, "", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 210, "12px Arial", 14, 255, 0, 0);
+		draw_text(14, "", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "12px Arial", 14, 255, 0, 0);
+		draw_text(15, "", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 270, "12px Arial", 14, 255, 0, 0);
+		draw_text(16, "", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 290, "12px Arial", 14, 255, 0, 0);
+		draw_text(17, "", "T e s t i n g :  M a t e u s z  L i g e n z a , P a w e l  L i g e n z a", "", 10, 310, "12px Arial", 14, 255, 0, 0);
+		draw_text(18, "", "P r e s s  F 5  t o  p l a y  a g a i n", "", 80, 340, "bold small-caps 12px Arial", 14, 255, 0, 0);
 	}
 	
 	function move_author() {
@@ -1962,7 +1911,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		win_game();
 		
 		//if (who_made_it[0][2] < 140 ) {
-		if (where_to_draw+320 < 150 ) {
+		if (where_to_draw+320 < 350 ) {
 			cancelAnimationFrame(animation2);
 			//reload_game();
 			return;
