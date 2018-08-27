@@ -100,8 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_boss_shoot = false;
 	let boss_stop_moving = 250; 
 	let boss_start_moving = 100;
-	let boss_power_line = 100;
-	let boss_power = 1;
+	let boss_power = 100;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
 	let three_obstacles_lines = [];
@@ -147,8 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillStyle = "rgb(255,0,0)";
 		context.fillText("Press enter to play", 100 , 170);
 		draw_space_ship();
-		space_ship_move();
-		draw_arrow()
+		draw_boss();
 		loop1();
 	}
 	
@@ -832,7 +830,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					bullets_counts.splice(i, 1);
 					score += 50;
 					boss_power -= 1;
-					boss_power_line -= 1;	
 					return;
 				}
 				for(k = 0; k < all_obstacles.length; k++) {
@@ -1012,7 +1009,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context2.fillStyle = "rgb("+r+","+g+","+b+")";
 		context2.fillText(before + text + after, posX , posY);
 		
-		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + (context2.measureText(after).width+10), text_height);
+		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + (context2.measureText(after).width+5), text_height);
 		
 		for (let m=0; m < get_text.data.length; m += 4) {
 			if (get_text.data[m] !== 255 && get_text.data[m] !== 6 ) {
@@ -1077,47 +1074,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_boss_power_line() {
-		//context.strokeStyle = "rgb(255,0,0)";
-		//context.fillRect(125, 15, boss_power_line, 3)
-		
-		
-		context.beginPath();
-		context.strokeStyle = "rgb(255,0,0)";
-		context.lineWidth = 3;
-		context.moveTo(125, 15); 
-		context.lineTo(125 + boss_power_line, 15);
-		context.stroke();
-	}
-	
-	function sqrt(x1,y1,x2,y2) {
-		return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
-	}
-	// finds the angle of (x,y) on a plane from the origin
-	function getAngle(x,y) { return Math.atan(y/(x==0?0.01:x))+(x<0?Math.PI:0); }
-
-	function drawLineNoAliasing(sx, sy, tx, ty, line_width, line_height, color) {
-		var dist = sqrt(sx,sy,tx,ty); // length of line
-		var ang = getAngle(tx-sx,ty-sy); // angle of line
-		for(var i=0;i<dist;i++) {
-			// for each point along the line
-			context.fillStyle = color;
-			context.fillRect(Math.round(sx + Math.cos(ang)*i), // round for perfect pixels
-				Math.round(sy + Math.sin(ang)*i), // thus no aliasing
-				line_width,line_height); // fill in one pixel, eg 1x1
-		}
+		context.fillStyle = "rgb(255,0,0)";
+		context.fillRect(125, 13, boss_power, 3);
 	}
 
 	
 	function draw_boss() {
 		
 		// Boss legs
-		drawLineNoAliasing(158, 63, 145, 55, 4, 2, "rgb(162, 163, 164)");
-		drawLineNoAliasing(143, 54, 128, 69, 4, 2, "rgb(162, 163, 164)");
-		drawLineNoAliasing(128, 69, 141, 86, 4, 2, "rgb(162, 163, 164)");
+		context.fillStyle = "rgb(162, 163, 164)";
+		draw_square(159,60, 158,64, 145,53, 145,56, 1);
+		draw_square(143,54, 143,57, 129,68, 129,72, 1);
+		draw_square(129,67, 129,71, 145,84, 145,88, 1);
 		
-		drawLineNoAliasing(200, 63, 213, 54, 4, 2, "rgb(162, 163, 164)");
-		drawLineNoAliasing(213, 54, 228, 69, 4, 2, "rgb(162, 163, 164)");
-		drawLineNoAliasing(228, 69, 216, 86, 4, 2, "rgb(162, 163, 164)");
+		draw_square(200,60, 200,64, 215,53, 215,56, 1);
+		draw_square(215,54, 215,58, 230,69, 230,73, 1);
+		draw_square(230,67, 230,71, 214,84, 214,88, 1);
 		
 		// circle on legs
 		context.fillStyle = "rgb(255, 195, 35)";
@@ -1135,128 +1107,37 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		// left and right laser
 		context.fillStyle = "rgb(255,0,0)";
-		context.fillRect(136, 86, 13, 1);
-		context.fillRect(137, 87, 11, 2);
-		context.fillRect(138, 89, 9, 2);
-		context.fillRect(139, 91, 7, 2);
-		context.fillRect(140, 93, 5, 2);
-		context.fillRect(141, 95, 3, 2);
-		context.fillRect(142, 97, 1, 2);
-		
-		context.fillRect(211, 86, 13, 1);
-		context.fillRect(212, 87, 11, 2);
-		context.fillRect(213, 89, 9, 2);
-		context.fillRect(214, 91, 7, 2);
-		context.fillRect(215, 93, 5, 2);
-		context.fillRect(216, 95, 3, 2);
-		context.fillRect(217, 97, 1, 2);
+		draw_triangle(143,99,136,86,150,86, 1);
+		draw_triangle(215,99,208,86,222,86, 1);
 		
 		// upper part of boss - blue
 		context.fillStyle = "rgb(95, 159, 255)";
-		context.fillRect(160, 46, 1, 25);
-		context.fillRect(161, 40, 1, 30);
-		context.fillRect(162, 35, 1, 30);
-		context.fillRect(163, 32, 1, 30);
-		context.fillRect(164, 30, 1, 30);
-		context.fillRect(165, 28, 1, 32);
-		
-		context.fillRect(166, 26, 28, 35);
-		
-		context.fillRect(194, 28, 1, 36);
-		context.fillRect(195, 30, 1, 34);
-		context.fillRect(196, 32, 1, 32);
-		context.fillRect(197, 35, 1, 30);
-		context.fillRect(198, 40, 1, 30);
-		context.fillRect(199, 46, 1, 30);
-		
-		context.fillRect(167, 25, 26, 1);
-		context.fillRect(168, 23, 24, 2);
-		context.fillRect(169, 22, 22, 1);
-		context.fillRect(170, 21, 20, 1);
-		context.fillRect(171, 20, 18, 1);
-		context.fillRect(172, 19, 16, 1);
-		context.fillRect(174, 18, 12, 1);
-		context.fillRect(176, 17, 8, 1);
-		context.fillRect(178, 16, 4, 1);
-		context.fillRect(179, 15, 2, 1);
+		draw_bezier_curve(160,70,160,0,200,0,200, 70, 1);
 		
 		
 		// alien
 		context.fillStyle = "rgb(0, 103, 12)";
-		context.fillRect(175, 32, 10, 45);
-		
-		context.fillRect(177, 31, 6, 1);
-		context.fillRect(178, 30, 4, 1);
-		
-		context.fillRect(174, 33, 1, 27);
-		context.fillRect(173, 34, 1, 25);
-		context.fillRect(172, 35, 1, 23);
-		context.fillRect(171, 36, 1, 21);
-		context.fillRect(170, 37, 1, 18);
-		context.fillRect(169, 39, 1, 14);
-		context.fillRect(168, 41, 1, 10);
-		
-
-		context.fillRect(185, 33, 1, 27);
-		context.fillRect(186, 34, 1, 25);
-		context.fillRect(187, 35, 1, 23);
-		context.fillRect(188, 36, 1, 21);
-		context.fillRect(189, 37, 1, 18);
-		context.fillRect(190, 39, 1, 14);
-		context.fillRect(191, 41, 1, 10);
+		draw_bezier_curve(175,65,150,20, 210,20, 185,65, 1);
 		
 		// alien eyes
 		context.fillStyle = "rgb(0, 0, 0)";
-		context.fillRect(173, 39, 1, 3);
-		context.fillRect(174, 39, 1, 5);
-		context.fillRect(175, 40, 1, 6);
-		context.fillRect(176, 41, 1, 6);
-		context.fillRect(177, 42, 1, 5);
-		context.fillRect(178, 43, 1, 4);
-		context.fillRect(179, 44, 1, 2);
-		
-		context.fillRect(181, 44, 1, 2);
-		context.fillRect(182, 43, 1, 4);
-		context.fillRect(183, 42, 1, 5);
-		context.fillRect(184, 41, 1, 6);
-		context.fillRect(185, 40, 1, 6);
-		context.fillRect(186, 39, 1, 5);
-		context.fillRect(187, 38, 1, 3);
+		draw_triangle(187,38, 181,41, 181,46, 1);
+		draw_triangle(172,38, 178,41, 178,46, 1);
 		
 		// lower part of boss
 		context.fillStyle = "rgb(40, 98, 184)";
-		context.fillRect(160, 61, 40, 18);
-		
-		context.fillRect(163, 60, 34, 1);
-		context.fillRect(166, 59, 28, 1);
-		
-		context.fillRect(163, 79, 34, 1);
-		context.fillRect(166, 80, 28, 1);
-		
-		context.fillRect(159, 62, 2, 16);
-		context.fillRect(157, 62, 2, 16);
-		context.fillRect(155, 63, 2, 14);
-		context.fillRect(153, 64, 2, 12);
-		context.fillRect(151, 65, 2, 10);
-		context.fillRect(149, 66, 2, 8);
-		context.fillRect(147, 68, 2, 4);
-		
-		context.fillRect(200, 62, 2, 16);
-		context.fillRect(202, 62, 2, 16);
-		context.fillRect(204, 63, 2, 14);
-		context.fillRect(206, 64, 2, 12);
-		context.fillRect(208, 65, 2, 10);
-		context.fillRect(210, 66, 2, 8);
-		context.fillRect(212, 68, 2, 4);
+		draw_bezier_curve(210,70, 215,55, 145,55, 150,70, 1);
+		draw_bezier_curve(210,70, 215,85, 145,85, 150,70, 1);
 		
 		// blue little laser under lower part of boss
 		context.fillStyle = "rgb(95, 159, 255)";
-		context.fillRect(179, 82, 2, 2);
+		context.fillRect(180, 82, 2, 2);
 		
 		// stripes on lower part of boss
-		drawLineNoAliasing(160, 62, 167, 78, 2, 2, "rgb(95, 159, 255)");
-		drawLineNoAliasing(175, 59, 184, 79, 2, 2, "rgb(95, 159, 255)");
-		drawLineNoAliasing(192, 60, 200, 77, 2, 2, "rgb(95, 159, 255)");
+		context.fillStyle = "rgb(95, 159, 255)";
+		draw_square(160,61, 162,62, 167,80, 169,80, 1);
+		draw_square(175,59, 177,60, 184,80, 186,80, 1);
+		draw_square(192,59, 194,60, 200,77, 202,77, 1);
 		
 		// dots on lower part of boss
 		context.fillStyle = "rgb(255, 195, 35)";
@@ -1318,34 +1199,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (boss_bullet_delay_arr.length > 10 && max_boss_bullets > 0) { 
 			max_boss_bullets -= 1;
 			
-			context.beginPath();
-			context.moveTo(boss_pos_x + (alien_width / 2), (boss_pos_y + alien_height) - 15); 
-			context.lineTo(boss_pos_x + (alien_width / 2), ((boss_pos_y + alien_height) - 15) + bullet_height);
+			context.fillStyle = "rgb(250, 250, 250)";
+			context.fillRect(boss_pos_x + (alien_width / 2), (boss_pos_y + alien_height) - 15, bullet_width, bullet_height)
+			context.fillRect(boss_pos_x + 16, boss_pos_y + alien_height, bullet_width, bullet_height); 
+			context.fillRect((boss_pos_x + alien_width) - 18, boss_pos_y + alien_height, bullet_width, bullet_height); 
 			
-			context.moveTo(boss_pos_x + 16, boss_pos_y + alien_height); 
-			context.lineTo(boss_pos_x + 16, (boss_pos_y + alien_height) + bullet_height);
-			
-			context.moveTo((boss_pos_x + alien_width) - 16, boss_pos_y + alien_height); 
-			context.lineTo((boss_pos_x + alien_width) - 16, (boss_pos_y + alien_height) + bullet_height);
-			
-			context.lineWidth = bullet_width;
-			context.strokeStyle = "rgb(250, 250, 250)";
-			context.stroke();
-			
-			let boss_bullet_width = 2;
-			
-			let boss_bullet_pos_x = boss_pos_x + (alien_width / 2) -1;
+			let boss_bullet_pos_x = boss_pos_x + (alien_width / 2);
 			let boss_bullet_pos_y = (boss_pos_y + alien_height) - 15;
 			
-			let boss_left_bullet_pos_x = boss_pos_x + 16 -1
+			let boss_left_bullet_pos_x = boss_pos_x + 16
 			let boss_left_bullet_pos_y = boss_pos_y + alien_height
 			
-			let boss_right_bullet_pos_x = (boss_pos_x + alien_width) - 16 -1
+			let boss_right_bullet_pos_x = (boss_pos_x + alien_width) - 18
 			let boss_right_bullet_pos_y = boss_pos_y + alien_height
 				
-			let get_boss_bullet = context.getImageData(boss_bullet_pos_x, boss_bullet_pos_y, boss_bullet_width, bullet_height);
-			let get_left_boss_bullet = context.getImageData(boss_left_bullet_pos_x, boss_left_bullet_pos_y, boss_bullet_width, bullet_height);
-			let get_right_boss_bullet = context.getImageData(boss_right_bullet_pos_x, boss_right_bullet_pos_y, boss_bullet_width, bullet_height);
+			let get_boss_bullet = context.getImageData(boss_bullet_pos_x, boss_bullet_pos_y, bullet_width, bullet_height);
+			let get_left_boss_bullet = context.getImageData(boss_left_bullet_pos_x, boss_left_bullet_pos_y, bullet_width, bullet_height);
+			let get_right_boss_bullet = context.getImageData(boss_right_bullet_pos_x, boss_right_bullet_pos_y, bullet_width, bullet_height);
 			
 			all_boss_bullets.push([get_boss_bullet, boss_bullet_pos_x, boss_bullet_pos_y]);
 			all_boss_bullets.push([get_left_boss_bullet, boss_left_bullet_pos_x, boss_left_bullet_pos_y]);
@@ -1850,12 +1720,12 @@ document.addEventListener('DOMContentLoaded', function() {
 							}
 		}
 		context.putImageData(get_text, 110, 100-7);
+		change_level_sound("lost-life");
 	}
 	
 	function win_game() {
 		if(boss_power <= 0) {
 			boss_power = 0;
-			boss_power_line = 0;
 			end_screen();
 			return;
 		}
@@ -1867,6 +1737,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		context.putImageData(end_screen_text[9], 130, 70);
 		context.putImageData(end_screen_text[10], 80, 100);
+		change_level_sound("change-level");
 	}
 
 	function draw_author(text, posX , posY, font, align, rgb, text_height) {
@@ -2155,6 +2026,24 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_triangle(x1,y1,x2,y2,x3,y3,fill)
 		draw_triangle(x2,y2,x3,y3,x4,y4,fill)
 		
+	}
+	
+	function draw_bezier_curve(x1,y1,x2,y2,x3,y3,x4,y4,fill) {
+		data = [];
+		for (i=0;i<=1;i=i+.001){
+			t=i;
+			//x=Math.Pow((1-5,2);
+			x=Math.pow((1-t),3)*x1+3*Math.pow((1-t),2)*t*x2+3*(1-t)*Math.pow(t,2)*x3+Math.pow(t,3)*x4
+			y=Math.pow((1-t),3)*y1+3*Math.pow((1-t),2)*t*y2+3*(1-t)*Math.pow(t,2)*y3+Math.pow(t,3)*y4
+			context.fillRect(parseInt(x),parseInt(y),1,1);
+			
+			let point = [parseInt(x),parseInt(y)];
+			data.push(point);
+		}
+		if(!fill) {return;}
+		const points = [...new Set(data)];
+		fill_space(points,points);
+	
 	}
 	    
 })
