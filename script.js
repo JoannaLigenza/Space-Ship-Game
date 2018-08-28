@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	let enemy_position_y = [];
 	let space_ship = "";
 	let space_ship_blue = "";
-	let which_key_pressed = "";
+	let which_key_pressed_code = "";
+	let which_key_pressed_key = "";
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_boss_shoot = false;
 	let boss_stop_moving = 250; 
 	let boss_start_moving = 100;
-	let boss_power = 100;
+	let boss_power = 1;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
 	let three_obstacles_lines = [];
@@ -121,7 +122,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	let one_time_sound = 0;
 	let boss_star_delay = 700;
 	let how_many_stars_in_boss = 6;
-	
+	let get_name = [];
+	let input_helper = false;
+	let start_write = 230;
+	let all_letters = [];
+
 	
 	function draw_frame() {
 		context.fillStyle = "rgb(255, 195, 35)";
@@ -137,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function start_screen() {
 		// ->>> CLT function
-		refresh_color_data();
+		//refresh_color_data();
 		// ->>> end CLT function
 		draw_frame();
 		context.font = "Bold 16px Arial";
@@ -147,26 +152,99 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillText("Press enter to play", 100 , 170);
 		draw_space_ship();
 		draw_boss();
+		//localStorage.clear()
+/*		let get_storage = localStorage.getItem("name");
+		if (get_storage === null) {
+			localStorage.setItem("score", "50,45,43,40,39,38,30,20,15,10");
+			localStorage.setItem("name", "Tom,Jace,Nina,Ala,Jola,PAWEL,OLA,ZBYS,KAMIL,MATI");
+			//console.log("get_storage" , get_storage)
+		}
+		//localStorage.setItem("score", "50,100, 30, 100");
+		//localStorage.setItem("name", "Tomek, Jacek");
+		//let tesst = localStorage.getItem("name");
+		//let testt2 = tesst.split(",")
+		console.log("get_storage", get_storage);
+		let arr1 = ["Tomek",  "Jacek", "karolina"];
+		console.log("arr1", arr1);
+		arr1.splice(0, 0, "Magdalena");
+		console.log("arr1", arr1);
+		arr1.splice(arr1.length-1, 1);
+		console.log("arr1", arr1);
+		//console.log("arr1", arr2); */
+		
 		loop1();
 	}
 	
+	function start_screen2() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		draw_frame();
+		context.font = "Bold 16px Arial";
+		context.textAlign = "left";
+		context.textBaseline = "middle";
+		context.fillStyle = "rgb(255,0,0)";
+		context.fillText("Press enter to play", 100 , 170);
+		draw_space_ship();
+		draw_boss();
+
+		
+		//loop1();
+	}
+	
 	function loop1() {
-		if (which_key_pressed == "13") {
+		
+		if (which_key_pressed_code == "13") {
 			cancelAnimationFrame(animation3);
 			init();
 			return;
 		}
-		
+		create_input();
+		show_letters();
 		setTimeout(function() {
 			animation3 = requestAnimationFrame(loop1); 
 		}, interval_delay); 
 	}
 	
+	function init_score() {
+		let get_storage = localStorage.getItem("name");
+		if (get_storage === null) {
+			localStorage.setItem("score", "50,45,43,40,39,38,30,20,15,10");
+			localStorage.setItem("name", "Tom,Jace,Nina,Ala,Jola,PAWEL,OLA,ZBYS,KAMIL,MATI");
+			//console.log("get_storage" , get_storage)
+		}
+	}
+	
+	function save_score(name, score) {
+		let get_name_arr = localStorage.getItem("name").split(",");
+		let get_score_arr = localStorage.getItem("score").split(",");
+		//console.log("get_name_arr", localStorage.getItem("name"))
+		//console.log("get_name_arr1", get_name_arr)
+		
+		for (i=0; i < get_score_arr.length; i++) {
+			if (score <= parseInt(get_score_arr[i])) {
+				console.log("zobacz")
+				continue;
+			}
+			if (score > parseInt(get_score_arr[i])) {
+				get_score_arr.splice(i, 0, score);
+				get_name_arr.splice(i, 0, name);
+				get_score_arr.splice(get_score_arr.length-1, 1);
+				get_name_arr.splice(get_name_arr.length-1, 1);
+				console.log("zobacz2")
+				break;
+			}
+		}
+		localStorage.setItem("name", get_name_arr);
+		localStorage.setItem("score", get_score_arr);
+	}
+	
+	//init_score();
+	//save_score("Wacek", 1000)
+	
 	//CLT -> counting colors on screen
 	function count_colors_opt(size_x,size_y){
-		var pixel_data = context.getImageData(0,0, size_x, size_y).data;
-		var pixel_arr = [];
-		var last_pixels = [];
+		let pixel_data = context.getImageData(0,0, size_x, size_y).data;
+		let pixel_arr = [];
+		let last_pixels = [];
 		for (let i=0; i<= pixel_data.length-4;i=i+4){
 			pixels = pixel_data[i]+","+pixel_data[i+1]+","+pixel_data[i+2]+","+pixel_data[i+3];
 			if (pixels!==last_pixels) {
@@ -182,9 +260,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function refresh_color_data() {
 		x = 5;  // 5 Seconds
-		var perf0 = performance.now();
+		let perf0 = performance.now();
 		let all_colors = count_colors_opt(360,400);
-		var perf1 = performance.now();
+		let perf1 = performance.now();
 		console.log("Colors on screen:" + all_colors + " take: " + parseInt(perf1 - perf0) + " ms" );
 		setTimeout(refresh_color_data, x*1000);
 	}
@@ -735,7 +813,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function space_ship_move() {
 		const step = 3;
-		if (which_key_pressed == "") { 
+		if (which_key_pressed_code == "") { 
 			ship_position_x = ship_position_x;
 		}
 		if (my_keys.keys && my_keys.keys[39] && move == true)  { 
@@ -762,7 +840,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	
 	function draw_bullet() {
-		if (which_key_pressed == "32" && one_shoot == true && can_shoot == true) { 
+		if (which_key_pressed_code == "32" && one_shoot == true && can_shoot == true) { 
 			
 			context.fillStyle = "rgb(250, 250, 250)";
 			context.fillRect((ship_position_x + (ship_width/2))-1, ship_position_y - bullet_height, bullet_width, bullet_height);
@@ -791,7 +869,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_additional_bullets() {
-		if (which_key_pressed == "32" && one_shoot == true && can_shoot == true) { 
+		if (which_key_pressed_code == "32" && one_shoot == true && can_shoot == true) { 
 			
 			context.beginPath();
 			context.fillStyle = "rgb(250, 250, 250)";
@@ -1317,10 +1395,105 @@ document.addEventListener('DOMContentLoaded', function() {
 		//console.log("all_obstacles ", all_obstacles.length)
 	}
 	
+	function draw_line(x1,y1,x2,y2){
+		data = [];
+		dlugosc_x = Math.abs(x2-x1);
+		dlugosc_y = Math.abs(y2-y1);
+		a = dlugosc_y/dlugosc_x;
+		
+		if (dlugosc_x>= dlugosc_y) ilosc_punktow = dlugosc_x;
+		if (dlugosc_x< dlugosc_y) ilosc_punktow = dlugosc_y;
+		
+		if (x1 < x2) {kierunek_x=1} else {kierunek_x=-1};
+		if (y1 < y2) {kierunek_y=1} else {kierunek_y=-1};
+		
+		
+		for(i=0;i<=ilosc_punktow;i++){
+		
+			x=i;y=i;
+			if (a>1) {y=i;x=parseInt((y)/(a))};
+			if (a<1) {x=i;y=parseInt(a*(x))};
+			
+			real_x = Math.abs(x+(x1*kierunek_x));
+			real_y = Math.abs(y+(y1*kierunek_y));
+
+			context.fillRect(real_x,real_y,1,1);
+	
+			let point = [real_x,real_y];
+			data.push(point);
+	
+		}
+		//if (!(real_x===x2)) console.log("Error X")
+		//if (!(real_y===y2)) console.log("Error Y")
+	
+	return data;
+	}
+	
+	
+	function fill_space(p1,p2){
+		p1.forEach(function(points1){
+			p2.forEach(function(points2){
+				x1 = points1[0];
+				y1 = points1[1];
+				x2 = points2[0];
+				y2 = points2[1];
+				if (y1===y2) {
+					context.fillRect(x1,y1,x2-x1,1)
+				}
+			});
+		});
+
+	}	
+
+	function draw_triangle(x1,y1,x2,y2,x3,y3,fill){
+		p1 = draw_line(x1,y1,x2,y2);
+		p2 = draw_line(x1,y1,x3,y3);
+		p3 = draw_line(x2,y2,x3,y3);
+		
+		if (!fill){return};
+
+			fill_space(p1,p2);
+			fill_space(p1,p3);
+			fill_space(p2,p3);
+	}
+	
+	function draw_square(x1,y1,x2,y2,x3,y3,x4,y4,fill){
+		
+		draw_line(x1,y1,x2,y2);
+		draw_line(x1,y1,x3,y3);
+		draw_line(x2,y2,x4,y4);
+		draw_line(x3,y3,x4,y4);
+		if (!fill){return};
+		draw_triangle(x1,y1,x2,y2,x3,y3,fill)
+		draw_triangle(x2,y2,x3,y3,x4,y4,fill)
+		
+	}
+	
+	function draw_bezier_curve(x1,y1,x2,y2,x3,y3,x4,y4,fill) {
+		data = [];
+		for (i=0;i<=1;i=i+.001){
+			t=i;
+			//x=Math.Pow((1-5,2);
+			x=Math.pow((1-t),3)*x1+3*Math.pow((1-t),2)*t*x2+3*(1-t)*Math.pow(t,2)*x3+Math.pow(t,3)*x4
+			y=Math.pow((1-t),3)*y1+3*Math.pow((1-t),2)*t*y2+3*(1-t)*Math.pow(t,2)*y3+Math.pow(t,3)*y4
+			context.fillRect(parseInt(x),parseInt(y),1,1);
+			
+			let point = [parseInt(x),parseInt(y)];
+			data.push(point);
+		}
+		if(!fill) {return;}
+		const points = [...new Set(data)];
+		fill_space(points,points);
+	
+	}
+	
 	document.addEventListener("keydown", function(e) {
-		which_key_pressed = e.keyCode;
-		console.log(which_key_pressed)
+		which_key_pressed_code = e.keyCode;
+		which_key_pressed_key = e.key;
+		console.log(which_key_pressed_code)
+		
 		move = true;
+		//input_helper = true;
 		
 		my_keys.keys =  (my_keys.keys || []); 
 		my_keys.keys[e.keyCode] = true;
@@ -1329,7 +1502,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.addEventListener("keyup", function(e) {
 		move = false;
 		one_shoot = true;
-		which_key_pressed = "";
+		input_helper = true;
+		which_key_pressed_code = "";
+		which_key_pressed_key = "";
+		
 		
 		my_keys.keys =  (my_keys.keys || []);
 		my_keys.keys[e.keyCode] = false;
@@ -1423,7 +1599,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function play() {
-		var note = song.charAt(position),
+		let note = song.charAt(position),
 			freq = scale[note];
 		position += 1;
 		if(position == song.length) {
@@ -1726,18 +1902,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	function win_game() {
 		if(boss_power <= 0) {
 			boss_power = 0;
-			end_screen();
+			//end_screen();
+			change_level_sound("change-level");
+			localStorage.setItem("score", score);
+			draw_text(9, "", "Y o u  w o n ! ", "", 130, 25, "bold 16px Arial", 16, 255, 0, 0);
+			draw_text(10, "", "Y o u r  s c o r e :  ", score, 80, 50, "bold 16px Arial", 16, 255, 0, 0);
+			draw_text(21, "", "E n t e r  Y o u r  n a m e : ", "", 20, 70, "bold 16px Arial", 16, 255, 0, 0);
 			return;
 		}
 	}
 	
 	function end_screen() {		
-		draw_text(9, "", "Y o u  w o n ! ", "", 130, 70, "bold 16px Arial", 16, 255, 0, 0);
-		draw_text(10, "", "Y o u r  s c o r e :  ", score, 80, 100, "bold 16px Arial", 16, 255, 0, 0);
-		
-		context.putImageData(end_screen_text[9], 130, 70);
-		context.putImageData(end_screen_text[10], 80, 100);
-		change_level_sound("change-level");
+		context.putImageData(end_screen_text[9], 130, 20);
+		context.putImageData(end_screen_text[10], 80, 50);
+		context.putImageData(end_screen_text[21], 35, 80);
 	}
 
 	function draw_author(text, posX , posY, font, align, rgb, text_height) {
@@ -1772,14 +1950,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function author() {
-		console.log("tesssssst")
+		console.log(localStorage.getItem("score"));
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		interval_delay = 30;
 		draw_frame();
-		draw_author();
+		//draw_author();
 		move_author();
 		blue_background();
-		win_game();
+		end_screen();
+		create_input()
+		show_letters()
 		
 		//if (who_made_it[0][2] < 140 ) {
 		if (where_to_draw+320 < 350 ) {
@@ -1793,14 +1972,51 @@ document.addEventListener('DOMContentLoaded', function() {
 		}, interval_delay);
 	}
 	
+	function create_input() {
+	/*	let input = document.createElement("input");
+		input.type = "text";
+		input.style.position = "fixed";
+		input.style.left = 80 + context2.measureText("Enter Your name: ").width + "5px";
+		input.style.top = "10px";
+		input.style.backgroundColor = "rgb(6, 0, 135)";
+		document.body.appendChild(input); */
+		if (which_key_pressed_code == 8 && input_helper == true) {
+			start_write = start_write - (context2.measureText(get_name[get_name.length-1]).width + 2);
+			get_name.splice(get_name.length-1, 1);
+			end_screen_text.splice(end_screen_text.length-1, 1);
+			all_letters.splice(all_letters.length-1, 1);
+			input_helper = false;
+			//start_screen2();
+			return;
+		}
+		if (which_key_pressed_code >= 65 && which_key_pressed_code <= 90 && input_helper == true) {
+			if (get_name.length < 5) {
+				get_name.push(which_key_pressed_key)
+				draw_text(22+(get_name.length-1), "", which_key_pressed_key, "", start_write, 10, "16px Arial", 16, 255, 0, 0);
+				all_letters.push([end_screen_text[22+(get_name.length-1)], start_write, 80]);
+				start_write = start_write + context2.measureText(get_name[get_name.length-1]).width + 2;
+				input_helper = false;
+				return;
+			}
+		}
+	}
+	
+	function show_letters() {
+		if (get_name.length >0) {
+			for(i=0; i<all_letters.length; i++){
+				context.putImageData(all_letters[i][0], all_letters[i][1], all_letters[i][2]);
+			}
+		}
+	}
+	
 /*	function reload_game() {
-		if (which_key_pressed == "13") {
+		if (which_key_pressed_code == "13") {
 			location.reload();
 		}
 	} */
 
 	
-	var t0 = performance.now();
+	let t0 = performance.now();
 	
 	function loop() {
 		//console.log("enemy_quantity ", enemy_quantity)
@@ -1824,12 +2040,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		if (level == 10 && change_level_delay == 0) {
 			draw_boss_power();
-			draw_boss_power_line();
+			draw_boss_power_line(); 
 			obstacles_delay -= 1;
 			boss_star_delay -=1;
 			if(boss_power <= 0) {
 				//win_game();
 				score = score + life_quantity*500*10;
+				interval_delay = 30;
+				win_game();
 				draw_author();
 				author();
 				cancelAnimationFrame(animation);
@@ -1922,7 +2140,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	start_screen();
-	
+	//author();
 	
 	function init() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
@@ -1947,103 +2165,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 
 	//console.log("all_bricks ", all_bricks)
-	var t1 = performance.now();
+	let t1 = performance.now();
 	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
 	
 	
-	
-	
-	function draw_line(x1,y1,x2,y2){
-		data = [];
-		dlugosc_x = Math.abs(x2-x1);
-		dlugosc_y = Math.abs(y2-y1);
-		a = dlugosc_y/dlugosc_x;
-		
-		if (dlugosc_x>= dlugosc_y) ilosc_punktow = dlugosc_x;
-		if (dlugosc_x< dlugosc_y) ilosc_punktow = dlugosc_y;
-		
-		if (x1 < x2) {kierunek_x=1} else {kierunek_x=-1};
-		if (y1 < y2) {kierunek_y=1} else {kierunek_y=-1};
-		
-		
-		for(i=0;i<=ilosc_punktow;i++){
-		
-			x=i;y=i;
-			if (a>1) {y=i;x=parseInt((y)/(a))};
-			if (a<1) {x=i;y=parseInt(a*(x))};
-			
-			real_x = Math.abs(x+(x1*kierunek_x));
-			real_y = Math.abs(y+(y1*kierunek_y));
-
-			context.fillRect(real_x,real_y,1,1);
-	
-			let point = [real_x,real_y];
-			data.push(point);
-	
-		}
-		//if (!(real_x===x2)) console.log("Error X")
-		//if (!(real_y===y2)) console.log("Error Y")
-	
-	return data;
-	
-	}
-	
-	
-	function fill_space(p1,p2){
-		p1.forEach(function(points1){
-			p2.forEach(function(points2){
-				x1 = points1[0];
-				y1 = points1[1];
-				x2 = points2[0];
-				y2 = points2[1];
-				if (y1===y2) {
-					context.fillRect(x1,y1,x2-x1,1)
-				}
-			});
-		});
-
-	}	
-
-	function draw_triangle(x1,y1,x2,y2,x3,y3,fill){
-		p1 = draw_line(x1,y1,x2,y2);
-		p2 = draw_line(x1,y1,x3,y3);
-		p3 = draw_line(x2,y2,x3,y3);
-		
-		if (!fill){return};
-
-			fill_space(p1,p2);
-			fill_space(p1,p3);
-			fill_space(p2,p3);
-	}
-	
-	function draw_square(x1,y1,x2,y2,x3,y3,x4,y4,fill){
-		
-		draw_line(x1,y1,x2,y2);
-		draw_line(x1,y1,x3,y3);
-		draw_line(x2,y2,x4,y4);
-		draw_line(x3,y3,x4,y4);
-		if (!fill){return};
-		draw_triangle(x1,y1,x2,y2,x3,y3,fill)
-		draw_triangle(x2,y2,x3,y3,x4,y4,fill)
-		
-	}
-	
-	function draw_bezier_curve(x1,y1,x2,y2,x3,y3,x4,y4,fill) {
-		data = [];
-		for (i=0;i<=1;i=i+.001){
-			t=i;
-			//x=Math.Pow((1-5,2);
-			x=Math.pow((1-t),3)*x1+3*Math.pow((1-t),2)*t*x2+3*(1-t)*Math.pow(t,2)*x3+Math.pow(t,3)*x4
-			y=Math.pow((1-t),3)*y1+3*Math.pow((1-t),2)*t*y2+3*(1-t)*Math.pow(t,2)*y3+Math.pow(t,3)*y4
-			context.fillRect(parseInt(x),parseInt(y),1,1);
-			
-			let point = [parseInt(x),parseInt(y)];
-			data.push(point);
-		}
-		if(!fill) {return;}
-		const points = [...new Set(data)];
-		fill_space(points,points);
-	
-	}
 	    
 })
