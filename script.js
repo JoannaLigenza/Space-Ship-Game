@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 11
-	let brick_row = 2;
+	let brick_row = 1;
 	let all_virtual_bricks = [];
 	const all_bricks = [];
 	let ship_position_x = 160;
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6];
+	let surprise_bricks_quantity = [6, 1];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -101,12 +101,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_boss_shoot = false;
 	let boss_stop_moving = 250; 
 	let boss_start_moving = 100;
-	let boss_power = 100;
+	let boss_power = 1;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
 	let three_obstacles_lines = [];
 	let score = 0;
-	let level = 1;
+	let level = 9;
 	let change_level_delay = 100;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function start_screen() {
 		// ->>> CLT function
-		refresh_color_data();
+		refresh_color_data(0);
 		// ->>> end CLT function
 		draw_frame();
 		context.font = "Bold italic 22px Arial";
@@ -243,15 +243,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 
-	function refresh_color_data() {
+	function refresh_color_data(last_colors) {
 		x = 1;  // 5 Seconds
 		let perf0 = performance.now();
 		let all_colors = count_colors_opt(360,400);
 		let perf1 = performance.now();
-		console.log("Colors on screen:" + all_colors + " take: " + parseInt(perf1 - perf0) + " ms" );
-		setTimeout(refresh_color_data, x*1000);
+		if (!(last_colors === all_colors)){
+			console.log("Colors changed from:"+last_colors+" to:"+all_colors + "and take: " + parseInt(perf1 - perf0) + " ms" );
+			last_colors = all_colors;
+		}
+		setTimeout(function () {refresh_color_data(last_colors)}, x*1000);
 	}
-	//CLT -> end counting colors on screen
+	//CLT -> end counting colors on screen 
+
 	
 	function draw_one_brick(positionX, positionY) {
 		for (i = positionX; i <= positionX + brick_width; i++) {
@@ -1853,21 +1857,17 @@ document.addEventListener('DOMContentLoaded', function() {
 		all_bricks.splice(0, all_bricks.length);
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
 		
-		context2.font = "bold 16px Arial";
-		context2.textAlign = "left";
-		context2.textBaseline = "middle";
-		context2.fillStyle = "rgb(255,0,0)";
-		context2.fillText("G a m e  O v e r ", 110 , 170);
-		
 		context2.font = "bold 12px Arial";
 		context2.textAlign = "left";
 		context2.textBaseline = "middle";
 		context2.fillStyle = "rgb(255,0,0)";
-		context2.fillText("Y o u r  s c o r e: " + score, 110 , 210);
+		context2.fillText("Y o u  l o s t ! ", 140 , 50);
+		context2.fillText("Y o u r  s c o r e: " + score, 110 , 130);
+		context2.font = "bold 16px Arial";
+		context2.fillText("G a m e  O v e r ", 120 , 90);
 		
-		context2.fillText("Y o u  l o s t ! ", 130 , 130);
 		
-		let get_text = context2.getImageData(110, 100-7, 200, 200);
+		let get_text = context2.getImageData(110, 50-7, 160, 100);
 		
 		for (let m=0; m < get_text.data.length; m += 4) {
 							if (get_text.data[m] !== 255 && get_text.data[m] !== 6) {
@@ -1880,8 +1880,34 @@ document.addEventListener('DOMContentLoaded', function() {
 								get_text.data[m+2] = 0;
 							}
 		}
-		context.putImageData(get_text, 110, 100-7);
+		context.putImageData(get_text, 120, 50-7);
+		
+		draw_text(21, "", "E n t e r  Y o u r  n a m e : _", "", 20, 190, "bold 16px Arial", 16, 255, 0, 0);
+		draw_text(22, "", "P r e s s  E n t e r  t o  a p p r o v e", "", 20, 280, " 12px Arial", 14, 255, 0, 0);
+			
 		change_level_sound("lost-life");
+		game_over_loop();
+	}
+	
+	function game_over_loop() {
+		context.putImageData(end_screen_text[21], 45, 190);
+		context.putImageData(end_screen_text[22], 75, 350);
+		//start_write_x = 240
+		start_write_y = 190;
+		create_input();
+		show_letters();
+		
+		if (which_key_pressed_code == "13") {
+			draw_final_score();
+			draw_author();
+			show_author();
+			cancelAnimationFrame(animation5);
+			return;
+		}
+		
+		setTimeout(function() {
+			animation5 = requestAnimationFrame(game_over_loop); 
+		}, interval_delay);
 	}
 	
 	function win_game() {
@@ -1981,6 +2007,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		if (which_key_pressed_code == "13") {
 			draw_final_score();
+			interval_delay = 40;
 			draw_author();
 			show_author();
 			cancelAnimationFrame(animation2);
@@ -2021,11 +2048,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		input.style.left = 80 + context2.measureText("Enter Your name: ").width + "5px";
 		input.style.top = "10px";
 		input.style.backgroundColor = "rgb(6, 0, 135)";
-		document.body.appendChild(input); */
+		document.body.appendChild(input); */ 
+		
 		if (which_key_pressed_code == 8 && input_helper == true) {
-			start_write_x = start_write_x - (context2.measureText(get_name[get_name.length-1]).width + 2);
+			if (all_letters.length !== 0) {
+				start_write_x = start_write_x - (context2.measureText(get_name[get_name.length-1]).width + 2);
+				end_screen_text.splice(end_screen_text.length-1, 1);
+				//console.log("cofam")
+			}
 			get_name.splice(get_name.length-1, 1);
-			end_screen_text.splice(end_screen_text.length-1, 1);
 			all_letters.splice(all_letters.length-1, 1);
 			input_helper = false;
 			//start_screen2();
@@ -2034,7 +2065,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (which_key_pressed_code >= 65 && which_key_pressed_code <= 90 && input_helper == true) {
 			if (get_name.length < 5) {
 				get_name.push(which_key_pressed_key)
-				draw_text(24+(get_name.length-1), "", which_key_pressed_key, "", start_write_x, 10, "16px Arial", 16, 255, 0, 0);
+				draw_text(24+(get_name.length-1), "", which_key_pressed_key, "", start_write_x, start_write_y, "16px Arial", 16, 255, 0, 0);
 				all_letters.push([end_screen_text[24+(get_name.length-1)], start_write_x, start_write_y]);
 				start_write_x = start_write_x + context2.measureText(get_name[get_name.length-1]).width + 2;
 				input_helper = false;
