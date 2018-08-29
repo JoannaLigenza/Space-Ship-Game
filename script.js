@@ -124,8 +124,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	let how_many_stars_in_boss = 6;
 	let get_name = [];
 	let input_helper = false;
-	let start_write = 230;
+	let start_write_x = 240;
+	let start_write_y = 150;
 	let all_letters = [];
+	let get_name_arr = [];
+	let get_score_arr = [];
 
 	
 	function draw_frame() {
@@ -214,10 +217,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function save_score(name, score) {
-		let get_name_arr = localStorage.getItem("name").split(",");
-		let get_score_arr = localStorage.getItem("score").split(",");
-		//console.log("get_name_arr", localStorage.getItem("name"))
-		//console.log("get_name_arr1", get_name_arr)
+		get_name_arr = localStorage.getItem("name").split(",");
+		get_score_arr = localStorage.getItem("score").split(",");
+		//console.log("get_name_arr", get_name_arr)
+		//console.log("get_score_arr ", get_score_arr )
+		console.log("name", name )
+		console.log("score ", score )
 		
 		for (i=0; i < get_score_arr.length; i++) {
 			if (score <= parseInt(get_score_arr[i])) {
@@ -1902,29 +1907,57 @@ document.addEventListener('DOMContentLoaded', function() {
 	function win_game() {
 		if(boss_power <= 0) {
 			boss_power = 0;
-			//end_screen();
 			change_level_sound("change-level");
-			localStorage.setItem("score", score);
+			//localStorage.setItem("score", score);
 			draw_text(9, "", "Y o u  w o n ! ", "", 130, 25, "bold 16px Arial", 16, 255, 0, 0);
 			draw_text(10, "", "Y o u r  s c o r e :  ", score, 80, 50, "bold 16px Arial", 16, 255, 0, 0);
-			draw_text(21, "", "E n t e r  Y o u r  n a m e : ", "", 20, 70, "bold 16px Arial", 16, 255, 0, 0);
+			draw_text(21, "", "E n t e r  Y o u r  n a m e : _", "", 20, 70, "bold 16px Arial", 16, 255, 0, 0);
+			draw_text(22, "", "P r e s s  E n t e r  t o  a p p r o v e", "", 20, 90, " 12px Arial", 14, 255, 0, 0);
 			return;
 		}
 	}
 	
 	function end_screen() {		
-		context.putImageData(end_screen_text[9], 130, 20);
-		context.putImageData(end_screen_text[10], 80, 50);
-		context.putImageData(end_screen_text[21], 35, 80);
+		context.putImageData(end_screen_text[9], 130, 50);
+		context.putImageData(end_screen_text[10], 80, 80);
+		context.putImageData(end_screen_text[21], 45, 150);
+		context.putImageData(end_screen_text[22], 75, 350);
+	}
+	
+	function draw_final_score() {
+		let strinify_name = get_name.toString();
+		strinify_name = strinify_name.replace(/,/g,'');
+		save_score(strinify_name, score);
+		
+		//get_name_arr = localStorage.getItem("name").split(",");
+		//get_score_arr = localStorage.getItem("score").split(",");
+		
+		let text_step = 10;
+		
+		for(i=0; i < get_score_arr.length; i++) {
+			draw_text(30+(i*2), "", get_name_arr[i], "", 100, text_step, "12px Arial", 14, 255, 0, 0);
+			draw_text(31+(i*2), "", get_score_arr[i], "", 200, text_step, "12px Arial", 14, 255, 0, 0);
+			text_step += 15
+		}
+	}
+	
+	function show_final_score() {
+		let text_step = 10;
+		for(i=0; i < get_score_arr.length; i++) {
+			context.putImageData(end_screen_text[(i*2)+30], 100, text_step);
+			context.putImageData(end_screen_text[(i*2)+31], 200, text_step);
+			text_step += 15
+		}
+		
 	}
 
 	function draw_author(text, posX , posY, font, align, rgb, text_height) {
-		draw_text(11, "", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 150, "12px Arial", 14, 255, 0, 0);
-		draw_text(12, "", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 180, "12px Arial", 14, 255, 0, 0);
-		draw_text(13, "", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 210, "12px Arial", 14, 255, 0, 0);
-		draw_text(14, "", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "12px Arial", 14, 255, 0, 0);
-		draw_text(15, "", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 270, "12px Arial", 14, 255, 0, 0);
-		draw_text(16, "", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 290, "12px Arial", 14, 255, 0, 0);
+		draw_text(11, "", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 160, "12px Arial", 14, 255, 0, 0);
+		draw_text(12, "", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 190, "12px Arial", 14, 255, 0, 0);
+		draw_text(13, "", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 220, "12px Arial", 14, 255, 0, 0);
+		draw_text(14, "", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 250, "12px Arial", 14, 255, 0, 0);
+		draw_text(15, "", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 280, "12px Arial", 14, 255, 0, 0);
+		draw_text(16, "", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 300, "12px Arial", 14, 255, 0, 0);
 		draw_text(17, "", "T e s t i n g :  M a t e u s z  L i g e n z a , P a w e l  L i g e n z a", "", 10, 310, "12px Arial", 14, 255, 0, 0);
 		draw_text(18, "", "P r e s s  F 5  t o  p l a y  a g a i n", "", 80, 340, "bold small-caps 12px Arial", 14, 255, 0, 0);
 	}
@@ -1946,29 +1979,52 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillRect(0,0, canvas.width, 2);
 		context.fillRect(0,canvas.height-2, canvas.width, 2);
 		context.fillStyle = "rgb(6, 0, 135)";
-		context.fillRect(2,2, canvas.width - 4, 135);
+		context.fillRect(2,2, canvas.width - 4, 200);
 	}
 	
-	function author() {
-		console.log(localStorage.getItem("score"));
+	function add_name_loop() {
+		//console.log(localStorage.getItem("score"));
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
 		//draw_author();
+		//move_author();
+		//blue_background();
+		end_screen();
+		create_input();
+		show_letters();
+		
+		if (which_key_pressed_code == "13") {
+			draw_final_score();
+			draw_author();
+			show_author();
+			cancelAnimationFrame(animation2);
+			return;
+		}
+		
+		setTimeout(function() {
+			animation2 = requestAnimationFrame(add_name_loop); 
+		}, interval_delay);
+	}
+	
+	function show_author() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		draw_frame();
 		move_author();
 		blue_background();
-		end_screen();
-		create_input()
-		show_letters()
+		show_final_score();
+		//end_screen();
+		//create_input();
+		//show_letters();
+		//draw_final_score()
 		
-		//if (who_made_it[0][2] < 140 ) {
-		if (where_to_draw+320 < 350 ) {
-			cancelAnimationFrame(animation2);
+		if (where_to_draw+320 < 230 ) {
+			cancelAnimationFrame(animation4);
 			//reload_game();
 			return;
 		}
 		
 		setTimeout(function() {
-			animation2 = requestAnimationFrame(author); 
+			animation4 = requestAnimationFrame(show_author); 
 		}, interval_delay);
 	}
 	
@@ -1981,7 +2037,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		input.style.backgroundColor = "rgb(6, 0, 135)";
 		document.body.appendChild(input); */
 		if (which_key_pressed_code == 8 && input_helper == true) {
-			start_write = start_write - (context2.measureText(get_name[get_name.length-1]).width + 2);
+			start_write_x = start_write_x - (context2.measureText(get_name[get_name.length-1]).width + 2);
 			get_name.splice(get_name.length-1, 1);
 			end_screen_text.splice(end_screen_text.length-1, 1);
 			all_letters.splice(all_letters.length-1, 1);
@@ -1992,9 +2048,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (which_key_pressed_code >= 65 && which_key_pressed_code <= 90 && input_helper == true) {
 			if (get_name.length < 5) {
 				get_name.push(which_key_pressed_key)
-				draw_text(22+(get_name.length-1), "", which_key_pressed_key, "", start_write, 10, "16px Arial", 16, 255, 0, 0);
-				all_letters.push([end_screen_text[22+(get_name.length-1)], start_write, 80]);
-				start_write = start_write + context2.measureText(get_name[get_name.length-1]).width + 2;
+				draw_text(23+(get_name.length-1), "", which_key_pressed_key, "", start_write_x, 10, "16px Arial", 16, 255, 0, 0);
+				all_letters.push([end_screen_text[23+(get_name.length-1)], start_write_x, start_write_y]);
+				start_write_x = start_write_x + context2.measureText(get_name[get_name.length-1]).width + 2;
 				input_helper = false;
 				return;
 			}
@@ -2048,8 +2104,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				score = score + life_quantity*500*10;
 				interval_delay = 30;
 				win_game();
-				draw_author();
-				author();
+				add_name_loop();
 				cancelAnimationFrame(animation);
 				return;
 			}
@@ -2140,7 +2195,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	start_screen();
-	//author();
+	//add_name_loop();
 	
 	function init() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
@@ -2159,6 +2214,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_lightning_icon();
 		move_bricks();
 		draw_obstacle();
+		init_score();
 		loop();
 	}
 	
