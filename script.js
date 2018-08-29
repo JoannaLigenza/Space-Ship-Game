@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 11
-	let brick_row = 1;
+	let brick_row = 2;
 	let all_virtual_bricks = [];
 	const all_bricks = [];
 	let ship_position_x = 160;
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6, 3];
+	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_shoot = true;
 	let enemy_quantity = [];
 	const bullets_counts = [];
-	let bullet_limit = 17; //4
+	let bullet_limit = 4; //4
 	const bullet_width = 2;
 	const bullet_height = 10;
 	let get_bullets = "";
@@ -101,12 +101,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_boss_shoot = false;
 	let boss_stop_moving = 250; 
 	let boss_start_moving = 100;
-	let boss_power = 1;
+	let boss_power = 100;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
 	let three_obstacles_lines = [];
 	let score = 0;
-	let level = 9;
+	let level = 1;
 	let change_level_delay = 100;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -145,40 +145,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function start_screen() {
 		// ->>> CLT function
-		//refresh_color_data();
+		refresh_color_data();
 		// ->>> end CLT function
 		draw_frame();
-		context.font = "Bold 16px Arial";
+		context.font = "Bold italic 22px Arial";
 		context.textAlign = "left";
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("Press enter to play", 100 , 170);
-		draw_space_ship();
-		draw_boss();
-		//localStorage.clear()
-/*		let get_storage = localStorage.getItem("name");
-		if (get_storage === null) {
-			localStorage.setItem("score", "50,45,43,40,39,38,30,20,15,10");
-			localStorage.setItem("name", "Tom,Jace,Nina,Ala,Jola,PAWEL,OLA,ZBYS,KAMIL,MATI");
-			//console.log("get_storage" , get_storage)
-		}
-		//localStorage.setItem("score", "50,100, 30, 100");
-		//localStorage.setItem("name", "Tomek, Jacek");
-		//let tesst = localStorage.getItem("name");
-		//let testt2 = tesst.split(",")
-		console.log("get_storage", get_storage);
-		let arr1 = ["Tomek",  "Jacek", "karolina"];
-		console.log("arr1", arr1);
-		arr1.splice(0, 0, "Magdalena");
-		console.log("arr1", arr1);
-		arr1.splice(arr1.length-1, 1);
-		console.log("arr1", arr1);
-		//console.log("arr1", arr2); */
-		
+		context.fillText("LOST  IN  BLOCKS", 75 , 100);
+		context.font = "Bold 16px Arial";
+		context.fillText("Press enter to play", 100 , 270);
+		//draw_space_ship();
+		//draw_boss();
 		loop1();
 	}
 	
-	function start_screen2() {
+/*	function start_screen2() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
 		context.font = "Bold 16px Arial";
@@ -188,10 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillText("Press enter to play", 100 , 170);
 		draw_space_ship();
 		draw_boss();
-
-		
 		//loop1();
-	}
+	} */
 	
 	function loop1() {
 		
@@ -200,8 +180,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			init();
 			return;
 		}
-		create_input();
-		show_letters();
+		//create_input();
+		//show_letters();
 		setTimeout(function() {
 			animation3 = requestAnimationFrame(loop1); 
 		}, interval_delay); 
@@ -264,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 	function refresh_color_data() {
-		x = 5;  // 5 Seconds
+		x = 1;  // 5 Seconds
 		let perf0 = performance.now();
 		let all_colors = count_colors_opt(360,400);
 		let perf1 = performance.now();
@@ -1743,14 +1723,14 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_col = 15;
 				brick_row = 3;
 				//green_bricks = 8;
-				yellow_bricks = 8;
+				//yellow_bricks = 8;
 				surprise_bricks_quantity = [6, 1, 7];
 				draw_virtual_bricks(30, 5);
 			}
 			if (level == 3) {
 				brick_col = 15;
 				brick_row = 4;
-				yellow_bricks = 0;
+				//yellow_bricks = 0;
 				surprise_bricks_quantity = [6, 1, 3, 2, 7];
 				draw_virtual_bricks(30, 5);
 			}
