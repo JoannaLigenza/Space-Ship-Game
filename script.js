@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		let get_storage = localStorage.getItem("name");
 		if (get_storage === null) {
 			localStorage.setItem("score", "50,45,43,40,39,38,30,20,15,10");
-			localStorage.setItem("name", "Tom,Jace,Nina,Ala,Jola,PAWEL,OLA,ZBYS,KAMIL,MATI");
+			localStorage.setItem("name", "T O M,J A C,N I N A,A L A,J O L A,P A W E L,O L A,Z B Y S,K A M I L,M A T I");
 			//console.log("get_storage" , get_storage)
 		}
 	}
@@ -221,12 +221,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		get_score_arr = localStorage.getItem("score").split(",");
 		//console.log("get_name_arr", get_name_arr)
 		//console.log("get_score_arr ", get_score_arr )
-		console.log("name", name )
-		console.log("score ", score )
+		//console.log("name", name )
+		//console.log("score ", score )
 		
 		for (i=0; i < get_score_arr.length; i++) {
 			if (score <= parseInt(get_score_arr[i])) {
-				console.log("zobacz")
+				//console.log("zobacz")
 				continue;
 			}
 			if (score > parseInt(get_score_arr[i])) {
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				get_name_arr.splice(i, 0, name);
 				get_score_arr.splice(get_score_arr.length-1, 1);
 				get_name_arr.splice(get_name_arr.length-1, 1);
-				console.log("zobacz2")
+				//console.log("zobacz2")
 				break;
 			}
 		}
@@ -1926,24 +1926,30 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function draw_final_score() {
 		let strinify_name = get_name.toString();
-		strinify_name = strinify_name.replace(/,/g,'');
+		strinify_name = strinify_name.toUpperCase();
+		strinify_name = strinify_name.replace(/,/g,' ');
 		save_score(strinify_name, score);
 		
 		//get_name_arr = localStorage.getItem("name").split(",");
 		//get_score_arr = localStorage.getItem("score").split(",");
 		
-		let text_step = 10;
+		draw_text(23, "", "T o p  1 0  s c o r e : ", "", 110, 10, " 16px Arial", 18, 255, 0, 0);
+		
+		let text_step = 30;
 		
 		for(i=0; i < get_score_arr.length; i++) {
-			draw_text(30+(i*2), "", get_name_arr[i], "", 100, text_step, "12px Arial", 14, 255, 0, 0);
+			draw_text(30+(i*2), "", i+1+" ", get_name_arr[i], 100, text_step, "12px Arial", 14, 255, 0, 0);
 			draw_text(31+(i*2), "", get_score_arr[i], "", 200, text_step, "12px Arial", 14, 255, 0, 0);
 			text_step += 15
 		}
 	}
 	
 	function show_final_score() {
-		let text_step = 10;
+		context.putImageData(end_screen_text[23], 110, 5);
+		
+		let text_step = 25;
 		for(i=0; i < get_score_arr.length; i++) {
+			context.putImageData(end_screen_text[(i*2)+30], 100, text_step);
 			context.putImageData(end_screen_text[(i*2)+30], 100, text_step);
 			context.putImageData(end_screen_text[(i*2)+31], 200, text_step);
 			text_step += 15
@@ -1952,14 +1958,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function draw_author(text, posX , posY, font, align, rgb, text_height) {
-		draw_text(11, "", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 160, "12px Arial", 14, 255, 0, 0);
-		draw_text(12, "", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 190, "12px Arial", 14, 255, 0, 0);
+		draw_text(11, "", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 180, "12px Arial", 14, 255, 0, 0);
+		draw_text(12, "", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 200, "12px Arial", 14, 255, 0, 0);
 		draw_text(13, "", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 220, "12px Arial", 14, 255, 0, 0);
-		draw_text(14, "", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 250, "12px Arial", 14, 255, 0, 0);
-		draw_text(15, "", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 280, "12px Arial", 14, 255, 0, 0);
-		draw_text(16, "", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 300, "12px Arial", 14, 255, 0, 0);
-		draw_text(17, "", "T e s t i n g :  M a t e u s z  L i g e n z a , P a w e l  L i g e n z a", "", 10, 310, "12px Arial", 14, 255, 0, 0);
-		draw_text(18, "", "P r e s s  F 5  t o  p l a y  a g a i n", "", 80, 340, "bold small-caps 12px Arial", 14, 255, 0, 0);
+		draw_text(14, "", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "12px Arial", 14, 255, 0, 0);
+		draw_text(15, "", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 260, "12px Arial", 14, 255, 0, 0);
+		draw_text(16, "", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 280, "12px Arial", 14, 255, 0, 0);
+		draw_text(17, "", "T e s t i n g :  M a t e u s z  L i g e n z a , P a w e l  L i g e n z a", "", 10, 300, "12px Arial", 14, 255, 0, 0);
+		draw_text(18, "", "P r e s s  F 5  t o  p l a y  a g a i n", "", 80, 370, "bold small-caps 12px Arial", 14, 255, 0, 0);
 	}
 	
 	function move_author() {
@@ -1969,7 +1975,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.putImageData(end_screen_text[14], 75, where_to_draw+120);
 		context.putImageData(end_screen_text[15], 45, where_to_draw+155);
 		context.putImageData(end_screen_text[16], 75, where_to_draw+195);
-		context.putImageData(end_screen_text[17],10, where_to_draw+235);
+		context.putImageData(end_screen_text[17], 10, where_to_draw+235);
 		context.putImageData(end_screen_text[18], 80, where_to_draw+320);
 		where_to_draw = where_to_draw - 1;
 	}
@@ -2048,8 +2054,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (which_key_pressed_code >= 65 && which_key_pressed_code <= 90 && input_helper == true) {
 			if (get_name.length < 5) {
 				get_name.push(which_key_pressed_key)
-				draw_text(23+(get_name.length-1), "", which_key_pressed_key, "", start_write_x, 10, "16px Arial", 16, 255, 0, 0);
-				all_letters.push([end_screen_text[23+(get_name.length-1)], start_write_x, start_write_y]);
+				draw_text(24+(get_name.length-1), "", which_key_pressed_key, "", start_write_x, 10, "16px Arial", 16, 255, 0, 0);
+				all_letters.push([end_screen_text[24+(get_name.length-1)], start_write_x, start_write_y]);
 				start_write_x = start_write_x + context2.measureText(get_name[get_name.length-1]).width + 2;
 				input_helper = false;
 				return;
