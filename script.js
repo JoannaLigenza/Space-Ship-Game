@@ -101,12 +101,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let can_boss_shoot = false;
 	let boss_stop_moving = 250; 
 	let boss_start_moving = 100;
-	let boss_power = 1;
+	let boss_power = 100;
 	let all_obstacles = [];
 	let obstacles_delay = 30;
 	let three_obstacles_lines = [];
 	let score = 0;
-	let level = 9;
+	let level = 1;
 	let change_level_delay = 100;
 	let can_change_level = true;
 	let interval_delay = 5;
@@ -1857,7 +1857,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		all_bricks.splice(0, all_bricks.length);
 		all_enemy_bullets.splice(0, all_enemy_bullets.length);
 		
-		context2.font = "bold 12px Arial";
+	/*	context2.font = "bold 12px Arial";
 		context2.textAlign = "left";
 		context2.textBaseline = "middle";
 		context2.fillStyle = "rgb(255,0,0)";
@@ -1880,7 +1880,10 @@ document.addEventListener('DOMContentLoaded', function() {
 								get_text.data[m+2] = 0;
 							}
 		}
-		context.putImageData(get_text, 120, 50-7);
+		context.putImageData(get_text, 120, 50-7); */
+		draw_text(24, "", "Y o u  l o s t ! ", "", 140, 50, "bold 12px Arial", 14, 255, 0, 0);
+		draw_text(25, "", "G a m e  O v e r ", "", 120, 90, "bold 16px Arial", 16, 255, 0, 0);
+		draw_text(26, "", "Y o u r  s c o r e: ", score, 110, 130, "bold 12px Arial", 14, 255, 0, 0);
 		
 		draw_text(21, "", "E n t e r  Y o u r  n a m e : _", "", 20, 190, "bold 16px Arial", 16, 255, 0, 0);
 		draw_text(22, "", "P r e s s  E n t e r  t o  a p p r o v e", "", 20, 280, " 12px Arial", 14, 255, 0, 0);
@@ -1890,12 +1893,18 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function game_over_loop() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		draw_frame();
+		context.putImageData(end_screen_text[24], 140, 50);
+		context.putImageData(end_screen_text[25], 120, 90);
+		context.putImageData(end_screen_text[26], 110, 130);
 		context.putImageData(end_screen_text[21], 45, 190);
 		context.putImageData(end_screen_text[22], 75, 350);
 		//start_write_x = 240
 		start_write_y = 190;
 		create_input();
 		show_letters();
+		console.log("loop")
 		
 		if (which_key_pressed_code == "13") {
 			draw_final_score();
@@ -1944,8 +1953,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		let text_step = 30;
 		
 		for(i=0; i < get_score_arr.length; i++) {
-			draw_text(30+(i*2), "", i+1+" ", get_name_arr[i], 100, text_step, "12px Arial", 14, 255, 0, 0);
-			draw_text(31+(i*2), "", get_score_arr[i], "", 200, text_step, "12px Arial", 14, 255, 0, 0);
+			draw_text(32+(i*2), "", i+1+". ", get_name_arr[i], 100, text_step, "12px Arial", 14, 255, 0, 0);
+			draw_text(33+(i*2), "", get_score_arr[i], "", 200, text_step, "12px Arial", 14, 255, 0, 0);
 			text_step += 15
 		}
 	}
@@ -1955,9 +1964,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		let text_step = 25;
 		for(i=0; i < get_score_arr.length; i++) {
-			context.putImageData(end_screen_text[(i*2)+30], 100, text_step);
-			context.putImageData(end_screen_text[(i*2)+30], 100, text_step);
-			context.putImageData(end_screen_text[(i*2)+31], 200, text_step);
+			//context.putImageData(end_screen_text[(i*2)+30], 100, text_step);
+			context.putImageData(end_screen_text[(i*2)+32], 100, text_step);
+			context.putImageData(end_screen_text[(i*2)+33], 200, text_step);
 			text_step += 15
 		}
 		
@@ -2007,7 +2016,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		if (which_key_pressed_code == "13") {
 			draw_final_score();
-			interval_delay = 40;
+			//interval_delay = 40;
 			draw_author();
 			show_author();
 			cancelAnimationFrame(animation2);
@@ -2021,6 +2030,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function show_author() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		interval_delay = 40;
 		draw_frame();
 		move_author();
 		blue_background();
@@ -2054,10 +2064,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (all_letters.length !== 0) {
 				start_write_x = start_write_x - (context2.measureText(get_name[get_name.length-1]).width + 2);
 				end_screen_text.splice(end_screen_text.length-1, 1);
-				//console.log("cofam")
+				get_name.splice(get_name.length-1, 1);
+				all_letters.splice(all_letters.length-1, 1);
+				console.log("all_letters", all_letters)
 			}
-			get_name.splice(get_name.length-1, 1);
-			all_letters.splice(all_letters.length-1, 1);
 			input_helper = false;
 			//start_screen2();
 			return;
@@ -2065,8 +2075,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (which_key_pressed_code >= 65 && which_key_pressed_code <= 90 && input_helper == true) {
 			if (get_name.length < 5) {
 				get_name.push(which_key_pressed_key)
-				draw_text(24+(get_name.length-1), "", which_key_pressed_key, "", start_write_x, start_write_y, "16px Arial", 16, 255, 0, 0);
-				all_letters.push([end_screen_text[24+(get_name.length-1)], start_write_x, start_write_y]);
+				draw_text(27+(get_name.length-1), "", which_key_pressed_key, "", start_write_x, start_write_y, "16px Arial", 16, 255, 0, 0);
+				all_letters.push([end_screen_text[27+(get_name.length-1)], start_write_x, start_write_y]);
 				start_write_x = start_write_x + context2.measureText(get_name[get_name.length-1]).width + 2;
 				input_helper = false;
 				return;
