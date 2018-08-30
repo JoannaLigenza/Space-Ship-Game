@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6];
+	let surprise_bricks_quantity = [6, 7, 7, 7, 7];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -147,6 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// ->>> CLT function
 		refresh_color_data(0);
 		// ->>> end CLT function
+		init_score();
 		draw_frame();
 	/*	context.font = "Bold italic 46px Arial";
 		context.textAlign = "left";
@@ -157,12 +158,17 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.font = "Bold 16px Arial";
 		context.fillText("Press enter to play", 100 , 270); */
 		
-		draw_text(33, "", "LOST  IN", "", 75, 50, "bold italic 46px Arial", 50, 255, 0, 0);
-		draw_text(34, "", "BLOCKS", "", 75, 100, "bold italic 46px Arial", 50, 255, 0, 0);
-		draw_text(35, "", "P r e s s  e n t e r  t o  p l a y", "", 50, 270, "bold 20px Arial", 25, 255, 0, 0);
-		draw_text(36, "", "P r e s s  s p a c e  t o  s h o w  s c o r e", "", 60, 350, "bold 12px Arial", 16, 255, 0, 0);
+		draw_text(33, "", "LOST  IN", "", 75, 50, "bold italic 46px Arial", 50, 250, 250, 250);
+		draw_text(34, "", "BLOCKS", "", 75, 100, "bold italic 46px Arial", 50, 255, 195, 35);
+		draw_text(35, "", "P r e s s  e n t e r  t o  p l a y", "", 50, 200, "bold 20px Arial", 25, 255, 0, 0);
+		draw_text(36, "", "P r e s s  s p a c e  f o r  h e l p", "", 85, 230, "bold 12px Arial", 16, 255, 195, 35);
 		
-		loop1();
+		context.putImageData(end_screen_text[33], 75, 50);
+		context.putImageData(end_screen_text[34], 75, 100);
+		context.putImageData(end_screen_text[35], 50, 270);
+		context.putImageData(end_screen_text[36], 85, 350);
+		
+		loop1();  //123, 190, 35)
 	}
 	
 /*	function start_screen2() {
@@ -183,13 +189,19 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_frame();
 		draw_final_score();
 		blue_background();
-		draw_text(35, "", "P r e s s  e n t e r  t o  p l a y", "", 50, 270, "bold 20px Arial", 25, 255, 0, 0);
+		draw_text(35, "", "P r e s s  e n t e r  t o  p l a y", "", 50, 270, "bold 20px Arial", 25, 123, 190, 35);
+		draw_text(37, "", "<-- M o v e  l e f t    --> M o v e  r i g h t", "", 60, 250, "bold 14px Arial", 16, 255, 195, 35);
+		//draw_text(38, "", "R i g h t  A r r o w  - m o v e  r i g h t", "", 60, 270, "bold 12px Arial", 16, 255, 195, 35);
+		draw_text(39, "", "S p a c e  -  s h o o t", "", 60, 290, "bold 14px Arial", 16, 255, 195, 35);
 		score_on_start_screen_loop();
 	}
 	
 	function score_on_start_screen_loop() {
 		show_final_score();
-		context.putImageData(end_screen_text[35], 50, 270);
+		context.putImageData(end_screen_text[37], 50, 240);
+		//context.putImageData(end_screen_text[38], 50, 290);
+		context.putImageData(end_screen_text[39], 50, 280);
+		context.putImageData(end_screen_text[35], 50, 350);
 		if (which_key_pressed_code == "13") {
 			cancelAnimationFrame(animation6);
 			init();
@@ -212,11 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			//cancelAnimationFrame(animation3);
 			return;
 		}
-
-		context.putImageData(end_screen_text[33], 75, 50);
-		context.putImageData(end_screen_text[34], 75, 100);
-		context.putImageData(end_screen_text[35], 50, 270);
-		context.putImageData(end_screen_text[36], 60, 350);
 		
 		setTimeout(function() {
 			animation3 = requestAnimationFrame(loop1); 
@@ -560,7 +567,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (enemy_quantity[i][0] == 0) {
 					enemy_quantity[i][1] = false;
 				}
-				if (enemy_quantity[i][0] == 0 && enemy_quantity[i][1] == false && all_enemy_bullets.length == 0) {
+				if (enemy_quantity[i][0] == 0 && enemy_quantity[enemy_quantity.length-1][1] == false && all_enemy_bullets.length == 0) {
 					enemy_quantity.splice(0, enemy_quantity.splice.length); 
 					return;
 				}
@@ -727,7 +734,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	function star_icon_collision() {
 		if (star_icon_quantity.length > 0) {	
 			for (i = 0; i < star_icon_quantity.length; i++) {
-				if (star_icon_quantity[i][1] + 11 > ship_position_y && star_icon_quantity[i][0] + 5 > ship_position_x && star_icon_quantity[i][0] + 11 < ship_position_x + ship_width) {
+				if (star_icon_quantity[i][1] + 11 > ship_position_y && star_icon_quantity[i][0] + 11 > ship_position_x && star_icon_quantity[i][0] + 11 < ship_position_x + ship_width) {
 					star_icon_quantity.splice(i, 1);
 					catched_stars.push(1);
 					score += 200;
@@ -1608,7 +1615,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		gain.connect(cont.destination);
 		gain.gain.setValueAtTime(0, cont.currentTime);
-		gain.gain.linearRampToValueAtTime(5, cont.currentTime + attack / 1000);
+		gain.gain.linearRampToValueAtTime(3, cont.currentTime + attack / 1000);
 		gain.gain.linearRampToValueAtTime(0, cont.currentTime + decay / 1000);
 
 		osc.frequency.value = freq;
@@ -2277,7 +2284,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_lightning_icon();
 		move_bricks();
 		draw_obstacle();
-		init_score();
 		loop();
 	}
 	
