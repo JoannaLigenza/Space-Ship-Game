@@ -191,7 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		blue_background();
 		draw_text(35, "", "P r e s s  e n t e r  t o  p l a y", "", 50, 270, "bold 20px Arial", 25, 123, 190, 35);
 		draw_text(37, "", "<-- M o v e  l e f t    --> M o v e  r i g h t", "", 60, 250, "bold 14px Arial", 16, 255, 195, 35);
-		//draw_text(38, "", "R i g h t  A r r o w  - m o v e  r i g h t", "", 60, 270, "bold 12px Arial", 16, 255, 195, 35);
 		draw_text(39, "", "S p a c e  -  s h o o t", "", 60, 290, "bold 14px Arial", 16, 255, 195, 35);
 		score_on_start_screen_loop();
 	}
@@ -946,7 +945,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						return;
 					}
 					for(k = 0; k < all_obstacles.length; k++) {
-						if (all_bullets[i][2] <= all_obstacles[k][2] && all_bullets[i][2] + bullet_height >= all_obstacles[k][2] && all_bullets[i][1] >= all_obstacles[k][1] && all_bullets[i][1] <= all_obstacles[k][1] + three_obstacles_lines[0][1]) {
+						if (all_bullets[i][2] <= all_obstacles[k][2] && all_bullets[i][2] + bullet_height >= all_obstacles[k][2] && all_bullets[i][1] >= all_obstacles[k][1] && all_bullets[i][1] <= all_obstacles[k][1] + all_obstacles[k][4]) {
 							if(all_obstacles[k][3] == "orange") {
 								//score += 20;
 								all_obstacles.splice(k, 1);
@@ -1386,10 +1385,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		let obstacle = [];
 		// [x1, y1, x2, y2, rgb, obstacle_pos_x, obstacle_pos_y]
+		let zero_line = [2, 200, 358, 200, "rgb(250, 250, 250)", canvas.width -2, 120];
 		let first_line = [5, 210, 30, 210, "rgb(250, 250, 250)", canvas.width -2, 120];
 		let second_line = [5, 220, 20, 220, "rgb(255, 195, 35)", canvas.width -10, 150];
-		let thrid_line = [5, 230, 15, 230, "rgb(250, 250, 250)", canvas.width -20, 180];
-		obstacle.push(first_line, second_line, thrid_line);
+		let thrid_line = [5, 230, 30, 230, "rgb(250, 250, 250)", canvas.width -20, 180];
+		obstacle.push(first_line, second_line, thrid_line, zero_line);
 		
 		for (i=0; i < obstacle.length; i++) {
 			context.beginPath();
@@ -1403,23 +1403,31 @@ document.addEventListener('DOMContentLoaded', function() {
 			//console.log("dlugosc: ", Math.abs(obstacle[i][2]-obstacle[i][0]))
 			three_obstacles_lines.push([get_obstacle, Math.abs(obstacle[i][2]-obstacle[i][0]), 5]);
 		}
+		all_obstacles[0] = [three_obstacles_lines[3][0], 2, 120, "white", three_obstacles_lines[3][1]];
 	}
 	
 	function push_obstacles() {
 		if (boss_power <= 95) {
-			all_obstacles.push([three_obstacles_lines[0][0], canvas.width -2, 120, "white"]);
+			all_obstacles.push([three_obstacles_lines[0][0], canvas.width -2, 120, "white", three_obstacles_lines[0][1]]);
 		}
-		if (boss_power <= 80) {
-			all_obstacles.push([three_obstacles_lines[1][0], canvas.width -10, 150, "orange"]);
+		if (boss_power <= 90) {
+			all_obstacles.push([three_obstacles_lines[1][0], canvas.width -10, 150, "orange", three_obstacles_lines[1][1]]);
 		}
-		if (boss_power <= 75) {
-			all_obstacles.push([three_obstacles_lines[2][0], canvas.width -20, 180, "white"]);
+		if (boss_power <= 85) {
+			all_obstacles.push([three_obstacles_lines[2][0], canvas.width -20, 180, "white", three_obstacles_lines[2][1]]);
 		} 
 	}
 	
 	function move_obstacles() {
+		//console.log("all_obstacles ", all_obstacles)
+		if(all_bricks.length == 0) {
+			all_obstacles[0][2] = -10;
+		}
+		if(all_bricks.length > 0) {
+			context.putImageData(all_obstacles[0][0], all_obstacles[0][1], all_obstacles[0][2]);
+		}
 		const obstacle_step = 2;
-		for (i=0; i < all_obstacles.length; i++) {
+		for (i=1; i < all_obstacles.length-1; i++) {
 			context.putImageData(all_obstacles[i][0], all_obstacles[i][1], all_obstacles[i][2]);
 			all_obstacles[i][1] = all_obstacles[i][1] - obstacle_step;
 			//console.log("three_obstacles_lines[0][2]", three_obstacles_lines[0][2])
@@ -2008,7 +2016,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			draw_text(41+(i*3), "", "", get_name_arr[i], 100, text_step, "12px Arial", 14, 255, 0, 0);
 			draw_text(42+(i*3), "", get_score_arr[i], "", 200, text_step, "12px Arial", 14, 255, 0, 0);
 			text_step += 15
-			console.log("tekst ", 150-context2.measureText(get_name_arr[i]).width-context2.measureText(i).width-3)
+			//console.log("tekst ", 150-context2.measureText(get_name_arr[i]).width-context2.measureText(i).width-3)
 		}
 	}
 	
@@ -2180,7 +2188,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			draw_boss_power_line(); 
 			obstacles_delay -= 1;
 			boss_star_delay -=1;
-			console.log("all_bricks.length ", all_bricks.length)
+			//console.log("all_bricks.length ", all_bricks.length)
 			if(boss_power <= 0 && all_bricks.length == 0) {
 				//win_game();
 				score = score + life_quantity*500*10;
