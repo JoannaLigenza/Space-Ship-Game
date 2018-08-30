@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6, 1];
+	let surprise_bricks_quantity = [6, 1, 1, 1, 1, 1];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -560,7 +560,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (enemy_quantity[i][0] == 0) {
 					enemy_quantity[i][1] = false;
 				}
-				if (enemy_quantity[i][0] == 0 && all_enemy_bullets.length == 0) {
+				if (enemy_quantity[i][0] == 0 && enemy_quantity[i][1] == false && all_enemy_bullets.length == 0) {
 					enemy_quantity.splice(0, enemy_quantity.splice.length); 
 					return;
 				}
