@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 11
-	let brick_row = 1;
+	let brick_row = 2;
 	let all_virtual_bricks = [];
 	const all_bricks = [];
 	let ship_position_x = 160;
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6, 7, 7, 7, 7];
+	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
@@ -233,8 +233,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	function init_score() {
 		let get_storage = localStorage.getItem("name");
 		if (get_storage === null) {
-			localStorage.setItem("score", "50,45,43,40,39,38,30,20,15,10");
-			localStorage.setItem("name", "T O M,J A C,N I N A,A L A,J O L A,P A W E L,O L A,Z B Y S,K A M I L,M A T I");
+			localStorage.setItem("score", "1000,900,800,700,600,500,300,200,100,50");
+			localStorage.setItem("name", "A S K A, A S K A, A S K A, A S K A, A S K A, A S K A, A S K A, A S K A, A S K A, A S K A");
 			//console.log("get_storage" , get_storage)
 		}
 	}
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		let all_colors = count_colors_opt(360,400);
 		let perf1 = performance.now();
 		if (!(last_colors === all_colors)){
-			console.log("Colors changed from:"+last_colors+" to:"+all_colors + "and take: " + parseInt(perf1 - perf0) + " ms" );
+			console.log("Colors changed from:"+last_colors+" to:"+all_colors + " and take: " + parseInt(perf1 - perf0) + " ms" );
 			last_colors = all_colors;
 		}
 		setTimeout(function () {refresh_color_data(last_colors)}, x*1000);
@@ -744,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (star_icon_quantity[i][1] + 16  > canvas.height - 5 ) {
 					star_icon_quantity.splice(i, 1);
 					if (!(level == 8 && secret_level == true)) {
-						console.log("secret_level ", secret_level)
+						//console.log("secret_level ", secret_level)
 						secret_level = false;
 					}
 					return;
@@ -935,23 +935,27 @@ document.addEventListener('DOMContentLoaded', function() {
 				return;
 			}
 			if (level == 10) {
-				if (all_bullets[i][1] >= (boss_pos_x + 20) && all_bullets[i][1] <= ((boss_pos_x + alien_width) - 20) && all_bullets[i][2] <= (boss_pos_y + alien_height) - 15 ) {
-					all_bullets.splice(i, 1);
-					bullets_counts.splice(i, 1);
-					score += 50;
-					boss_power -= 1;
-					return;
-				}
-				for(k = 0; k < all_obstacles.length; k++) {
-					if (all_bullets[i][2] <= all_obstacles[k][2] && all_bullets[i][2] + bullet_height >= all_obstacles[k][2] && all_bullets[i][1] >= all_obstacles[k][1] && all_bullets[i][1] <= all_obstacles[k][1] + three_obstacles_lines[0][1]) {
-						if(all_obstacles[k][3] == "orange") {
-							//score += 20;
-							all_obstacles.splice(k, 1);
-						}
+				if (boss_power > 0) {
+					if (all_bullets[i][1] >= (boss_pos_x + 20) && all_bullets[i][1] <= ((boss_pos_x + alien_width) - 20) && all_bullets[i][2] <= (boss_pos_y + alien_height) - 15 ) {
 						all_bullets.splice(i, 1);
-						bullets_counts.splice(i, 1);	
+						bullets_counts.splice(i, 1);
+						score += 50;
+						if (boss_power > 0) {
+							boss_power -= 1;
+						}
 						return;
 					}
+					for(k = 0; k < all_obstacles.length; k++) {
+						if (all_bullets[i][2] <= all_obstacles[k][2] && all_bullets[i][2] + bullet_height >= all_obstacles[k][2] && all_bullets[i][1] >= all_obstacles[k][1] && all_bullets[i][1] <= all_obstacles[k][1] + three_obstacles_lines[0][1]) {
+							if(all_obstacles[k][3] == "orange") {
+								//score += 20;
+								all_obstacles.splice(k, 1);
+							}
+							all_bullets.splice(i, 1);
+							bullets_counts.splice(i, 1);	
+							return;
+						}
+					} 
 				}
 			}
 			for (j = 0; j < all_bricks.length; j++) {
@@ -1402,13 +1406,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function push_obstacles() {
-		if (boss_power <= 100) {
+		if (boss_power <= 95) {
 			all_obstacles.push([three_obstacles_lines[0][0], canvas.width -2, 120, "white"]);
 		}
-		if (boss_power <= 85) {
+		if (boss_power <= 80) {
 			all_obstacles.push([three_obstacles_lines[1][0], canvas.width -10, 150, "orange"]);
 		}
-		if (boss_power <= 70) {
+		if (boss_power <= 75) {
 			all_obstacles.push([three_obstacles_lines[2][0], canvas.width -20, 180, "white"]);
 		} 
 	}
@@ -1522,7 +1526,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.addEventListener("keydown", function(e) {
 		which_key_pressed_code = e.keyCode;
 		which_key_pressed_key = e.key;
-		console.log(which_key_pressed_code)
+		//console.log(which_key_pressed_code)
 		
 		move = true;
 		//input_helper = true;
@@ -1648,7 +1652,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		refresh = true;
 		refresh_delay();
 		change_level_delay = 100;
-		console.log("level ", level);	
+		//console.log("level ", level);	
 	}
 	
 	function show_next_level_info() {
@@ -1842,14 +1846,16 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 			if (level == 10) {
 				turbo_shooting = true;
-				brick_col = 0;
-				brick_row = 0;
-				green_bricks = 0;
+				brick_col = 17;
+				brick_row = 8;
+				green_bricks = (brick_col * brick_row);
 				yellow_bricks = 0;
-				surprise_bricks_quantity = [];
+				surprise_bricks_quantity = [1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7];
 				move_boss();
 				refresh = false;
 				change_level_refresh = false;
+				draw_virtual_bricks(10, 120);
+				draw_all_bricks();
 				return;
 			}
 			draw_all_bricks();
@@ -1876,7 +1882,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 		if (change_level_delay === 98 && lost_life_refresh == true) {
-			console.log("secret_level ", secret_level)
+			//console.log("secret_level ", secret_level)
 			if (one_time_sound !== 1) {
 				change_level_sound("lost-life");
 			}
@@ -1947,7 +1953,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		start_write_y = 190;
 		create_input();
 		show_letters();
-		console.log("loop")
+		//console.log("loop")
 		
 		if (which_key_pressed_code == "13") {
 			draw_final_score();
@@ -1994,11 +2000,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_text(23, "", "T o p  1 0  s c o r e : ", "", 110, 10, " 16px Arial", 18, 255, 0, 0);
 		
 		let text_step = 30;
-		
+		//150-context2.measureText(get_name_arr[i]).width-context2.measureText(i).width-3
+		//console.log("tekst ", 150-context2.measureText(get_name_arr[i]).width-context2.measureText(i).width-3)
 		for(i=0; i < get_score_arr.length; i++) {
-			draw_text(40+(i*2), "", i+1+".  ", get_name_arr[i], 100, text_step, "12px Arial", 14, 255, 0, 0);
-			draw_text(41+(i*2), "", get_score_arr[i], "", 200, text_step, "12px Arial", 14, 255, 0, 0);
+			//draw_text(40+(i*2), "", i+1+".  ", get_name_arr[i], 100, text_step, "12px Arial", 14, 255, 0, 0);
+			draw_text(40+(i*3), "", i+1+".  ", "", 70, text_step, "12px Arial", 14, 255, 0, 0);
+			draw_text(41+(i*3), "", "", get_name_arr[i], 100, text_step, "12px Arial", 14, 255, 0, 0);
+			draw_text(42+(i*3), "", get_score_arr[i], "", 200, text_step, "12px Arial", 14, 255, 0, 0);
 			text_step += 15
+			console.log("tekst ", 150-context2.measureText(get_name_arr[i]).width-context2.measureText(i).width-3)
 		}
 	}
 	
@@ -2008,8 +2018,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		let text_step = 40;
 		for(i=0; i < get_score_arr.length; i++) {
 			//context.putImageData(end_screen_text[(i*2)+30], 100, text_step);
-			context.putImageData(end_screen_text[(i*2)+40], 100, text_step);
-			context.putImageData(end_screen_text[(i*2)+41], 200, text_step);
+			context.putImageData(end_screen_text[(i*3)+40], 105, text_step);
+			context.putImageData(end_screen_text[(i*3)+41], 200-context2.measureText(get_name_arr[i]).width-context2.measureText(i).width-3, text_step);
+			context.putImageData(end_screen_text[(i*3)+42], 260-context2.measureText(get_score_arr[i]).width-context2.measureText(i).width-3, text_step);
 			text_step += 15
 		}
 		
@@ -2109,7 +2120,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				end_screen_text.splice(end_screen_text.length-1, 1);
 				get_name.splice(get_name.length-1, 1);
 				all_letters.splice(all_letters.length-1, 1);
-				console.log("all_letters", all_letters)
+				//console.log("all_letters", all_letters)
 			}
 			input_helper = false;
 			//start_screen2();
@@ -2158,7 +2169,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_life();
 		draw_hearts();		
 		if (end_game == true) {
-			console.log("end_game");
+			//console.log("end_game");
 			game_over();
 			cancelAnimationFrame(animation);
 			return;
@@ -2169,7 +2180,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			draw_boss_power_line(); 
 			obstacles_delay -= 1;
 			boss_star_delay -=1;
-			if(boss_power <= 0) {
+			console.log("all_bricks.length ", all_bricks.length)
+			if(boss_power <= 0 && all_bricks.length == 0) {
 				//win_game();
 				score = score + life_quantity*500*10;
 				interval_delay = 30;
@@ -2189,9 +2201,14 @@ document.addEventListener('DOMContentLoaded', function() {
 				star_icon_quantity.push([random_star, 1]);
 				boss_star_delay = 700;
 			}
-			move_boss();
-			stop_boss();
-			move_obstacles();
+			if (boss_power > 0) {
+				move_boss();
+				stop_boss();
+				move_obstacles();
+				if (boss_power == 0) {
+					all_obstacles.splice(0, all_obstacles.length);
+				}
+			}
 			if (can_boss_shoot == true) {
 				draw_boss_bullets();
 				move_boss_bullet();
