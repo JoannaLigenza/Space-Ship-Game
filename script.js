@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let is_brick_moving = false;
 	const brick_moving_delay = 10;
 	let brick_moving_delay_arr = [];
-	let surprise_bricks_quantity = [6, 1, 1, 1, 1, 1];
+	let surprise_bricks_quantity = [6];
 	const all_surprise_bricks = [];
 	let color = "orange";
 	let yellow_bricks = 0;
