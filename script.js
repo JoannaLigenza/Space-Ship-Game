@@ -148,15 +148,20 @@ document.addEventListener('DOMContentLoaded', function() {
 		refresh_color_data(0);
 		// ->>> end CLT function
 		draw_frame();
-		context.font = "Bold italic 22px Arial";
+	/*	context.font = "Bold italic 46px Arial";
 		context.textAlign = "left";
 		context.textBaseline = "middle";
 		context.fillStyle = "rgb(255,0,0)";
-		context.fillText("LOST  IN  BLOCKS", 75 , 100);
+		context.fillText("LOST  IN", 75 , 50);
+		context.fillText("BLOCKS", 75 , 100);
 		context.font = "Bold 16px Arial";
-		context.fillText("Press enter to play", 100 , 270);
-		//draw_space_ship();
-		//draw_boss();
+		context.fillText("Press enter to play", 100 , 270); */
+		
+		draw_text(33, "", "LOST  IN", "", 75, 50, "bold italic 46px Arial", 50, 255, 0, 0);
+		draw_text(34, "", "BLOCKS", "", 75, 100, "bold italic 46px Arial", 50, 255, 0, 0);
+		draw_text(35, "", "P r e s s  e n t e r  t o  p l a y", "", 50, 270, "bold 20px Arial", 25, 255, 0, 0);
+		draw_text(36, "", "P r e s s  s p a c e  t o  s h o w  s c o r e", "", 60, 350, "bold 12px Arial", 16, 255, 0, 0);
+		
 		loop1();
 	}
 	
@@ -173,6 +178,28 @@ document.addEventListener('DOMContentLoaded', function() {
 		//loop1();
 	} */
 	
+	function show_score_on_start_screen() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		draw_frame();
+		draw_final_score();
+		blue_background();
+		draw_text(35, "", "P r e s s  e n t e r  t o  p l a y", "", 50, 270, "bold 20px Arial", 25, 255, 0, 0);
+		score_on_start_screen_loop();
+	}
+	
+	function score_on_start_screen_loop() {
+		show_final_score();
+		context.putImageData(end_screen_text[35], 50, 270);
+		if (which_key_pressed_code == "13") {
+			cancelAnimationFrame(animation6);
+			init();
+			return;
+		}
+		setTimeout(function() {
+			animation6 = requestAnimationFrame(score_on_start_screen_loop); 
+		}, interval_delay);
+	}
+	
 	function loop1() {
 		
 		if (which_key_pressed_code == "13") {
@@ -180,8 +207,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			init();
 			return;
 		}
-		//create_input();
-		//show_letters();
+		if (which_key_pressed_code == "32") {
+			show_score_on_start_screen();
+			//cancelAnimationFrame(animation3);
+			return;
+		}
+
+		context.putImageData(end_screen_text[33], 75, 50);
+		context.putImageData(end_screen_text[34], 75, 100);
+		context.putImageData(end_screen_text[35], 50, 270);
+		context.putImageData(end_screen_text[36], 60, 350);
+		
 		setTimeout(function() {
 			animation3 = requestAnimationFrame(loop1); 
 		}, interval_delay); 
@@ -272,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		for (l=0; l < brick_row; l++) {
 			for (k=0; k < brick_col; k++) {
 				all_virtual_bricks.push(["get_brick", positionX + (brick_width * k), positionY + (brick_height * l), 0, color])
-				console.log("color ", color)
+				//console.log("color ", color)
 			}
 		}
 		const all_virtual_bricks_copy = [];
@@ -1072,11 +1108,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	function draw_text(numb, before, text, after, posX , posY, font, text_height, r, g, b) {
 		context2.font = font;
 		context2.textAlign = "left";
-		context2.textBaseline = "middle";
+		context2.textBaseline = "top";
 		context2.fillStyle = "rgb("+r+","+g+","+b+")";
 		context2.fillText(before + text + after, posX , posY);
 		
-		let get_text = context2.getImageData(posX, posY-7, context2.measureText(text).width + (context2.measureText(after).width+5), text_height);
+		let get_text = context2.getImageData(posX, posY, context2.measureText(text).width + (context2.measureText(after).width+5), text_height);
 		
 		for (let m=0; m < get_text.data.length; m += 4) {
 			if (get_text.data[m] !== 255 && get_text.data[m] !== 6 ) {
@@ -1622,8 +1658,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.putImageData(end_screen_text[7], 100, 170);
 	}
 	
-	function show_bonus_level_info() {
-		draw_text(8, "", "B o n u s   L e v e l  !  ", "", 100, 170, "bold 16px Arial", 16, 255, 0, 0);
+	function show_hidden_level_info() {
+		draw_text(8, "", "H i d d e n   L e v e l  !  ", "", 100, 170, "bold 16px Arial", 16, 255, 0, 0);
 		
 		context.putImageData(end_screen_text[8], 100, 170);
 	}
@@ -1826,7 +1862,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}	
 		if (change_level_delay < 99 && change_level_delay > 0 && change_level_refresh == true) {
 			if (level == 8 && secret_level == true) {
-				show_bonus_level_info();
+				show_hidden_level_info();
 				return;
 			}
 			show_next_level_info();
@@ -1953,20 +1989,20 @@ document.addEventListener('DOMContentLoaded', function() {
 		let text_step = 30;
 		
 		for(i=0; i < get_score_arr.length; i++) {
-			draw_text(32+(i*2), "", i+1+". ", get_name_arr[i], 100, text_step, "12px Arial", 14, 255, 0, 0);
-			draw_text(33+(i*2), "", get_score_arr[i], "", 200, text_step, "12px Arial", 14, 255, 0, 0);
+			draw_text(40+(i*2), "", i+1+".  ", get_name_arr[i], 100, text_step, "12px Arial", 14, 255, 0, 0);
+			draw_text(41+(i*2), "", get_score_arr[i], "", 200, text_step, "12px Arial", 14, 255, 0, 0);
 			text_step += 15
 		}
 	}
 	
 	function show_final_score() {
-		context.putImageData(end_screen_text[23], 110, 5);
+		context.putImageData(end_screen_text[23], 110, 10);
 		
-		let text_step = 25;
+		let text_step = 40;
 		for(i=0; i < get_score_arr.length; i++) {
 			//context.putImageData(end_screen_text[(i*2)+30], 100, text_step);
-			context.putImageData(end_screen_text[(i*2)+32], 100, text_step);
-			context.putImageData(end_screen_text[(i*2)+33], 200, text_step);
+			context.putImageData(end_screen_text[(i*2)+40], 100, text_step);
+			context.putImageData(end_screen_text[(i*2)+41], 200, text_step);
 			text_step += 15
 		}
 		
@@ -2000,7 +2036,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		context.fillRect(0,0, canvas.width, 2);
 		context.fillRect(0,canvas.height-2, canvas.width, 2);
 		context.fillStyle = "rgb(6, 0, 135)";
-		context.fillRect(2,2, canvas.width - 4, 200);
+		context.fillRect(2,2, canvas.width - 4, 210);
 	}
 	
 	function add_name_loop() {
