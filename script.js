@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	function start_screen() {
 		// ->>> CLT function
-		refresh_color_data(0);
+		//refresh_color_data(0);
 		// ->>> end CLT function
 		init_score();
 		draw_frame();
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		let all_colors = count_colors_opt(360,400);
 		let perf1 = performance.now();
 		if (!(last_colors === all_colors)){
-			console.log("Colors changed from:"+last_colors+" to:"+all_colors + " and take: " + parseInt(perf1 - perf0) + " ms" );
+			console.log("Colors changed from:"+last_colors+" to:"+all_colors+" and take: "+parseInt(perf1 - perf0)+" ms"," level: ",level);
 			last_colors = all_colors;
 		}
 		setTimeout(function () {refresh_color_data(last_colors)}, x*1000);
@@ -1400,6 +1400,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function push_obstacles() {
+		if (all_bricks.length !== 0) {
+			return;
+		}
 		if (boss_power <= 95) {
 			all_obstacles.push([three_obstacles_lines[0][0], canvas.width -2, 120, "white", three_obstacles_lines[0][1]]);
 		}
@@ -1418,6 +1421,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if(all_bricks.length > 0) {
 			context.putImageData(all_obstacles[0][0], all_obstacles[0][1], all_obstacles[0][2]);
+			all_obstacles[0][2] = 120;
 		}
 		const obstacle_step = 2;
 		for (i=1; i < all_obstacles.length-1; i++) {
@@ -1756,6 +1760,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			max_boss_bullets = 15;
 			boss_stop_moving = 250;
 			all_boss_bullets.splice(0, all_boss_bullets.length);
+			all_obstacles.splice(1, all_obstacles.length-1);
 			change_level_delay = 100;
 		}
 
@@ -1828,7 +1833,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				for (i=0; i< ((brick_col * brick_row)-4) /2 ; i++) {
 					surprise_bricks_quantity.push(1, 7);
 				}
-				console.log("surprise_bricks_quantity", surprise_bricks_quantity.length, surprise_bricks_quantity)
+				//console.log("surprise_bricks_quantity", surprise_bricks_quantity.length, surprise_bricks_quantity)
 				draw_virtual_bricks(30, 5);
 				one_time_sound = 1;
 			}
@@ -1852,11 +1857,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (level == 10) {
 				turbo_shooting = true;
 				brick_col = 17;
-				brick_row = 8;
+				brick_row = 8; //8
 				green_bricks = (brick_col * brick_row);
 				yellow_bricks = 0;
 				surprise_bricks_quantity = [1, 7];
-				for (i=0; i< 19; i++) {
+				//for (i=0; i< parseInt(((brick_col * brick_row)-2) /2); i++) {
+				for (i=0; i<19; i++) {
 					surprise_bricks_quantity.push(1, 7);
 				}
 				move_boss();
@@ -2040,9 +2046,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		draw_text(12, "", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 200, "12px Arial", 14, 255, 0, 0);
 		draw_text(13, "", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 220, "12px Arial", 14, 255, 0, 0);
 		draw_text(14, "", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "12px Arial", 14, 255, 0, 0);
-		draw_text(15, "", "J o a n n a  L i g e n z a ,  P a w e l  L i g e n z a", "", 5, 260, "12px Arial", 14, 255, 0, 0);
+		draw_text(15, "", "J o a n n a  L i g e n z a ,  M a t e u s z  L i g e n z a", "", 5, 260, "12px Arial", 14, 255, 0, 0);
 		draw_text(16, "", "B u g s  f i x i n g :  J o a n n a   L i g e n z a", "", 75, 280, "12px Arial", 14, 255, 0, 0);
-		draw_text(17, "", "T e s t i n g :  M a t e u s z  L i g e n z a , P a w e l  L i g e n z a", "", 10, 300, "12px Arial", 14, 255, 0, 0);
+		draw_text(17, "", "T e s t e r s :  M a t e u s z  L i g e n z a , P a w e l  L i g e n z a", "", 10, 300, "12px Arial", 14, 255, 0, 0);
 		draw_text(18, "", "P r e s s  F 5  t o  p l a y  a g a i n", "", 80, 370, "bold small-caps 12px Arial", 14, 255, 0, 0);
 	}
 	
@@ -2193,7 +2199,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			obstacles_delay -= 1;
 			boss_star_delay -=1;
 			//console.log("all_bricks.length ", all_bricks.length)
-			if(boss_power <= 0 && all_bricks.length == 0) {
+			if(boss_power <= 0) {
 				//win_game();
 				score = score + life_quantity*500*10;
 				interval_delay = 30;
@@ -2320,7 +2326,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	//console.log("all_bricks ", all_bricks)
 	let t1 = performance.now();
-	console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
+	//console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")  
 	
 	
 	    
