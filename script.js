@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	let song = "";
 	let scale = "";
 	let myV = "";
-	let can_draw_frame = true;
 	const brick_width = 20;
 	const brick_height = 15;
 	let brick_col = 11
@@ -49,15 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	let get_bullets = "";
 	let get_enemy = "";
 	let all_bullets = [];
-	let all_additional_bullets = [];
 	let turbo_shooting = false;
 	let turbo_shooting_delay = 450;
 	let shooting_enemy = "";
 	const enemy_width = 12;
 	const enemy_height = 14;
-	const enemy_bullet_width = 2;
-	const enemy_bullet_height = 10;
-	const enemy_bullet_delay = 10;
 	let enemy_bullet_delay_arr = [];
 	let enemy_max_bullet = 20;
 	const all_enemy_bullets = [];
@@ -112,13 +107,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	let interval_delay = 5;
 	let refresh = false;
 	let refresh_delay_time = 10;
-	let animation = "";
 	let end_game = false;
 	let end_screen_text = [];
 	let where_to_draw = 400;
 	let change_level_refresh = false;
 	let lost_life_refresh = false;
-	let secret_level = true;
+	let hidden_level = true;
 	let one_time_sound = 0;
 	let boss_star_delay = 700;
 	let how_many_stars_in_boss = 6;
@@ -196,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function score_on_start_screen_loop() {
+		let animation6 = "";
 		show_final_score();
 		context.putImageData(end_screen_text[37], 50, 240);
 		//context.putImageData(end_screen_text[38], 50, 290);
@@ -212,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function loop1() {
-		
+		let animation3 = "";
 		if (which_key_pressed_code == "13") {
 			cancelAnimationFrame(animation3);
 			init();
@@ -220,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (which_key_pressed_code == "32") {
 			show_score_on_start_screen();
-			//cancelAnimationFrame(animation3);
+			cancelAnimationFrame(animation3);
 			return;
 		}
 		
@@ -364,8 +359,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	function move_bricks() {
 		const brick_step = 3;
 		brick_moving_delay_arr.push(1);
-		if (all_bricks.length == 0 && can_change_level == true && level == 8 && secret_level == true) {
-			secret_level = false;
+		if (all_bricks.length == 0 && can_change_level == true && level == 8 && hidden_level == true) {
+			hidden_level = false;
 			level -= 1;
 		}
 		if (all_bricks.length == 0 && can_change_level == true) {
@@ -400,18 +395,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	
 	function brick_color(positionX, positionY) {
-				if (color == "orange") { 
-					context.fillStyle = "rgb(232, 169, 0)";
-					context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
-				}
-				if (color == "yellow") { 
-					context.fillStyle = "rgb(240, 240, 34)";
-					context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
-				}
-				if (color == "green") { 
-					context.fillStyle = "rgb(123, 190, 35)";
-					context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
-				}
+			if (color == "orange") { 
+				context.fillStyle = "rgb(232, 169, 0)";
+			}
+			if (color == "yellow") { 
+				context.fillStyle = "rgb(240, 240, 34)";
+			}
+			if (color == "green") { 
+				context.fillStyle = "rgb(123, 190, 35)";
+			}
+			context.fillRect(positionX + 1, positionY + 1, brick_width - 1, brick_height - 1);
 	}
 	
 	function brick_pattern1(positionX, positionY) {
@@ -619,8 +612,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 				if (heart_position_y + 8  > canvas.height - 5 ) {
 					hearts_quantity.splice(i, 1);
-					if (!(level == 8 && secret_level == true)) {
-						secret_level = false;
+					if (!(level == 8 && hidden_level == true)) {
+						hidden_level = false;
 					}
 					return;
 				}
@@ -742,9 +735,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 				if (star_icon_quantity[i][1] + 16  > canvas.height - 5 ) {
 					star_icon_quantity.splice(i, 1);
-					if (!(level == 8 && secret_level == true)) {
-						//console.log("secret_level ", secret_level)
-						secret_level = false;
+					if (!(level == 8 && hidden_level == true)) {
+						//console.log("hidden_level ", hidden_level)
+						hidden_level = false;
 					}
 					return;
 				}
@@ -1139,11 +1132,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function draw_level() {
-		if (level == 8 && secret_level == true) {
+		if (level == 8 && hidden_level == true) {
 			draw_text(3, "", "L e v e l : ", "+", 5, canvas.height - 15, "bold small-caps 12px Arial", 12, 255, 0, 0);
 			context.putImageData(end_screen_text[3], 5, canvas.height - 15);
 		}
-		if (!(level == 8 && secret_level == true)) {
+		if (!(level == 8 && hidden_level == true)) {
 			draw_text(0, "", "L e v e l : ", level, 5, canvas.height - 15, "bold small-caps 12px Arial", 12, 255, 0, 0);
 			context.putImageData(end_screen_text[0], 5, canvas.height - 15);
 		}
@@ -1690,12 +1683,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if (life_quantity > 0) {
 			lost_life_refresh = true;
-			if (!(level == 8 && secret_level == true)) {
+			if (!(level == 8 && hidden_level == true)) {
 				life_quantity -= 1;
 				score -= ( (((brick_col*brick_row) - all_bricks.length)*10) + (catched_stars.length*200));
 			}
 			//life_quantity -= 1;
-			secret_level = false;
+			hidden_level = false;
 			//console.log(score)
 			
 			what_to_refresh();
@@ -1769,7 +1762,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function refresh_delay() {
-		//console.log("secret_level ", secret_level)
+		//console.log("hidden_level ", hidden_level)
 		can_shoot = false;
 		show_info();
 		//refresh_delay_time -= 1 
@@ -1825,17 +1818,21 @@ document.addEventListener('DOMContentLoaded', function() {
 				surprise_bricks_quantity = [6, 1, 3, 5, 1, 4, 1, 1, 4, 1, 2, 7, 7, 8];
 				draw_virtual_bricks(30, 5);
 			}
-			if (level == 8 && secret_level == true) {
+			if (level == 8 && hidden_level == true) {
 				brick_col = 15;
 				brick_row = 8;
 				green_bricks = 0;
 				yellow_bricks = (brick_col * brick_row);
-				surprise_bricks_quantity = [8, 2, 3, 7, 1, 7, 1, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7];
+				surprise_bricks_quantity = [8, 2, 3, 8];
 				//surprise_bricks_quantity = [1,7,1,7,1,7,1,7]
+				for (i=0; i< ((brick_col * brick_row)-4) /2 ; i++) {
+					surprise_bricks_quantity.push(1, 7);
+				}
+				console.log("surprise_bricks_quantity", surprise_bricks_quantity.length, surprise_bricks_quantity)
 				draw_virtual_bricks(30, 5);
 				one_time_sound = 1;
 			}
-			if (level == 8 && secret_level == false) {
+			if (level == 8 && hidden_level == false) {
 				brick_col = 15;
 				brick_row = 8;
 				green_bricks = 50;
@@ -1858,7 +1855,10 @@ document.addEventListener('DOMContentLoaded', function() {
 				brick_row = 8;
 				green_bricks = (brick_col * brick_row);
 				yellow_bricks = 0;
-				surprise_bricks_quantity = [1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7];
+				surprise_bricks_quantity = [1, 7];
+				for (i=0; i< 19; i++) {
+					surprise_bricks_quantity.push(1, 7);
+				}
 				move_boss();
 				refresh = false;
 				change_level_refresh = false;
@@ -1882,7 +1882,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			change_level_sound("change-level");
 		}	
 		if (change_level_delay < 99 && change_level_delay > 0 && change_level_refresh == true) {
-			if (level == 8 && secret_level == true) {
+			if (level == 8 && hidden_level == true) {
 				show_hidden_level_info();
 				return;
 			}
@@ -1890,7 +1890,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 		if (change_level_delay === 98 && lost_life_refresh == true) {
-			//console.log("secret_level ", secret_level)
+			//console.log("hidden_level ", hidden_level)
 			if (one_time_sound !== 1) {
 				change_level_sound("lost-life");
 			}
@@ -1950,6 +1950,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function game_over_loop() {
+		let animation5 = "";
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
 		context.putImageData(end_screen_text[24], 140, 50);
@@ -2035,7 +2036,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function draw_author(text, posX , posY, font, align, rgb, text_height) {
-		draw_text(11, "", "G r a p h i c :   J o a n n a   L i g e n z a ", "", 80, 180, "12px Arial", 14, 255, 0, 0);
+		draw_text(11, "", "Graphic: Joanna Ligenza".match(/./g).join(' '), "", 80, 180, "12px Arial", 14, 255, 0, 0);
 		draw_text(12, "", "S o u n d s :   J o a n n a   L i g e n z a ", "", 80, 200, "12px Arial", 14, 255, 0, 0);
 		draw_text(13, "", "R e a l i s a t i o n :   J o a n n a   L i g e n z a ", "", 75, 220, "12px Arial", 14, 255, 0, 0);
 		draw_text(14, "", "I d e a s  a n d  i n s p i r a t i o n s : ", "", 75, 240, "12px Arial", 14, 255, 0, 0);
@@ -2066,6 +2067,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function add_name_loop() {
+		let animation2 = "";
 		//console.log(localStorage.getItem("score"));
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		draw_frame();
@@ -2091,6 +2093,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	function show_author() {
+		let animation4 = "";
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		interval_delay = 40;
 		draw_frame();
@@ -2164,6 +2167,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	let t0 = performance.now();
 	
 	function loop() {
+		let animation = "";
 		//console.log("enemy_quantity ", enemy_quantity)
 		//console.log("all_virtual_bricks ", all_virtual_bricks)
 		//console.log("enemy_quantity ", enemy_quantity.length)
